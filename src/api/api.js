@@ -1,0 +1,37 @@
+import axios from 'axios';
+
+const API_BASE_URL = 'http://127.0.0.1:8000/api/v1/tajashutki';
+
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export const getInitData = async () => {
+  const response = await apiClient.get('/init');
+  return response.data;
+};
+
+export const getProducts = async (params) => {
+  const response = await apiClient.get('/products', { params });
+  return response.data;
+};
+
+export const getProductDetails = async (slug) => {
+  const response = await apiClient.get(`/products/${slug}`);
+  return response.data;
+};
+
+export const placeOrder = async (orderData) => {
+  const response = await apiClient.post('/orders', orderData);
+  return response.data;
+};
+
+export const trackOrder = async (trackingId) => {
+  const response = await apiClient.get(`/orders/track/${trackingId}`);
+  return response.data;
+};
+
+export default apiClient;
