@@ -7,9 +7,13 @@ import Cart from '@/pages/Cart';
 import Checkout from '@/pages/Checkout';
 import OrderTracking from '@/pages/OrderTracking';
 import Contact from '@/pages/Contact';
+import About from '@/pages/About';
+import Reviews from '@/pages/Reviews';
 import FAQ from '@/pages/FAQ';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Terms from '@/pages/Terms';
+import OrderSuccess from '@/pages/OrderSuccess';
+import Wishlist from '@/pages/Wishlist';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from './store/productsSlice';
@@ -40,9 +44,13 @@ const AnimatedRoutes = () => {
         <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
         <Route path="/track" element={<PageTransition><OrderTracking /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/reviews" element={<PageTransition><Reviews /></PageTransition>} />
         <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
         <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+        <Route path="/order-success" element={<PageTransition><OrderSuccess /></PageTransition>} />
+        <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
