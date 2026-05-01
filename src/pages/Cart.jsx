@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useSite } from '../context/SiteContext';
 import { 
   selectCartItems, 
   selectCartTotal, 
@@ -8,6 +6,7 @@ import {
   removeItem, 
   updateQuantity 
 } from '../store/cartSlice';
+import { selectDeliverySettings } from '../store/settingsSlice';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/delivery';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, RefreshCcw, Ticket, X } from 'lucide-react';
@@ -20,12 +19,12 @@ const Cart = () => {
   const items = useSelector(selectCartItems);
   const totalPrice = useSelector(selectCartTotal);
   const cartCount = useSelector(selectCartCount);
-  const { settings } = useSite();
+  const deliverySettings = useSelector(selectDeliverySettings);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const freeDeliveryThreshold = parseFloat(settings?.free_delivery_threshold || 2500);
+  const freeDeliveryThreshold = parseFloat(deliverySettings?.freeDeliveryThreshold || 2500);
   const isFreeDelivery = totalPrice >= freeDeliveryThreshold;
 
   const handleApplyCoupon = async () => {
