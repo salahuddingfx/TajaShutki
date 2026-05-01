@@ -8,7 +8,7 @@ import {
 } from '../store/cartSlice';
 import { selectDeliverySettings } from '../store/settingsSlice';
 import { calculateDeliveryCharge, formatPrice } from '../utils/delivery';
-import { api } from '../lib/api';
+import { placeOrder } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, MapPin, Phone, User, CreditCard, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -52,17 +52,21 @@ const Checkout = () => {
     
     try {
       const orderData = {
-        customer: formData,
-        items: items,
-        totalAmount,
-        deliveryCharge,
-        paymentMethod: 'Cash on Delivery',
-        phone: formData.phone // Used for tracking
+        customer_name: formData.name,
+        customer_phone: formData.phone,
+        customer_address: formData.address,
+        location: formData.location === "Cox's Bazar" ? 'Cox' : 'Outside',
+        items: items.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity
+        }))
       };
       
-      const response = await api.createOrder(orderData);
-      setOrderSuccess(response);
-      dispatch(clearCart());
+      const response = await placeOrder(orderData);
+      if (response.success) {
+        setOrderSuccess(response.data);
+        dispatch(clearCart());
+      }
     } catch (error) {
       console.error('Order failed', error);
     } finally {
@@ -82,12 +86,12 @@ const Checkout = () => {
             <CheckCircle2 size={40} />
           </div>
           <h2 className="text-3xl font-display font-bold mb-4">Order Placed!</h2>
-          <p className="text-slate-500 mb-2">Thank you for your purchase, {orderSuccess.customer.name}.</p>
-          <p className="text-maroon font-bold text-lg mb-8">Tracking ID: {orderSuccess.id}</p>
+          <p className="text-slate-500 mb-2">Thank you for your purchase, {orderSuccess.customer_name}.</p>
+          <p className="text-maroon font-bold text-lg mb-8">Tracking ID: {orderSuccess.tracking_id}</p>
           <p className="text-sm text-slate-400 mb-10">We've sent a confirmation message to your phone.</p>
           <div className="space-y-4">
             <button 
-              onClick={() => navigate('/track')}
+              onClick={() => navigate('/track', { state: { trackingId: orderSuccess.tracking_id } })}
               className="btn-primary w-full"
             >
               Track Your Order

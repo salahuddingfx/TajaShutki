@@ -1,29 +1,40 @@
-import { useState } from 'react';
-import { api } from '../lib/api';
+import { useState, useEffect } from 'react';
+import { trackOrder } from '../api/api';
 import { formatPrice } from '../utils/delivery';
 import { Search, Package, MapPin, Truck, CheckCircle2, Clock, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 const OrderTracking = () => {
-  const [trackingId, setTrackingId] = useState('');
+  const location = useLocation();
+  const [trackingId, setTrackingId] = useState(location.state?.trackingId || '');
   const [order, setOrder] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    if (location.state?.trackingId) {
+      performSearch(location.state.trackingId);
+    }
+  }, [location.state]);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!trackingId) return;
-    
+    performSearch(trackingId);
+  };
+
+  const performSearch = async (id) => {
     setIsSearching(true);
     setError('');
     setOrder(null);
     
     try {
-      const result = await api.trackOrder(trackingId);
-      if (result) {
-        setOrder(result);
+      const response = await trackOrder(id);
+      if (response.success) {
+        setOrder(response.data);
       } else {
-        setError('No order found with that tracking ID or phone number.');
+        setError('No order found with that tracking ID.');
       }
     } catch (err) {
       setError('Something went wrong. Please try again.');
@@ -105,7 +116,7 @@ const OrderTracking = () => {
                     </div>
                     <div className="text-left md:text-right">
                       <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Tracking ID</p>
-                      <h3 className="text-xl font-bold text-maroon">{order.id}</h3>
+                      <h3 className="text-xl font-bold text-maroon">{order.tracking_id}</h3>
                     </div>
                   </div>
 
@@ -149,7 +160,7 @@ const OrderTracking = () => {
                       ))}
                       <div className="pt-4 border-t border-slate-100 flex justify-between items-center font-bold text-lg">
                         <span>Total Paid</span>
-                        <span className="text-maroon">{formatPrice(order.totalAmount)}</span>
+                        <span className="text-maroon">{formatPrice(order.total_amount)}</span>
                       </div>
                     </div>
                   </div>
@@ -163,23 +174,23 @@ const OrderTracking = () => {
                     <div className="space-y-4 text-sm text-slate-600">
                       <div>
                         <p className="font-bold text-slate-800 mb-1">Customer</p>
-                        <p>{order.customer.name}</p>
+                        <p>{order.customer_name}</p>
                       </div>
                       <div>
                         <p className="font-bold text-slate-800 mb-1">Address</p>
-                        <p>{order.customer.address}, {order.customer.location}</p>
+                        <p>{order.customer_address}, {order.location}</p>
                       </div>
                       <div className="flex gap-8 pt-2">
                         <div>
                           <p className="font-bold text-slate-800 mb-1">Date</p>
                           <div className="flex items-center gap-2">
                             <Calendar size={14} />
-                            {new Date(order.createdAt).toLocaleDateString()}
+                            {new Date(order.created_at).toLocaleDateString()}
                           </div>
                         </div>
                         <div>
                           <p className="font-bold text-slate-800 mb-1">Method</p>
-                          <p>{order.paymentMethod}</p>
+                          <p>Cash on Delivery</p>
                         </div>
                       </div>
                     </div>
