@@ -26,16 +26,16 @@ const ProductCard = ({ product }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group relative bg-white rounded-[40px] shadow-premium border border-black/[0.01] overflow-hidden hover:-translate-y-4 transition-all duration-700 h-full flex flex-col"
+      className="group relative bg-white rounded-3xl shadow-sm hover:shadow-xl border border-slate-100 overflow-hidden transition-all duration-500 h-full flex flex-col"
     >
       {/* Image Container */}
-      <div className="relative aspect-[4/5] overflow-hidden rounded-t-[40px]">
+      <div className="relative aspect-square overflow-hidden bg-slate-50/50 p-4">
         <img 
           src={product.images && product.images.length > 0 ? product.images[0].image_path : (product.image_path || product.image || 'https://images.unsplash.com/photo-1514516348920-f319999a5e8f?q=80&w=400&auto=format&fit=crop')} 
           alt={product.name}
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
         />
         
         {/* Action Overlay */}
@@ -57,11 +57,11 @@ const ProductCard = ({ product }) => {
         {/* Wishlist Button */}
         <button 
           onClick={handleWishlist}
-          className={`absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10 ${
-            isWishlisted ? 'bg-maroon text-white shadow-lg' : 'bg-white/80 backdrop-blur-md text-slate-400 hover:text-maroon'
+          className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 z-10 ${
+            isWishlisted ? 'bg-maroon text-white shadow-lg' : 'bg-white text-slate-400 hover:text-maroon shadow-md'
           }`}
         >
-          <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
+          <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
         </button>
 
         {/* New Arrival Badge */}
@@ -73,42 +73,37 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Content */}
-      <div className="p-5 md:p-10 pt-4 md:pt-6 flex flex-col flex-grow">
-        <div className="flex items-center gap-2 mb-3">
-           <span className="w-1 h-1 rounded-full bg-slate-300" />
-           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-             {product.category?.name || product.category || "Pure Dried Fish"}
-           </span>
-        </div>
-        
-        <Link to={`/product/${product.slug || product.id}`}>
-          <h3 className="text-base md:text-xl font-display font-black text-slate-800 mb-2 md:mb-3 group-hover:text-maroon transition-colors tracking-tight line-clamp-2 h-10 md:h-14">
+      {/* Content */}
+      <div className="p-4 md:p-5 flex flex-col flex-grow">
+        <Link to={`/product/${product.slug || product.id}`} className="block mb-2">
+          <h3 className="text-sm md:text-base font-bold text-slate-800 hover:text-maroon transition-colors line-clamp-2 h-10 md:h-12 leading-tight">
             {product.name}
           </h3>
         </Link>
         
-        <div className="flex items-center gap-1 mb-4">
-           {[...Array(5)].map((_, i) => (
-             <Star 
-               key={i} 
-               size={12} 
-               className={i < (product.rating || 5) ? "fill-amber-400 text-amber-400" : "text-slate-200"} 
-             />
-           ))}
-           <span className="text-[10px] font-bold text-slate-400 ml-1">({product.reviews_count || 8})</span>
+        <div className="mb-4">
+           <span className="text-xl md:text-2xl font-black text-maroon">৳{product.price}</span>
+           {product.oldPrice && (
+             <span className="ml-2 text-sm text-slate-400 line-through font-medium">৳{product.oldPrice}</span>
+           )}
         </div>
         
         <div className="flex items-center justify-between mt-auto">
-          <div className="flex flex-col">
-             <span className="text-[10px] md:text-xs font-bold text-slate-400">Weight: {product.weight}kg</span>
-             <span className="text-lg md:text-2xl font-display font-black text-slate-900 mt-0.5 md:mt-1">৳{product.price}</span>
+          <div className="flex items-center gap-0.5">
+             {[...Array(5)].map((_, i) => (
+               <Star 
+                 key={i} 
+                 size={14} 
+                 className={i < (product.rating || 5) ? "fill-amber-400 text-amber-400" : "text-slate-200"} 
+               />
+             ))}
           </div>
           
           <button 
             onClick={handleAddToCart}
-            className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-maroon hover:text-white transition-all group-hover:shadow-glow"
+            className="text-maroon hover:scale-125 transition-transform"
           >
-            <Plus size={20} className="md:w-6 md:h-6" />
+            <ShoppingBag size={24} />
           </button>
         </div>
       </div>
