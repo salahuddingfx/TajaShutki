@@ -31,7 +31,7 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-t-[40px]">
         <img 
-          src={product.image_path || product.image} 
+          src={product.images && product.images.length > 0 ? product.images[0].image_path : (product.image_path || product.image || 'https://images.unsplash.com/photo-1514516348920-f319999a5e8f?q=80&w=400&auto=format&fit=crop')} 
           alt={product.name}
           loading="lazy"
           decoding="async"
@@ -73,7 +73,7 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Content */}
-      <div className="p-10 pt-6 flex flex-col flex-grow">
+      <div className="p-5 md:p-10 pt-4 md:pt-6 flex flex-col flex-grow">
         <div className="flex items-center gap-2 mb-3">
            <span className="w-1 h-1 rounded-full bg-slate-300" />
            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
@@ -82,7 +82,7 @@ const ProductCard = ({ product }) => {
         </div>
         
         <Link to={`/product/${product.slug || product.id}`}>
-          <h3 className="text-xl font-display font-black text-slate-800 mb-3 group-hover:text-maroon transition-colors tracking-tight line-clamp-1">
+          <h3 className="text-base md:text-xl font-display font-black text-slate-800 mb-2 md:mb-3 group-hover:text-maroon transition-colors tracking-tight line-clamp-2 h-10 md:h-14">
             {product.name}
           </h3>
         </Link>
@@ -100,15 +100,15 @@ const ProductCard = ({ product }) => {
         
         <div className="flex items-center justify-between mt-auto">
           <div className="flex flex-col">
-             <span className="text-xs font-bold text-slate-400">Weight: {product.weight}kg</span>
-             <span className="text-2xl font-display font-black text-slate-900 mt-1">৳{product.price}</span>
+             <span className="text-[10px] md:text-xs font-bold text-slate-400">Weight: {product.weight}kg</span>
+             <span className="text-lg md:text-2xl font-display font-black text-slate-900 mt-0.5 md:mt-1">৳{product.price}</span>
           </div>
           
           <button 
             onClick={handleAddToCart}
-            className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-maroon hover:text-white transition-all group-hover:shadow-glow"
+            className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-maroon hover:text-white transition-all group-hover:shadow-glow"
           >
-            <Plus size={24} />
+            <Plus size={20} className="md:w-6 md:h-6" />
           </button>
         </div>
       </div>
