@@ -192,19 +192,19 @@ const Cart = () => {
                 </div>
 
                 {/* Coupon Section */}
-                <div className="pt-6 border-t border-slate-50">
-                   <div className="flex gap-3">
+                <div className="pt-6 border-t border-slate-100">
+                   <div className="flex gap-2">
                       <input 
                         type="text"
                         placeholder="Coupon code"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                        className="flex-grow bg-slate-50 border-none rounded-xl px-4 py-3 font-bold text-slate-800 text-sm focus:ring-2 focus:ring-blue-600/20"
+                        className="flex-grow min-w-0 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-800 text-sm focus:ring-2 focus:ring-blue-600/20 transition-all"
                       />
                       <button 
                         onClick={handleApplyCoupon}
                         disabled={loading || !couponCode}
-                        className="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold text-xs hover:bg-blue-600 transition-all disabled:opacity-50"
+                        className="shrink-0 bg-slate-900 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-600 transition-all disabled:opacity-50"
                       >
                         {loading ? '...' : 'Apply'}
                       </button>
