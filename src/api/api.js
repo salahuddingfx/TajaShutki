@@ -39,5 +39,19 @@ export const submitContact = async (contactData) => {
   return response.data;
 };
 
-export default apiClient;
+export const getDynamicPage = async (slug) => {
+  const response = await apiClient.get(`/pages/${slug}`);
+  return response.data;
+};
 
+export const getReviews = async (params) => {
+  const response = await apiClient.get('/reviews', { params });
+  return response.data;
+};
+
+export const submitReview = async (reviewData) => {
+  const response = await apiClient.post('/reviews', reviewData);
+  return response.data;
+};
+
+export default apiClient;
