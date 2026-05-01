@@ -26,7 +26,10 @@ const Checkout = () => {
     phone: '',
     address: '',
     location: 'Dhaka', // Default
-    notes: ''
+    notes: '',
+    paymentMethod: 'cod',
+    paymentNumber: '',
+    transactionId: ''
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,7 +62,10 @@ const Checkout = () => {
         items: items.map(item => ({
           product_id: item.id,
           quantity: item.quantity
-        }))
+        })),
+        payment_method: formData.paymentMethod,
+        transaction_id: formData.transactionId,
+        sender_number: formData.paymentNumber
       };
       
       const response = await placeOrder(orderData);
@@ -195,17 +201,116 @@ const Checkout = () => {
                     <div className="w-8 h-8 rounded-lg bg-maroon/10 text-maroon flex items-center justify-center text-sm">2</div>
                     Payment Method
                   </h3>
-                  <div className="bg-slate-50 border-2 border-maroon p-5 rounded-xl flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-maroon/10 text-maroon flex items-center justify-center">
-                        <CreditCard size={20} />
+                  
+                  <div className="space-y-4">
+                    {/* COD */}
+                    <label className={`block p-5 rounded-xl border-2 transition-all cursor-pointer ${formData.paymentMethod === 'cod' ? 'border-maroon bg-slate-50' : 'border-slate-100 hover:border-slate-200'}`}>
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value="cod" 
+                        checked={formData.paymentMethod === 'cod'}
+                        onChange={handleChange}
+                        className="hidden"
+                      />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${formData.paymentMethod === 'cod' ? 'bg-maroon/10 text-maroon' : 'bg-slate-100 text-slate-400'}`}>
+                            <Truck size={20} />
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">Cash on Delivery</p>
+                            <p className="text-xs text-slate-500">Pay when you receive the order</p>
+                          </div>
+                        </div>
+                        {formData.paymentMethod === 'cod' && <CheckCircle2 className="text-maroon" size={24} />}
                       </div>
-                      <div>
-                        <p className="font-bold text-slate-800">Cash on Delivery</p>
-                        <p className="text-xs text-slate-500">Pay when you receive the pickles</p>
+                    </label>
+
+                    {/* bKash */}
+                    <label className={`block p-5 rounded-xl border-2 transition-all cursor-pointer ${formData.paymentMethod === 'bkash' ? 'border-[#D12053] bg-[#D12053]/5' : 'border-slate-100 hover:border-slate-200'}`}>
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value="bkash" 
+                        checked={formData.paymentMethod === 'bkash'}
+                        onChange={handleChange}
+                        className="hidden"
+                      />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${formData.paymentMethod === 'bkash' ? 'bg-[#D12053] text-white' : 'bg-slate-100 text-slate-400'}`}>
+                            <CreditCard size={20} />
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">bKash (Manual)</p>
+                            <p className="text-xs text-slate-500">Send money to 01851-075537 (Personal)</p>
+                          </div>
+                        </div>
+                        {formData.paymentMethod === 'bkash' && <CheckCircle2 className="text-[#D12053]" size={24} />}
                       </div>
-                    </div>
-                    <CheckCircle2 className="text-maroon" size={24} />
+                    </label>
+
+                    {/* Nagad */}
+                    <label className={`block p-5 rounded-xl border-2 transition-all cursor-pointer ${formData.paymentMethod === 'nagad' ? 'border-[#F1592A] bg-[#F1592A]/5' : 'border-slate-100 hover:border-slate-200'}`}>
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value="nagad" 
+                        checked={formData.paymentMethod === 'nagad'}
+                        onChange={handleChange}
+                        className="hidden"
+                      />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${formData.paymentMethod === 'nagad' ? 'bg-[#F1592A] text-white' : 'bg-slate-100 text-slate-400'}`}>
+                            <CreditCard size={20} />
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">Nagad (Manual)</p>
+                            <p className="text-xs text-slate-500">Send money to 01851-075537 (Personal)</p>
+                          </div>
+                        </div>
+                        {formData.paymentMethod === 'nagad' && <CheckCircle2 className="text-[#F1592A]" size={24} />}
+                      </div>
+                    </label>
+
+                    {/* Payment Details Input (bKash/Nagad only) */}
+                    {(formData.paymentMethod === 'bkash' || formData.paymentMethod === 'nagad') && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="space-y-4 pt-4 overflow-hidden"
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Your {formData.paymentMethod.toUpperCase()} Number</label>
+                            <input 
+                              required
+                              type="tel"
+                              name="paymentNumber"
+                              value={formData.paymentNumber}
+                              onChange={handleChange}
+                              placeholder="01XXX-XXXXXX"
+                              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:border-maroon text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Transaction ID</label>
+                            <input 
+                              required
+                              type="text"
+                              name="transactionId"
+                              value={formData.transactionId}
+                              onChange={handleChange}
+                              placeholder="TrxID (e.g. 8X9Y...)"
+                              className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:border-maroon text-sm"
+                            />
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-slate-400 italic">Please send the total amount ৳{totalAmount} to our number first, then provide the details above.</p>
+                      </motion.div>
+                    )}
                   </div>
                 </div>
               </form>
