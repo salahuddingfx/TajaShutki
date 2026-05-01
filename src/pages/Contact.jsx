@@ -1,11 +1,35 @@
-import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe } from 'lucide-react';
+import { useState } from 'react';
+import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, Loader2, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { selectContact } from '../store/settingsSlice';
+import { submitContact } from '../api/api';
 
 const Contact = () => {
   const contact = useSelector(selectContact);
   
+  const [formData, setFormData] = useState({ name: '', email: '', subject: 'General Inquiry', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); setError(null);
+    try {
+      await submitContact(formData);
+      setSuccess(true);
+      setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const contactInfo = [
     {
       icon: <Phone size={24} />,
@@ -113,11 +137,26 @@ const Contact = () => {
                 <h2 className="text-3xl font-display font-bold text-slate-800">Send a Message</h2>
               </div>
 
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {success && (
+                  <div className="md:col-span-2 bg-green-50 text-green-700 p-4 rounded-2xl flex items-center gap-3">
+                    <CheckCircle2 size={20} />
+                    <p className="font-medium text-sm">Your message has been sent successfully!</p>
+                  </div>
+                )}
+                {error && (
+                  <div className="md:col-span-2 bg-red-50 text-red-700 p-4 rounded-2xl">
+                    <p className="font-medium text-sm">{error}</p>
+                  </div>
+                )}
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
                   <input 
                     type="text" 
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
                     placeholder="John Doe" 
                     className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/10 focus:bg-white focus:border-maroon/20 transition-all font-medium"
                   />
@@ -126,31 +165,56 @@ const Contact = () => {
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
                   <input 
                     type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                     placeholder="john@example.com" 
                     className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/10 focus:bg-white focus:border-maroon/20 transition-all font-medium"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Subject</label>
-                  <select className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/10 focus:bg-white focus:border-maroon/20 transition-all font-medium appearance-none">
-                    <option>General Inquiry</option>
-                    <option>Bulk Order Request</option>
-                    <option>Feedback & Suggestions</option>
-                    <option>Support</option>
+                  <select 
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/10 focus:bg-white focus:border-maroon/20 transition-all font-medium appearance-none"
+                  >
+                    <option value="General Inquiry">General Inquiry</option>
+                    <option value="Bulk Order Request">Bulk Order Request</option>
+                    <option value="Feedback & Suggestions">Feedback & Suggestions</option>
+                    <option value="Support">Support</option>
                   </select>
                 </div>
                 <div className="md:col-span-2 space-y-2">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Your Message</label>
                   <textarea 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
                     placeholder="Tell us how we can help..." 
                     rows="5" 
                     className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-3xl focus:outline-none focus:ring-2 focus:ring-maroon/10 focus:bg-white focus:border-maroon/20 transition-all font-medium resize-none"
                   ></textarea>
                 </div>
                 <div className="md:col-span-2 pt-4">
-                  <button className="btn-primary w-full md:w-auto px-12 group">
-                    Send Message
-                    <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="btn-primary w-full md:w-auto px-12 group disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 size={18} className="animate-spin" /> Sending...
+                      </span>
+                    ) : (
+                      <>
+                        Send Message
+                        <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

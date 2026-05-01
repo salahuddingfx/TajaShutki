@@ -34,4 +34,10 @@ export const trackOrder = async (trackingId) => {
   return response.data;
 };
 
+export const submitContact = async (contactData) => {
+  const response = await apiClient.post('/contact', contactData);
+  return response.data;
+};
+
 export default apiClient;
+
