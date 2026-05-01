@@ -10,7 +10,7 @@ import {
 } from '../store/cartSlice';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/delivery';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, RefreshCcw } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, RefreshCcw, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../lib/api';
 import { toast } from 'react-hot-toast';
