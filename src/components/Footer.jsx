@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone, ArrowUpRight, Facebook, Instagram, Youtube } from 'lucide-react';
 import { TikTok } from './BrandIcons';
-import { useSite } from '../context/SiteContext';
 import { useSelector } from 'react-redux';
-import { selectContact } from '@/store/settingsSlice';
+import { selectContact, selectSocialLinks } from '@/store/settingsSlice';
 import { motion } from 'framer-motion';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const contact = useSelector(selectContact);
-  const { settings } = useSite();
-  const socialLinks = settings?.social_links || {};
+  const socialLinks = useSelector(selectSocialLinks) || {};
 
   const socials = [
     { id: 'facebook', icon: Facebook, url: socialLinks.facebook },
