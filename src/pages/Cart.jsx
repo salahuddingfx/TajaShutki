@@ -10,12 +10,40 @@ import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/delivery';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, RefreshCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { api } from '../lib/api';
+import { toast } from 'react-hot-toast';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const items = useSelector(selectCartItems);
   const totalPrice = useSelector(selectCartTotal);
   const cartCount = useSelector(selectCartCount);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode) return;
+    setLoading(true);
+    try {
+      const response = await api.post('/validate-coupon', { code: couponCode });
+      setAppliedCoupon(response.data.coupon);
+      toast.success('Coupon applied successfully!');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Invalid coupon code');
+      setAppliedCoupon(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const discountAmount = appliedCoupon 
+    ? (appliedCoupon.type === 'percentage' 
+        ? (totalPrice * (appliedCoupon.value / 100)) 
+        : parseFloat(appliedCoupon.value))
+    : 0;
+
+  const finalTotal = Math.max(0, totalPrice - discountAmount);
 
   if (items.length === 0) {
     return (
@@ -161,6 +189,45 @@ const Cart = () => {
                   <span>Cart Subtotal</span>
                   <span className="text-slate-900">{formatPrice(totalPrice)}</span>
                 </div>
+
+                {/* Coupon Section */}
+                <div className="pt-6 border-t border-slate-50">
+                   <div className="flex gap-3">
+                      <input 
+                        type="text"
+                        placeholder="Coupon code"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        className="flex-grow bg-slate-50 border-none rounded-xl px-4 py-3 font-bold text-slate-800 text-sm focus:ring-2 focus:ring-blue-600/20"
+                      />
+                      <button 
+                        onClick={handleApplyCoupon}
+                        disabled={loading || !couponCode}
+                        className="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold text-xs hover:bg-blue-600 transition-all disabled:opacity-50"
+                      >
+                        {loading ? '...' : 'Apply'}
+                      </button>
+                   </div>
+                   {appliedCoupon && (
+                     <div className="mt-3 flex items-center justify-between text-blue-600 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <div className="flex items-center gap-2">
+                          <Ticket size={14} />
+                          <span className="text-xs font-black">{appliedCoupon.code} Applied</span>
+                        </div>
+                        <button onClick={() => setAppliedCoupon(null)} className="text-slate-400 hover:text-red-500">
+                           <X size={14} />
+                        </button>
+                     </div>
+                   )}
+                </div>
+
+                {discountAmount > 0 && (
+                  <div className="flex justify-between items-center text-blue-600 font-bold">
+                    <span>Discount</span>
+                    <span>-{formatPrice(discountAmount)}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center text-slate-500 font-bold">
                   <span>Delivery Fee</span>
                   <span className="text-blue-600 uppercase text-xs tracking-widest">Calculated Later</span>
@@ -168,13 +235,14 @@ const Cart = () => {
                 <div className="pt-8 border-t border-slate-100 flex justify-between items-center">
                   <div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Grand Total</span>
-                    <h4 className="text-4xl font-black text-blue-600 mt-1 tracking-tighter">{formatPrice(totalPrice)}</h4>
+                    <h4 className="text-4xl font-black text-blue-600 mt-1 tracking-tighter">{formatPrice(finalTotal)}</h4>
                   </div>
                 </div>
               </div>
 
               <Link 
                 to="/checkout" 
+                state={{ discountAmount, appliedCoupon, finalTotal }}
                 className="flex items-center justify-center gap-4 bg-blue-600 text-white w-full py-6 rounded-3xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl hover:shadow-blue-600/40 group"
               >
                 Checkout Now
