@@ -4,12 +4,12 @@ const defaultSiteSettings = {
   hero: [
     {
       id: 1,
-      title: "Premium Churi Shutki",
-      subtitle: "Authentic sun-dried Ribbon fish from the coasts of Cox's Bazar.",
+      title: "Authentic Sun-Dried Seafood",
+      subtitle: "Traditional taste from the coast of Cox's Bazar.",
       image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=1600&auto=format&fit=crop",
       productId: "1",
-      price: 350,
-      badge: "Ocean Fresh"
+      price: 450,
+      badge: "100% Naturally Dried"
     }
   ],
   contact: {
@@ -18,14 +18,15 @@ const defaultSiteSettings = {
     address: "Marine Drive, Cox's Bazar, Bangladesh"
   },
   delivery: {
-    insideCity: 60,
-    outsideCity: 110,
-    weightCharge: 15
+    insideCity: 70,
+    outsideCity: 120,
+    weightCharge: 20
   }
 };
 
 const initialState = {
   sites: {
+    site_1: { ...defaultSiteSettings, name: "Acharu", categories: [], hero: [] },
     site_2: { ...defaultSiteSettings, name: "Taja Shutki", categories: [], hero: [] }
   },
   currentSiteId: 'site_2',
@@ -46,10 +47,32 @@ const settingsSlice = createSlice({
     },
     setInitData: (state, action) => {
       const { categories, hero_slides, site } = action.payload;
-      state.sites.site_2.categories = categories;
-      state.sites.site_2.hero = hero_slides.length > 0 ? hero_slides : defaultSiteSettings.hero;
-      state.sites.site_2.name = site.name;
-      state.sites.site_2.contact = site.settings || defaultSiteSettings.contact;
+      const siteKey = site.id === 1 ? 'site_1' : 'site_2';
+      const s = site.settings || {};
+      
+      state.sites[siteKey].categories = categories;
+      state.sites[siteKey].hero = hero_slides.length > 0 ? hero_slides : defaultSiteSettings.hero;
+      state.sites[siteKey].name = site.name;
+      
+      state.sites[siteKey].contact = {
+        phone: s.support_phone || s.phone || defaultSiteSettings.contact.phone,
+        email: s.store_email || s.email || defaultSiteSettings.contact.email,
+        address: s.address || defaultSiteSettings.contact.address,
+        whatsapp: s.whatsapp_number || '',
+      };
+
+      state.sites[siteKey].delivery = {
+        insideCity: Number(s.delivery_inside) || 70,
+        outsideCity: Number(s.delivery_outside) || 120,
+        weightCharge: Number(s.delivery_per_kg) || 10,
+      };
+
+      state.sites[siteKey].about = s.about ? (typeof s.about === 'string' ? JSON.parse(s.about) : s.about) : null;
+      state.sites[siteKey].home = s.home ? (typeof s.home === 'string' ? JSON.parse(s.home) : s.home) : null;
+      
+      state.initData = action.payload;
+      // Persist the new state immediately to local storage
+      localStorage.setItem('acharu-multi-settings', JSON.stringify(state));
     },
     updateSiteSettings: (state, action) => {
       const { siteId, settings } = action.payload;
@@ -69,9 +92,10 @@ export const selectAllSites = (state) => state.settings.sites;
 export const selectCategories = (state) => 
   state.settings.sites[state.settings.currentSiteId].categories;
 
-// Legacy selectors
 export const selectHeroSlides = (state) => state.settings.sites[state.settings.currentSiteId].hero;
 export const selectContact = (state) => state.settings.sites[state.settings.currentSiteId].contact;
 export const selectDeliverySettings = (state) => state.settings.sites[state.settings.currentSiteId].delivery;
+export const selectHomeSettings = (state) => state.settings.sites[state.settings.currentSiteId].home;
+export const selectAboutSettings = (state) => state.settings.sites[state.settings.currentSiteId].about;
 
 export default settingsSlice.reducer;
