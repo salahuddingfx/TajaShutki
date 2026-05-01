@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-t-[40px]">
         <img 
-          src={product.image} 
+          src={product.image_path || product.image} 
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
         />
@@ -31,7 +31,7 @@ const ProductCard = ({ product }) => {
         {/* Action Overlay */}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center gap-3">
            <Link 
-             to={`/product/${product.id}`}
+             to={`/product/${product.slug || product.id}`}
              className="w-14 h-14 rounded-full bg-white text-slate-900 flex items-center justify-center hover:bg-maroon hover:text-white transition-all scale-75 group-hover:scale-100 duration-500 delay-75 shadow-xl"
            >
              <Eye size={22} />
@@ -56,10 +56,12 @@ const ProductCard = ({ product }) => {
       <div className="p-10 pt-6 flex flex-col flex-grow">
         <div className="flex items-center gap-2 mb-3">
            <span className="w-1 h-1 rounded-full bg-slate-300" />
-           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Pure Dried Fish</span>
+           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+             {product.category?.name || "Pure Dried Fish"}
+           </span>
         </div>
         
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/product/${product.slug || product.id}`}>
           <h3 className="text-xl font-display font-black text-slate-800 mb-3 group-hover:text-maroon transition-colors tracking-tight line-clamp-1">
             {product.name}
           </h3>
