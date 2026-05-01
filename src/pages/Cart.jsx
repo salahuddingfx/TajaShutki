@@ -56,7 +56,7 @@ const Cart = () => {
                 
                 <div className="flex-grow text-center sm:text-left">
                   <h3 className="font-bold text-lg text-slate-800">{item.name}</h3>
-                  <p className="text-sm text-slate-400 mb-2">{item.category} • {item.weight}kg</p>
+                  <p className="text-sm text-slate-400 mb-2">{item.category?.name || item.category || 'Uncategorized'} • {item.weight}kg</p>
                   <p className="font-bold text-maroon">{formatPrice(item.price)}</p>
                 </div>
 
