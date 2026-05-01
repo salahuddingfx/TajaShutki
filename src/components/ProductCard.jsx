@@ -1,15 +1,23 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Eye, Plus } from 'lucide-react';
-import { useDispatch } from 'react-redux';
-import { addItem } from '../store/cartSlice';
+import { ShoppingBag, Eye, Plus, Star, Heart } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '@/store/cartSlice';
+import { toggleWishlist, selectWishlistItems } from '@/store/wishlistSlice';
 import { motion } from 'framer-motion';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
+  const wishlistItems = useSelector(selectWishlistItems);
+  const isWishlisted = wishlistItems.some(item => item.id === product.id);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     dispatch(addItem({ product }));
+  };
+
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    dispatch(toggleWishlist(product));
   };
 
   return (
@@ -25,6 +33,8 @@ const ProductCard = ({ product }) => {
         <img 
           src={product.image_path || product.image} 
           alt={product.name}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
         />
         
@@ -44,6 +54,16 @@ const ProductCard = ({ product }) => {
            </button>
         </div>
 
+        {/* Wishlist Button */}
+        <button 
+          onClick={handleWishlist}
+          className={`absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10 ${
+            isWishlisted ? 'bg-maroon text-white shadow-lg' : 'bg-white/80 backdrop-blur-md text-slate-400 hover:text-maroon'
+          }`}
+        >
+          <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
+        </button>
+
         {/* New Arrival Badge */}
         {product.isNew && (
           <div className="absolute top-6 left-6 px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-slate-800 shadow-sm">
@@ -57,7 +77,7 @@ const ProductCard = ({ product }) => {
         <div className="flex items-center gap-2 mb-3">
            <span className="w-1 h-1 rounded-full bg-slate-300" />
            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-             {product.category?.name || "Pure Dried Fish"}
+             {product.category?.name || product.category || "Pure Dried Fish"}
            </span>
         </div>
         
@@ -66,6 +86,17 @@ const ProductCard = ({ product }) => {
             {product.name}
           </h3>
         </Link>
+        
+        <div className="flex items-center gap-1 mb-4">
+           {[...Array(5)].map((_, i) => (
+             <Star 
+               key={i} 
+               size={12} 
+               className={i < (product.rating || 5) ? "fill-amber-400 text-amber-400" : "text-slate-200"} 
+             />
+           ))}
+           <span className="text-[10px] font-bold text-slate-400 ml-1">({product.reviews_count || 8})</span>
+        </div>
         
         <div className="flex items-center justify-between mt-auto">
           <div className="flex flex-col">
