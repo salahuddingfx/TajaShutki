@@ -34,22 +34,22 @@ const Contact = () => {
     {
       icon: <Phone size={24} />,
       title: "Call Us",
-      details: contact.phone,
+      details: contact.support_phone || contact.phone || "+880 1330-336084",
       description: "Mon-Fri from 9am to 6pm",
       color: "bg-blue-50 text-blue-600"
     },
     {
       icon: <Mail size={24} />,
       title: "Email Us",
-      details: contact.email,
+      details: contact.store_email || contact.email || "support@tajashutki.com",
       description: "Our friendly team is here to help",
       color: "bg-maroon/5 text-maroon"
     },
     {
       icon: <MapPin size={24} />,
       title: "Visit Us",
-      details: contact.address,
-      description: "Cox's Bazar, Bangladesh",
+      details: contact.address || "Dhaka, Bangladesh",
+      description: "Headquarters",
       color: "bg-green-50 text-green-600"
     }
   ];
