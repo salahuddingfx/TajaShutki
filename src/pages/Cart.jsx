@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useSite } from '@/context/SiteContext';
+import { useSite } from '../context/SiteContext';
 import { 
   selectCartItems, 
   selectCartTotal, 
