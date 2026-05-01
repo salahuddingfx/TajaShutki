@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
 import { Search, ChevronDown } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { selectProductsBySite } from '@/store/productsSlice';
 import { selectCurrentSiteId, selectCategories } from '@/store/settingsSlice';
+import { Helmet } from 'react-helmet-async';
+import SkeletonCard from '@/components/SkeletonCard';
 
 const Shop = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,6 +19,23 @@ const Shop = () => {
   
   const selectedCategoryName = searchParams.get('category') || 'All';
   const searchQuery = searchParams.get('search') || '';
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const newParams = new URLSearchParams(searchParams);
+      if (localSearch) {
+        newParams.set('search', localSearch);
+      } else {
+        newParams.delete('search');
+      }
+      setSearchParams(newParams, { replace: true });
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [localSearch]);
 
   const filteredProducts = useMemo(() => {
     let result = siteProducts || [];
@@ -26,23 +45,27 @@ const Shop = () => {
     }
     
     if (searchQuery) {
-      result = result.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter(p =>
+        (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.description || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     
     return result;
   }, [selectedCategoryName, searchQuery, siteProducts]);
 
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const currentItems = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategoryName, searchQuery]);
+
   const handleSearchChange = (value) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value) {
-      newParams.set('search', value);
-    } else {
-      newParams.delete('search');
-    }
-    setSearchParams(newParams, { replace: true });
+    setLocalSearch(value);
   };
 
   const handleCategoryClick = (category) => {
@@ -56,7 +79,12 @@ const Shop = () => {
   };
 
   return (
-    <div className="bg-cream min-h-screen pb-20">
+    <>
+      <Helmet>
+        <title>Shop | Taja Shutki - Premium Dried Fish & Seafood</title>
+        <meta name="description" content="Browse our premium collection of naturally dried fish and seafood." />
+      </Helmet>
+      <div className="bg-cream min-h-screen pb-20">
       {/* Header */}
       <div className="bg-maroon py-24 text-cream relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-black/10 z-0" />
@@ -148,9 +176,13 @@ const Shop = () => {
         </div>
 
         {/* Product Grid */}
-        {filteredProducts.length > 0 ? (
+        {!siteProducts || siteProducts.length === 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {filteredProducts.map((product) => (
+            {Array(8).fill(0).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            {currentItems.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -169,8 +201,32 @@ const Shop = () => {
             </button>
           </div>
         )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-16 flex justify-center items-center gap-2">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setCurrentPage(i + 1);
+                  window.scrollTo({ top: 300, behavior: 'smooth' });
+                }}
+                className={clsx(
+                  "w-10 h-10 rounded-xl font-bold transition-all",
+                  currentPage === i + 1 
+                    ? "bg-slate-900 text-white shadow-lg scale-110" 
+                    : "bg-white text-slate-400 hover:text-slate-800 border border-slate-100"
+                )}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
+    </>
   );
 };
 
