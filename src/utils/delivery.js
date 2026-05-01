@@ -4,8 +4,12 @@
  * @param {number} totalWeight - Total weight of items in kg
  * @returns {number} - Delivery charge
  */
-export const calculateDeliveryCharge = (location, totalWeight, settings) => {
-  const { insideCity = 70, outsideCity = 120, weightCharge = 20 } = settings || {};
+export const calculateDeliveryCharge = (location, totalWeight, totalAmount, settings) => {
+  const { insideCity = 70, outsideCity = 120, weightCharge = 20, free_delivery_threshold = 2500 } = settings || {};
+  
+  if (totalAmount >= parseFloat(free_delivery_threshold)) {
+    return 0;
+  }
   
   let baseCharge = location === 'Cox\'s Bazar' ? insideCity : outsideCity;
   
