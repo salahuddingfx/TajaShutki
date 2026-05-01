@@ -1,28 +1,28 @@
 import { useState, useMemo } from 'react';
 import ProductCard from '@/components/ProductCard';
-import { categories } from '@/data/products';
 import { Search, ChevronDown } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { selectProductsBySite } from '@/store/productsSlice';
-import { selectCurrentSiteId } from '@/store/settingsSlice';
+import { selectCurrentSiteId, selectCategories } from '@/store/settingsSlice';
 
 const Shop = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSiteId = useSelector(selectCurrentSiteId);
   const siteProducts = useSelector(state => selectProductsBySite(state, currentSiteId));
+  const categories = useSelector(selectCategories);
   
-  const selectedCategory = searchParams.get('category') || 'All';
+  const selectedCategoryName = searchParams.get('category') || 'All';
   const searchQuery = searchParams.get('search') || '';
 
   const filteredProducts = useMemo(() => {
     let result = siteProducts || [];
     
-    if (selectedCategory !== 'All') {
-      result = result.filter(p => p.category === selectedCategory);
+    if (selectedCategoryName !== 'All') {
+      result = result.filter(p => p.category?.name === selectedCategoryName || p.category === selectedCategoryName);
     }
     
     if (searchQuery) {
@@ -33,7 +33,7 @@ const Shop = () => {
     }
     
     return result;
-  }, [selectedCategory, searchQuery, siteProducts]);
+  }, [selectedCategoryName, searchQuery, siteProducts]);
 
   const handleSearchChange = (value) => {
     const newParams = new URLSearchParams(searchParams);
@@ -62,8 +62,8 @@ const Shop = () => {
         <div className="absolute top-0 left-0 w-full h-full bg-black/10 z-0" />
         <div className="container-custom relative z-10">
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-cream/60 mb-4">Premium Selection</p>
-          <h1 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tight">Taja Shutki <span className="italic opacity-50">Market</span></h1>
-          <p className="text-cream/70 max-w-2xl text-lg font-medium">
+          <h1 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tight text-white uppercase">Taja Shutki <span className="italic opacity-50">Market</span></h1>
+          <p className="text-cream/70 max-w-2xl text-lg font-medium leading-relaxed">
             Discover the finest sun-dried delicacies from the Bay of Bengal, delivered with coastal authenticity.
           </p>
         </div>
@@ -91,12 +91,12 @@ const Shop = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className={clsx(
                 "w-full lg:w-64 flex items-center justify-between px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border",
-                selectedCategory !== 'All' 
+                selectedCategoryName !== 'All' 
                   ? "bg-maroon text-cream border-maroon shadow-2xl shadow-maroon/20" 
                   : "bg-slate-100/50 text-slate-500 border-transparent hover:border-slate-200"
               )}
             >
-              <span>{selectedCategory === 'All' ? 'Filter Categories' : selectedCategory}</span>
+              <span>{selectedCategoryName === 'All' ? 'Filter Categories' : selectedCategoryName}</span>
               <ChevronDown size={16} className={clsx("transition-transform duration-500", isDropdownOpen && "rotate-180")} />
             </button>
 
@@ -121,7 +121,7 @@ const Shop = () => {
                         onClick={() => { handleCategoryClick('All'); setIsDropdownOpen(false); }}
                         className={clsx(
                           "w-full text-left px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                          selectedCategory === 'All' ? "bg-maroon text-cream" : "hover:bg-slate-50 text-slate-400 hover:text-slate-900"
+                          selectedCategoryName === 'All' ? "bg-maroon text-cream" : "hover:bg-slate-50 text-slate-400 hover:text-slate-900"
                         )}
                       >
                         All Categories
@@ -129,14 +129,14 @@ const Shop = () => {
                       <div className="h-px bg-slate-100 my-1 mx-2" />
                       {categories.map((cat) => (
                         <button
-                          key={cat}
-                          onClick={() => { handleCategoryClick(cat); setIsDropdownOpen(false); }}
+                          key={cat.id}
+                          onClick={() => { handleCategoryClick(cat.name); setIsDropdownOpen(false); }}
                           className={clsx(
                             "w-full text-left px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                            selectedCategory === cat ? "bg-maroon text-cream shadow-lg" : "hover:bg-slate-50 text-slate-400 hover:text-slate-900"
+                            selectedCategoryName === cat.name ? "bg-maroon text-cream shadow-lg" : "hover:bg-slate-50 text-slate-400 hover:text-slate-900"
                           )}
                         >
-                          {cat}
+                          {cat.name}
                         </button>
                       ))}
                     </div>

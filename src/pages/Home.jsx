@@ -2,21 +2,27 @@ import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
 import { useSelector } from 'react-redux';
 import { selectProductsBySite } from '@/store/productsSlice';
-import { selectCurrentSiteId } from '@/store/settingsSlice';
+import { selectCurrentSiteId, selectCategories } from '@/store/settingsSlice';
 import { motion } from 'framer-motion';
 import { ArrowRight, Star, ShieldCheck, Truck, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { categories } from '@/data/products';
 
 const Home = () => {
   const currentSiteId = useSelector(selectCurrentSiteId);
   const siteProducts = useSelector(state => selectProductsBySite(state, currentSiteId));
+  const categories = useSelector(selectCategories);
   const featuredProducts = siteProducts.slice(0, 4);
 
-  const displayCategories = categories.filter(c => c !== 'All').map(cat => {
-    const product = siteProducts.find(p => p.category === cat);
-    return { name: cat, image: product?.image || siteProducts[0]?.image };
-  }).slice(0, 4);
+  const displayCategories = categories
+    .filter(c => c.is_featured)
+    .map(cat => {
+      const product = siteProducts.find(p => p.category_id === cat.id);
+      return { 
+        name: cat.name, 
+        image: product?.image || siteProducts[0]?.image || "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=400&auto=format&fit=crop" 
+      };
+    })
+    .slice(0, 4);
 
   const features = [
     {

@@ -13,6 +13,8 @@ import Terms from '@/pages/Terms';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from './store/productsSlice';
+import { setInitData } from './store/settingsSlice';
+import { getInitData } from './api/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PageTransition = ({ children }) => (
@@ -51,6 +53,16 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    
+    const init = async () => {
+      try {
+        const res = await getInitData();
+        dispatch(setInitData(res.data));
+      } catch (err) {
+        console.error("Initialization failed", err);
+      }
+    };
+    init();
   }, [dispatch]);
 
   return (

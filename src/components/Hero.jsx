@@ -43,10 +43,12 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(contentRef.current.children, 
-        { opacity: 0, x: -50 },
-        { opacity: 1, x: 0, duration: 1, stagger: 0.2, ease: "expo.out" }
-      );
+      if (contentRef.current) {
+        gsap.fromTo(contentRef.current.children, 
+          { opacity: 0, x: -50 },
+          { opacity: 1, x: 0, duration: 1, stagger: 0.2, ease: "expo.out" }
+        );
+      }
     });
     return () => ctx.revert();
   }, [currentSlide]);
@@ -72,7 +74,7 @@ const Hero = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent z-10" />
           <div className="absolute inset-0 bg-black/40 z-5" />
           <img 
-            src={activeSlide.image} 
+            src={activeSlide.image_path || activeSlide.image} 
             alt={activeSlide.title}
             className="w-full h-full object-cover"
           />
