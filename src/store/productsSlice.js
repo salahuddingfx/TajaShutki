@@ -1,10 +1,23 @@
 import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit';
 import { getProducts } from '../api/api';
+import { products as initialProducts } from '../data/products';
 
-// Initial state with site-specific products
-const initialState = {
-  products: initialProducts.map(p => ({ ...p, siteId: 'site_2' })), // Default to site 2 for Taja Shutki
+const loadProducts = () => {
+  if (typeof window === 'undefined') return { products: [] };
+  const saved = localStorage.getItem('tajashutki-products');
+  if (saved) {
+    try {
+      return { products: JSON.parse(saved) };
+    } catch (e) {
+      console.error('Error loading products from local storage', e);
+    }
+  }
+  return {
+    products: initialProducts.map(p => ({ ...p, siteId: 'site_2' })),
+  };
 };
+
+const initialState = loadProducts();
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
@@ -16,7 +29,7 @@ export const fetchProducts = createAsyncThunk(
 
 const productsSlice = createSlice({
   name: 'products',
-  initialState: loadProducts(),
+  initialState,
   reducers: {
     addProduct: (state, action) => {
       state.products.push({
