@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { Share2, Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
-import { Instagram, Twitter } from './BrandIcons';
+import { Mail, MapPin, Phone, ArrowUpRight, Facebook, Instagram, Youtube } from 'lucide-react';
+import { TikTok } from './BrandIcons';
+import { useSite } from '@/context/SiteContext';
 import { useSelector } from 'react-redux';
 import { selectContact } from '@/store/settingsSlice';
 import { motion } from 'framer-motion';
@@ -8,6 +8,15 @@ import { motion } from 'framer-motion';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const contact = useSelector(selectContact);
+  const { settings } = useSite();
+  const socialLinks = settings?.social_links || {};
+
+  const socials = [
+    { id: 'facebook', icon: Facebook, url: socialLinks.facebook },
+    { id: 'instagram', icon: Instagram, url: socialLinks.instagram },
+    { id: 'youtube', icon: Youtube, url: socialLinks.youtube },
+    { id: 'tiktok', icon: TikTok, url: socialLinks.tiktok },
+  ].filter(s => s.url);
 
   return (
     <footer className="bg-slate-950 text-slate-400 pt-24 pb-12 overflow-hidden relative">
@@ -30,10 +39,16 @@ const Footer = () => {
             <p className="text-lg leading-relaxed text-slate-400 max-w-sm font-medium">
               Elevating the tradition of sun-dried delicacies with artisanal precision and coastal integrity.
             </p>
-            <div className="flex gap-6">
-              {[Instagram, Twitter, Share2].map((Icon, i) => (
-                <a key={i} href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-maroon hover:border-maroon transition-all duration-500">
-                  <Icon size={20} />
+            <div className="flex gap-4">
+              {socials.map((social) => (
+                <a 
+                  key={social.id} 
+                  href={social.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-maroon hover:border-maroon transition-all duration-500 hover:scale-110"
+                >
+                  <social.icon size={20} />
                 </a>
               ))}
             </div>
