@@ -59,8 +59,10 @@ const Footer = () => {
             <h4 className="text-white font-black uppercase tracking-[0.3em] text-[10px] mb-10">Concierge</h4>
             <ul className="space-y-6 font-bold tracking-tight">
               <li><Link to="/track" className="hover:text-white transition-colors flex items-center gap-2">Order Tracking <ArrowUpRight size={14} className="opacity-40" /></Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">Our Story / About</Link></li>
+              <li><Link to="/reviews" className="hover:text-white transition-colors">Customer Reviews</Link></li>
               <li><Link to="/faq" className="hover:text-white transition-colors">Client FAQ</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition-colors">Heritage Story</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy & Data</Link></li>
             </ul>
           </div>
