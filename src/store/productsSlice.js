@@ -23,7 +23,7 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (params) => {
     const response = await getProducts(params);
-    return response.data.data;
+    return response.data.data || [];
   }
 );
 
@@ -52,7 +52,12 @@ const productsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProducts.fulfilled, (state, action) => {
-      state.products = action.payload;
+      if (!action.payload) return;
+      state.products = action.payload.map(p => ({
+        ...p,
+        image: p.images && p.images.length > 0 ? p.images[0].image_path : p.image,
+        siteId: 'site_2'
+      }));
     });
   }
 });
