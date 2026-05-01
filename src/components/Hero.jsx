@@ -2,14 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from '../store/cartSlice';
-import { selectHeroSlides } from '../store/settingsSlice';
+import { selectHeroSlides, selectCurrentSiteId } from '../store/settingsSlice';
+import { selectProductsBySite } from '../store/productsSlice';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, ShoppingBag, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 
 const Hero = () => {
+  const currentSiteId = useSelector(selectCurrentSiteId);
   const slides = useSelector(selectHeroSlides);
+  const siteProducts = useSelector(state => selectProductsBySite(state, currentSiteId));
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progress, setProgress] = useState(0);
   const slideRef = useRef(null);
@@ -74,7 +77,7 @@ const Hero = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent z-10" />
           <div className="absolute inset-0 bg-black/40 z-5" />
           <img 
-            src={activeSlide.image_path || activeSlide.image} 
+            src={activeSlide.image_path} 
             alt={activeSlide.title}
             className="w-full h-full object-cover"
           />
@@ -108,26 +111,30 @@ const Hero = () => {
         <div className="w-full pb-10 flex flex-col md:flex-row items-center justify-between gap-6">
           {/* CTAs */}
           <div className="flex items-center gap-6">
-            <button 
-              onClick={() => dispatch(addItem({ product: { id: activeSlide.productId, name: activeSlide.title, price: activeSlide.price, image: activeSlide.image, weight: 0.5 } }))}
-              className="group relative px-8 py-4 bg-maroon text-cream font-black uppercase tracking-widest text-[10px] rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-maroon/20 flex items-center gap-3"
-            >
-              <ShoppingBag size={16} />
-              Add to Cart
-            </button>
+            {activeSlide.product_id && (
+              <>
+                <button 
+                  onClick={() => dispatch(addItem({ product: siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 } }))}
+                  className="group relative px-8 py-4 bg-maroon text-cream font-black uppercase tracking-widest text-[10px] rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-maroon/20 flex items-center gap-3"
+                >
+                  <ShoppingBag size={16} />
+                  {activeSlide.button_text || 'Add to Cart'}
+                </button>
 
-            <Link 
-              to={`/product/${activeSlide.productId}`}
-              className="group flex items-center gap-4"
-            >
-              <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-maroon transition-all duration-500">
-                <ArrowUpRight size={18} className="group-hover:rotate-45 transition-transform" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-0.5">Story</span>
-                <span className="text-[10px] font-black text-white uppercase tracking-widest group-hover:text-maroon transition-colors">Discover Story</span>
-              </div>
-            </Link>
+                <Link 
+                  to={`/product/${siteProducts.find(p => p.id == activeSlide.product_id)?.slug || activeSlide.product_id}`}
+                  className="group flex items-center gap-4"
+                >
+                  <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-maroon transition-all duration-500">
+                    <ArrowUpRight size={18} className="group-hover:rotate-45 transition-transform" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-0.5">Story</span>
+                    <span className="text-[10px] font-black text-white uppercase tracking-widest group-hover:text-maroon transition-colors">Discover Story</span>
+                  </div>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Progress & Navigation */}
