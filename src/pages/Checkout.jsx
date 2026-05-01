@@ -70,8 +70,8 @@ const Checkout = () => {
       
       const response = await placeOrder(orderData);
       if (response.success) {
-        setOrderSuccess(response.data);
         dispatch(clearCart());
+        navigate(`/order-success?id=${response.data.tracking_id}`);
       }
     } catch (error) {
       console.error('Order failed', error);
