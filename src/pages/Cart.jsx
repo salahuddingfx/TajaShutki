@@ -64,55 +64,53 @@ const Cart = () => {
                 <motion.div 
                   key={item.id}
                   layout
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, x: -20 }}
-                  className="group relative bg-white p-8 rounded-[32px] shadow-[0_10px_40px_rgba(0,0,0,0.02)] border border-slate-100 flex flex-col sm:flex-row gap-8 items-center hover:shadow-[0_20px_60px_rgba(0,0,0,0.04)] transition-all duration-500"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="group bg-white p-6 rounded-2xl border-b border-slate-100 flex items-center gap-6"
                 >
-                  <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 bg-slate-50 p-2 border border-slate-100">
-                    <img 
-                      src={item.image_path || item.image || 'https://images.unsplash.com/photo-1514516348920-f319999a5e8f?q=80&w=400&auto=format&fit=crop'} 
-                      alt={item.name} 
-                      className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110" 
-                    />
-                  </div>
-                  
-                  <div className="flex-grow text-center sm:text-left">
-                    <div className="flex items-center gap-2 mb-2 opacity-60 justify-center sm:justify-start">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{item.category?.name || item.category || 'Pure Dried'}</span>
+                  {/* Quantity Controls - Vertical */}
+                  <div className="flex flex-col items-center gap-2">
+                    <button 
+                      onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
+                      className="text-blue-600 hover:scale-125 transition-transform"
+                    >
+                      <Plus size={20} className="font-bold" />
+                    </button>
+                    <div className="w-10 h-10 flex items-center justify-center border-2 border-orange-400 rounded-lg font-black text-slate-800">
+                      {item.quantity}
                     </div>
-                    <h3 className="font-bold text-2xl text-slate-800 mb-2 group-hover:text-blue-600 transition-colors tracking-tight">{item.name}</h3>
-                    <div className="flex items-center gap-4 text-sm text-slate-400 font-bold justify-center sm:justify-start">
-                      <span>{item.weight}kg</span>
-                      <span className="w-1 h-1 rounded-full bg-slate-200" />
-                      <span>{formatPrice(item.price)} each</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
                     <button 
                       onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}
                       disabled={item.quantity <= 1}
-                      className="w-10 h-10 flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all text-slate-500 rounded-xl disabled:opacity-30"
+                      className="text-blue-600 hover:scale-125 transition-transform disabled:opacity-30"
                     >
-                      <Minus size={16} />
-                    </button>
-                    <span className="w-12 text-center font-black text-slate-800 text-lg">{item.quantity}</span>
-                    <button 
-                      onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
-                      className="w-10 h-10 flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all text-slate-500 rounded-xl"
-                    >
-                      <Plus size={16} />
+                      <Minus size={20} className="font-bold" />
                     </button>
                   </div>
 
-                  <div className="text-right sm:min-w-[120px]">
-                    <p className="font-black text-3xl text-slate-900 tracking-tighter">{formatPrice(item.price * item.quantity)}</p>
+                  {/* Image */}
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 p-1 shrink-0">
+                    <img 
+                      src={item.image_path || item.image || 'https://images.unsplash.com/photo-1514516348920-f319999a5e8f?q=80&w=400&auto=format&fit=crop'} 
+                      alt={item.name} 
+                      className="w-full h-full object-contain" 
+                    />
+                  </div>
+                  
+                  {/* Details */}
+                  <div className="flex-grow">
+                    <h3 className="font-bold text-lg text-slate-800 leading-tight mb-1">{item.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-black text-blue-600">৳{item.price}</span>
+                      <span className="text-sm font-bold text-slate-500">(৳{item.price} x {item.quantity})</span>
+                    </div>
                   </div>
 
+                  {/* Remove */}
                   <button 
                     onClick={() => dispatch(removeItem(item.id))}
-                    className="absolute top-4 right-4 p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300"
+                    className="w-10 h-10 bg-orange-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
                   >
                     <Trash2 size={20} />
                   </button>
