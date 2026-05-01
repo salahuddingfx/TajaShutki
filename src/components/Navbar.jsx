@@ -60,7 +60,7 @@ const Navbar = () => {
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className={clsx(
-            "lg:hidden p-3 rounded-2xl transition-all",
+            "xl:hidden p-3 rounded-2xl transition-all",
             isScrolled ? "bg-slate-100 text-slate-800" : "bg-white/10 text-white backdrop-blur-md"
           )}
         >
