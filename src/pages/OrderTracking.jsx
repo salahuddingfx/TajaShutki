@@ -45,23 +45,33 @@ const OrderTracking = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Order Received': return <Clock className="text-blue-500" />;
-      case 'Order Processed': return <CheckCircle2 className="text-blue-600" />;
-      case 'Packaged': return <Package className="text-maroon" />;
-      case 'Shipping': return <Truck className="text-orange-500" />;
-      case 'Delivered': return <CheckCircle2 className="text-green-500" />;
+      case 'placed': return <Clock className="text-blue-500" />;
+      case 'confirmed': return <CheckCircle2 className="text-blue-600" />;
+      case 'packed': return <Package className="text-maroon" />;
+      case 'shipped': return <Truck className="text-orange-500" />;
+      case 'delivered': return <CheckCircle2 className="text-green-500" />;
+      case 'cancelled': return <CheckCircle2 className="text-red-500" />;
       default: return <Clock className="text-slate-400" />;
     }
   };
 
+  const statusMap = {
+    'placed': 'Order Received',
+    'confirmed': 'Order Processed',
+    'packed': 'Packaged',
+    'shipped': 'Shipping',
+    'delivered': 'Delivered',
+    'cancelled': 'Cancelled'
+  };
+
   const statusSteps = [
-    'Order Received',
-    'Order Processed',
-    'Packaged',
-    'Shipping',
-    'Delivered'
+    'placed',
+    'confirmed',
+    'packed',
+    'shipped',
+    'delivered'
   ];
-  const currentStepIndex = statusSteps.indexOf(order?.status || 'Order Received');
+  const currentStepIndex = statusSteps.indexOf(order?.status || 'placed');
 
   return (
     <div className="bg-cream min-h-screen pb-20 pt-10">
@@ -111,7 +121,7 @@ const OrderTracking = () => {
                       <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
                       <h3 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
                         {getStatusIcon(order.status)}
-                        {order.status}
+                        {statusMap[order.status] || order.status}
                       </h3>
                     </div>
                     <div className="text-left md:text-right">
@@ -136,7 +146,7 @@ const OrderTracking = () => {
                             {index <= currentStepIndex ? <CheckCircle2 size={20} /> : index + 1}
                           </div>
                           <p className={`mt-3 font-bold text-sm ${index <= currentStepIndex ? 'text-slate-800' : 'text-slate-400'}`}>
-                            {step}
+                            {statusMap[step]}
                           </p>
                         </div>
                       ))}
