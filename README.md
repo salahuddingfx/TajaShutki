@@ -1,20 +1,42 @@
-# 🐟 Taja Shutki - Freshness from the Sea
+# <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Fish.png" alt="Fish" width="45" /> TajaShutki | Authentic Dried Delicacies
 
-![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
-
-**Taja Shutki** brings the best quality dried fish and seafood directly from the coastal regions to your kitchen.
-
-## 🌊 Visual Identity
-- **Vibe:** Fresh, clean, and reliable.
-- **Colors:** Deep Emerald Green, Seafoam, and Crisp White.
-- **Goal:** To represent the purity and freshness of coastal harvests.
-
-## 🛠️ Features
-- **Seafood Categories:** Easy navigation through various types of dried fish.
-- **Secure Payments:** Integrated manual verification for bKash and Nagad.
-- **Order Tracking:** Follow the journey of your seafood in real-time.
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=35&pause=1000&color=475569&center=true&vCenter=true&width=800&height=100&lines=Premium+Shutki+Storefront;Freshness+Delivered;Scalable+Commerce+Frontend" alt="Typing SVG" />
+</p>
 
 ---
-👨‍💻 Developed by **Salah Uddin Kader**
+
+## 🛍️ About TajaShutki
+TajaShutki is a specialized e-commerce platform for authentic dried fish products. It emphasizes freshness, tradition, and a clean, reliable shopping experience.
+
+## 🛠️ Tech Stack
+<p align="center">
+  <a href="https://react.dev" target="_blank"><img src="https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" /></a>
+  <a href="https://tailwindcss.com" target="_blank"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" /></a>
+  <a href="https://vitejs.dev" target="_blank"><img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" /></a>
+  <a href="https://lucide.dev" target="_blank"><img src="https://img.shields.io/badge/Lucide_Icons-FFD700?style=for-the-badge&logo=lucide&logoColor=black" /></a>
+</p>
+
+---
+
+## ✨ Features
+- **🌊 Oceanic Aesthetic**: A clean, slate-colored theme that emphasizes trust and freshness.
+- **📦 Dynamic Inventory**: Real-time stock levels synced with the Global Admin.
+- **🛰️ Multi-step Tracking**: Granular visibility into the order fulfillment process.
+- **⚡ Performance First**: Zero-latency navigation powered by Vite.
+
+## 🛰️ Integration
+TajaShutki is powered by the **[Nexus Core Backend](https://github.com/salahuddingfx/Multi-Vendor-Backend)** and managed via the **[Nexus Admin Dashboard](https://github.com/salahuddingfx/Multi-Vendor-Admin)**.
+
+## 🚀 Setup
+```bash
+npm install
+# Set VITE_API_URL and VITE_SITE_ID=2
+npm run dev
+```
+
+---
+<p align="center">
+  <img src="https://img.shields.io/badge/Brand-TajaShutki-475569?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Status-Optimized-blue?style=for-the-badge" />
+</p>

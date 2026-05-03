@@ -14,6 +14,7 @@ import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import Terms from '@/pages/Terms';
 import OrderSuccess from '@/pages/OrderSuccess';
 import Wishlist from '@/pages/Wishlist';
+import Developer from '@/pages/Developer';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from './store/productsSlice';
@@ -51,6 +52,7 @@ const AnimatedRoutes = () => {
         <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
         <Route path="/order-success" element={<PageTransition><OrderSuccess /></PageTransition>} />
         <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
+        <Route path="/developer" element={<PageTransition><Developer /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );

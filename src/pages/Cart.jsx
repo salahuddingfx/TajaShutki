@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { formatPrice } from '../utils/delivery';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, RefreshCcw, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api } from '../lib/api';
+import { api } from '../api/api';
 import { toast } from 'react-hot-toast';
 
 const Cart = () => {

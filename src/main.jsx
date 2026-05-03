@@ -6,13 +6,16 @@ import { Provider } from 'react-redux'
 import { store } from '@/store'
 import { HelmetProvider } from 'react-helmet-async'
 import { Toaster } from 'react-hot-toast'
+import { LanguageProvider } from '@/context/LanguageContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <HelmetProvider>
-        <App />
-        <Toaster position="top-right" />
+        <LanguageProvider>
+          <App />
+          <Toaster position="top-right" />
+        </LanguageProvider>
       </HelmetProvider>
     </Provider>
   </StrictMode>,

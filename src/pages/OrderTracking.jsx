@@ -4,6 +4,7 @@ import { formatPrice } from '../utils/delivery';
 import { Search, Package, MapPin, Truck, CheckCircle2, Clock, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
+import echo from '../lib/echo';
 
 const OrderTracking = () => {
   const location = useLocation();
@@ -42,6 +43,22 @@ const OrderTracking = () => {
       setIsSearching(false);
     }
   };
+
+  useEffect(() => {
+    if (order?.tracking_id) {
+      const channel = `orders.${order.tracking_id}`;
+      echo.channel(channel)
+        .listen('OrderStatusChanged', (e) => {
+          setOrder(prev => ({
+            ...prev,
+            status: e.status,
+            payment_status: e.payment_status
+          }));
+        });
+
+      return () => echo.leave(channel);
+    }
+  }, [order?.tracking_id]);
 
   const getStatusIcon = (status) => {
     switch (status) {

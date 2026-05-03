@@ -108,6 +108,8 @@ const Footer = () => {
               <p>© {currentYear} Taja Shutki Luxury</p>
               <div className="w-px h-4 bg-white/10" />
               <p>Direct from Cox's Bazar</p>
+              <div className="w-px h-4 bg-white/10" />
+              <Link to="/developer" className="hover:text-white transition-colors text-maroon/80 font-bold">Developer Credits</Link>
            </div>
            
            <div className="flex items-center gap-4 text-slate-500">

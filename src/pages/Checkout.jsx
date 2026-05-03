@@ -32,6 +32,9 @@ const Checkout = () => {
     transactionId: ''
   });
   
+  const initData = useSelector((state) => state.settings?.initData);
+  const settings = initData?.site?.settings || {};
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
 
@@ -244,7 +247,7 @@ const Checkout = () => {
                           </div>
                           <div>
                             <p className="font-bold text-slate-800">bKash (Manual)</p>
-                            <p className="text-xs text-slate-500">Send money to 01851-075537 (Personal)</p>
+                            <p className="text-xs text-slate-500">Send money to {settings.bkash_number || '01886-460526'} (Personal)</p>
                           </div>
                         </div>
                         {formData.paymentMethod === 'bkash' && <CheckCircle2 className="text-[#D12053]" size={24} />}
@@ -268,7 +271,7 @@ const Checkout = () => {
                           </div>
                           <div>
                             <p className="font-bold text-slate-800">Nagad (Manual)</p>
-                            <p className="text-xs text-slate-500">Send money to 01851-075537 (Personal)</p>
+                            <p className="text-xs text-slate-500">Send money to {settings.nagad_number || '01886-460526'} (Personal)</p>
                           </div>
                         </div>
                         {formData.paymentMethod === 'nagad' && <CheckCircle2 className="text-[#F1592A]" size={24} />}
@@ -323,8 +326,8 @@ const Checkout = () => {
               <h3 className="font-display font-bold text-2xl mb-8">Your Order</h3>
               
               <div className="max-h-[300px] overflow-y-auto pr-2 mb-8 space-y-4">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-4 items-center">
+                {items.map((item, index) => (
+                  <div key={`${item.id}-${index}`} className="flex gap-4 items-center">
                     <div className="w-16 h-16 rounded-lg bg-slate-50 overflow-hidden shrink-0 border border-slate-100">
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
