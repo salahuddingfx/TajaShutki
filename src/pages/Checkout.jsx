@@ -78,6 +78,7 @@ const Checkout = () => {
       const trackingId = response.data?.tracking_id || response.tracking_id || response.data?.id;
 
       if (response.success || response.status === 'success' || trackingId) {
+        setOrderSuccess(response.data || { tracking_id: trackingId });
         dispatch(clearCart());
         navigate(`/order-success?id=${trackingId || 'PENDING'}`);
       } else {
