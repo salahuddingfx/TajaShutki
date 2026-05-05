@@ -179,8 +179,11 @@ const OrderTracking = () => {
                     </h4>
                     <div className="space-y-4">
                       {order.items.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center text-sm">
-                          <span className="text-slate-600">{item.quantity}x {item.name}</span>
+                        <div key={idx} className="flex justify-between items-start text-sm">
+                          <div className="flex flex-col">
+                            <span className="text-slate-600 font-medium">{item.quantity}x {item.name}</span>
+                            {item.sku && <span className="text-[10px] text-slate-400 font-bold uppercase">Code: {item.sku}</span>}
+                          </div>
                           <span className="font-bold text-slate-800">{formatPrice(item.price * item.quantity)}</span>
                         </div>
                       ))}
