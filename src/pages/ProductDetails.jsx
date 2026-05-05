@@ -186,7 +186,7 @@ const ProductDetails = () => {
   };
 
   const updateProductQuantity = (newQty) => {
-    const qty = Math.max(0, newQty);
+    const qty = Math.max(1, newQty);
     setQuantity(qty);
     if (cartItem) {
       dispatch(updateQuantity({ id: product.id, quantity: qty }));
@@ -448,8 +448,7 @@ const ProductDetails = () => {
                 
                 <button 
                   onClick={handleAddToCart}
-                  disabled={quantity === 0}
-                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 shadow-slate-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 shadow-slate-100"
                 >
                   <ShoppingCart size={18} />
                   Add to Cart
@@ -457,8 +456,7 @@ const ProductDetails = () => {
 
                 <button 
                   onClick={handleOrderNow}
-                  disabled={quantity === 0}
-                  className="flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-teal-600 text-white hover:bg-teal-700 hover:scale-[1.02] active:scale-95 shadow-teal-600/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-teal-600 text-white hover:bg-teal-700 hover:scale-[1.02] active:scale-95 shadow-teal-600/20"
                 >
                   <ShoppingBag size={18} />
                   Order Now
