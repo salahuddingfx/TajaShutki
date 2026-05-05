@@ -1,6 +1,6 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import ScrollToTop from '../components/ScrollToTop';
+import WhatsAppFloat from '../components/WhatsAppFloat';
 import BottomNav from '../components/BottomNav';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
       </main>
       <Footer />
       <BottomNav />
-      <ScrollToTop />
+      <WhatsAppFloat />
       <Toaster richColors position="top-right" />
     </div>
   );

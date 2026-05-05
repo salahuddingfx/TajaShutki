@@ -5,7 +5,7 @@ import { addItem } from '../store/cartSlice';
 import { selectHeroSlides, selectCurrentSiteId } from '../store/settingsSlice';
 import { selectProductsBySite } from '../store/productsSlice';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, ShoppingBag, ArrowUpRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingCart, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 
@@ -117,8 +117,8 @@ const Hero = () => {
                   onClick={() => dispatch(addItem({ product: siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 } }))}
                   className="group relative px-8 py-4 bg-maroon text-cream font-black uppercase tracking-widest text-[10px] rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-maroon/20 flex items-center gap-3"
                 >
-                  <ShoppingBag size={16} />
-                  {activeSlide.button_text || 'Add to Cart'}
+                  <ShoppingCart size={16} />
+                  {activeSlide.button_text || 'Order Now'}
                 </button>
 
                 <Link 

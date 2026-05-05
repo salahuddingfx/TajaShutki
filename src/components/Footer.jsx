@@ -36,7 +36,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-sm leading-relaxed text-slate-400 max-w-sm font-medium">
-              সাগরপাড়ের সেরা শুঁটকি আপনার দোরগোড়ায়। কক্সবাজারের ঐতিহ্যবাহী উপায়ে রোদে শুকানো এবং সম্পূর্ণ বিষমুক্ত।
+              Elevating the tradition of sun-dried delicacies with artisanal precision and coastal integrity.
             </p>
             <div className="flex gap-3">
               {socials.map((social) => (
@@ -95,6 +95,8 @@ const Footer = () => {
               <p>© {currentYear} Taja Shutki</p>
               <div className="hidden md:block w-px h-3 bg-white/10" />
               <p>Direct from Cox's Bazar</p>
+              <div className="hidden md:block w-px h-3 bg-white/10" />
+              <Link to="/developer" className="hover:text-white transition-colors text-maroon/80 font-bold lowercase">Developer Credits</Link>
            </div>
            
            <div className="flex items-center gap-4 text-slate-500">
