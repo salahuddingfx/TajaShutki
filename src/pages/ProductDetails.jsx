@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, selectCartItems, updateQuantity } from '../store/cartSlice';
+import { addItem, removeItem, selectCartItems, updateQuantity } from '../store/cartSlice';
 import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle, Star, Truck, MapPin, Globe, CreditCard, ShieldCheck, AlertTriangle, X, Maximize2, Minus, Plus, ShoppingBag, Image as ImageIcon, Video, Trash2, PlayCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
@@ -186,10 +186,18 @@ const ProductDetails = () => {
   };
 
   const updateProductQuantity = (newQty) => {
-    const qty = Math.max(1, newQty);
-    setQuantity(qty);
+    if (newQty < 1) {
+      if (cartItem) {
+        dispatch(removeItem(product.id));
+        toast.warning(`${translate(product.name, product.name_bn)} removed from cart`);
+      }
+      setQuantity(1);
+      return;
+    }
+
+    setQuantity(newQty);
     if (cartItem) {
-      dispatch(updateQuantity({ id: product.id, quantity: qty }));
+      dispatch(updateQuantity({ id: product.id, quantity: newQty }));
     }
   };
 
