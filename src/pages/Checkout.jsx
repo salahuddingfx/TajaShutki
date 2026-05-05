@@ -12,6 +12,7 @@ import { placeOrder } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, MapPin, Phone, User, CreditCard, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -72,9 +73,15 @@ const Checkout = () => {
       };
       
       const response = await placeOrder(orderData);
-      if (response.success) {
+      
+      // Check if tracking_id is nested or direct
+      const trackingId = response.data?.tracking_id || response.tracking_id || response.data?.id;
+
+      if (response.success || response.status === 'success' || trackingId) {
         dispatch(clearCart());
-        navigate(`/order-success?id=${response.data.tracking_id}`);
+        navigate(`/order-success?id=${trackingId || 'PENDING'}`);
+      } else {
+        toast.error(response.message || 'Failed to place order. Please try again.');
       }
     } catch (error) {
       console.error('Order failed', error);

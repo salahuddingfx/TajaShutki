@@ -58,6 +58,8 @@ const AnimatedRoutes = () => {
   );
 };
 
+import { Toaster } from 'sonner';
+
 function App() {
   const dispatch = useDispatch();
 
@@ -77,6 +79,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster richColors position="top-right" />
       <Layout>
         <AnimatedRoutes />
       </Layout>
