@@ -7,16 +7,20 @@ import { useLocation } from 'react-router-dom';
 
 const OrderTracking = () => {
   const location = useLocation();
-  const [trackingId, setTrackingId] = useState(location.state?.trackingId || '');
+  const queryParams = new URLSearchParams(location.search);
+  const queryId = queryParams.get('id');
+  
+  const [trackingId, setTrackingId] = useState(location.state?.trackingId || queryId || '');
   const [order, setOrder] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (location.state?.trackingId) {
-      performSearch(location.state.trackingId);
+    const idToSearch = location.state?.trackingId || queryId;
+    if (idToSearch) {
+      performSearch(idToSearch);
     }
-  }, [location.state]);
+  }, [location.state, queryId]);
 
   const handleSearch = async (e) => {
     e.preventDefault();

@@ -69,7 +69,7 @@ const OrderSuccess = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
-                  to={`/track-order?id=${orderId}`}
+                  to={`/track?id=${orderId}`}
                   className="flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all hover:scale-105"
                 >
                   <Truck size={20} />
