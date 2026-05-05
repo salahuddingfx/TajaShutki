@@ -48,14 +48,14 @@ const OrderSuccess = () => {
             className="bg-white rounded-[48px] p-12 text-center shadow-premium border border-slate-100 overflow-hidden relative"
           >
             {/* Decorative background circle */}
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-maroon/5 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-maroon/5 rounded-full blur-3xl"></div>
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-teal-600/5 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-teal-600/5 rounded-full blur-3xl"></div>
 
             <motion.div 
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", damping: 12, delay: 0.2 }}
-              className="w-24 h-24 bg-maroon text-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-maroon/30"
+              className="w-24 h-24 bg-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-teal-600/30"
             >
               <CheckCircle2 size={48} />
             </motion.div>
@@ -65,7 +65,7 @@ const OrderSuccess = () => {
 
             <div className="bg-slate-50 rounded-3xl p-8 mb-10 border border-slate-100">
               <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Order Tracking ID</div>
-              <div className="text-3xl font-display font-black text-maroon tracking-wider mb-6">{orderId || 'ORDER-PENDING'}</div>
+              <div className="text-3xl font-display font-black text-teal-600 tracking-wider mb-6">{orderId || 'ORDER-PENDING'}</div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
