@@ -98,9 +98,10 @@ const ProductDetails = () => {
 
         try {
           const revRes = await getReviews({ product_id: prod.id });
-          setProductReviews(revRes.data);
+          setProductReviews(Array.isArray(revRes.data) ? revRes.data : []);
         } catch (err) {
           console.error("Failed to fetch reviews", err);
+          setProductReviews([]);
         }
       } catch (err) {
         console.error("Failed to fetch product:", err);
@@ -448,19 +449,25 @@ const ProductDetails = () => {
                     <div className="bg-green-50 text-green-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle2 size={18} />
                     </div>
-                    <span className="text-slate-700 font-medium leading-relaxed text-lg">Cash on delivery is available, order with absolute confidence!</span>
+                    <span className="text-slate-700 font-medium leading-relaxed text-lg">
+                      {translate('Cash on delivery is available, order with absolute confidence!', 'ক্যাশ অন ডেলিভারি সুবিধা আছে, নিশ্চিন্তে অর্ডার করুন!')}
+                    </span>
                   </li>
                   <li className="flex items-start gap-4">
                     <div className="bg-green-50 text-green-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle2 size={18} />
                     </div>
-                    <span className="text-slate-700 font-medium leading-relaxed text-lg">Free delivery on selected promotional items.</span>
+                    <span className="text-slate-700 font-medium leading-relaxed text-lg">
+                      {translate('Fast & secure delivery to your doorstep.', 'আপনার দোরগোড়ায় দ্রুত এবং নিরাপদ ডেলিভারি।')}
+                    </span>
                   </li>
                   <li className="flex items-start gap-4">
                     <div className="bg-green-50 text-green-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle2 size={18} />
                     </div>
-                    <span className="text-slate-700 font-medium leading-relaxed text-lg">Premium quality & traditional taste guaranteed.</span>
+                    <span className="text-slate-700 font-medium leading-relaxed text-lg">
+                      {translate('Premium quality & traditional taste guaranteed.', 'প্রিমিয়াম কোয়ালিটি এবং ঐতিহ্যগত স্বাদের নিশ্চয়তা।')}
+                    </span>
                   </li>
                 </ul>
               </div>
