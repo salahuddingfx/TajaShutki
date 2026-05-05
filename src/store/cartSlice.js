@@ -26,11 +26,11 @@ const cartSlice = createSlice({
       } else {
         state.items.push({ ...product, quantity });
       }
-      localStorage.setItem('acharu-cart-redux', JSON.stringify(state.items));
+      localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
     },
     removeItem: (state, action) => {
       state.items = state.items.filter(item => item.id !== action.payload);
-      localStorage.setItem('acharu-cart-redux', JSON.stringify(state.items));
+      localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
     },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
