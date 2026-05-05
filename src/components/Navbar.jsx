@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Menu, X, Search, ChevronDown, Phone, MessageCircle, Globe, Loader2 } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, ChevronDown, Phone, MessageCircle, Globe, Loader2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { selectCartCount } from '../store/cartSlice';
 import { selectCategories } from '../store/settingsSlice';
@@ -263,7 +263,7 @@ const Navbar = () => {
               "p-3 md:p-4 rounded-2xl transition-all duration-500 group-hover:scale-110",
               isScrolled ? "bg-maroon text-white shadow-xl shadow-maroon/20" : "bg-maroon text-white shadow-lg shadow-maroon/20"
             )}>
-              <ShoppingBag size={20} />
+              <ShoppingCart size={20} />
               {cartItemsCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-6 h-6 bg-maroon text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-lg border-4 border-white">
                   {cartItemsCount}
