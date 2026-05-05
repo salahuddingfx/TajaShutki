@@ -1,8 +1,15 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { selectCartItems, updateQuantity } from '../store/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, selectCartItems, updateQuantity } from '../store/cartSlice';
+import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle, Star, Truck, MapPin, Globe, CreditCard, ShieldCheck, AlertTriangle, X, Maximize2, Minus, Plus, ShoppingBag, Image as ImageIcon, Video, Trash2, PlayCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { clsx } from 'clsx';
+import { getProductDetails, getProducts, getReviews, submitReview } from '../api/api';
+import ProductCard from '../components/ProductCard';
+import Swal from 'sweetalert2';
 import { useLanguage } from '@/context/LanguageContext';
+import { toast } from 'sonner';
 
 const ProductDetails = () => {
   const { language, t: translate } = useLanguage();
