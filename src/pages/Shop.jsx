@@ -19,7 +19,6 @@ const Shop = () => {
   
   const selectedCategoryName = searchParams.get('category') || 'All';
   const selectedPriceRange = searchParams.get('price') || 'All';
-  const selectedRating = searchParams.get('rating') || 'All';
   const searchQuery = searchParams.get('search') || '';
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,12 +32,6 @@ const Shop = () => {
     { label: 'Above ৳2000', value: '2000-99999' },
   ];
 
-  const ratingFilters = [
-    { label: 'All Reviews', value: 'All' },
-    { label: '4.5 & Up', value: '4.5' },
-    { label: '4.0 & Up', value: '4.0' },
-    { label: '3.0 & Up', value: '3.0' },
-  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,11 +61,6 @@ const Shop = () => {
       result = result.filter(p => p.price >= min && p.price <= max);
     }
 
-    // Rating Filter
-    if (selectedRating !== 'All') {
-      const minRating = Number(selectedRating);
-      result = result.filter(p => (p.rating || 5) >= minRating);
-    }
     
     // Search Filter
     if (searchQuery) {
@@ -83,7 +71,7 @@ const Shop = () => {
     }
     
     return result;
-  }, [selectedCategoryName, selectedPriceRange, selectedRating, searchQuery, siteProducts]);
+  }, [selectedCategoryName, selectedPriceRange, searchQuery, siteProducts]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const currentItems = filteredProducts.slice(
@@ -93,7 +81,7 @@ const Shop = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategoryName, selectedPriceRange, selectedRating, searchQuery]);
+  }, [selectedCategoryName, selectedPriceRange, searchQuery]);
 
   const handleFilterChange = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
@@ -204,27 +192,6 @@ const Shop = () => {
                     </div>
                   </div>
 
-                  {/* Rating */}
-                  <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-2">Reviews</h3>
-                    <div className="space-y-2">
-                      {ratingFilters.map((rating) => (
-                        <button
-                          key={rating.value}
-                          onClick={() => handleFilterChange('rating', rating.value)}
-                          className={clsx(
-                            "w-full text-left px-5 py-3 rounded-xl text-[10px] font-bold transition-all flex items-center justify-between",
-                            selectedRating === rating.value 
-                              ? "bg-slate-900 text-white shadow-lg" 
-                              : "text-slate-500 hover:bg-slate-50"
-                          )}
-                        >
-                          {rating.label}
-                          {selectedRating === rating.value && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
 
                   <button 
                     onClick={clearAllFilters}
@@ -240,7 +207,7 @@ const Shop = () => {
             <div className="flex-grow">
               {/* Mobile Toolbar */}
               <div className="lg:hidden mb-8 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {/* Category Dropdown */}
                   <div className="relative">
                     <button 
@@ -309,39 +276,6 @@ const Shop = () => {
                     </AnimatePresence>
                   </div>
 
-                  {/* Rating Dropdown */}
-                  <div className="relative">
-                    <button 
-                      onClick={() => setActiveDropdown(activeDropdown === 'rating' ? null : 'rating')}
-                      className={clsx(
-                        "w-full px-3 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider border flex items-center justify-between",
-                        selectedRating !== 'All' ? "bg-maroon text-white border-maroon" : "bg-white text-slate-600 border-slate-100 shadow-sm"
-                      )}
-                    >
-                      <span>Review</span>
-                      <ChevronDown size={12} />
-                    </button>
-                    <AnimatePresence>
-                      {activeDropdown === 'rating' && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          className="absolute top-full right-0 mt-2 w-48 bg-white rounded-2xl shadow-premium border border-slate-50 z-50 p-2"
-                        >
-                          {ratingFilters.map((rating) => (
-                            <button
-                              key={rating.value}
-                              onClick={() => handleFilterChange('rating', rating.value)}
-                              className="w-full text-left px-4 py-3 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50"
-                            >
-                              {rating.label}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
                 </div>
 
                 {/* Search Mobile */}
@@ -359,11 +293,11 @@ const Shop = () => {
 
               {/* Product Grid */}
               {!siteProducts || siteProducts.length === 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                   {Array(8).fill(0).map((_, i) => <SkeletonCard key={i} />)}
                 </div>
               ) : filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                   {currentItems.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
