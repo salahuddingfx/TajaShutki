@@ -43,10 +43,11 @@ const Checkout = () => {
   const totalAmount = totalPrice + deliveryCharge;
 
   useEffect(() => {
-    if (items.length === 0 && !orderSuccess) {
+    // Check if we are currently submitting to avoid premature redirect
+    if (items.length === 0 && !orderSuccess && !isSubmitting) {
       navigate('/cart');
     }
-  }, [items, orderSuccess, navigate]);
+  }, [items, orderSuccess, isSubmitting, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
