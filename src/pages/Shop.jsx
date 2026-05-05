@@ -11,17 +11,34 @@ import { Helmet } from 'react-helmet-async';
 import SkeletonCard from '@/components/SkeletonCard';
 
 const Shop = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null); // 'category', 'price', 'rating'
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSiteId = useSelector(selectCurrentSiteId);
   const siteProducts = useSelector(state => selectProductsBySite(state, currentSiteId));
   const categories = useSelector(selectCategories);
   
   const selectedCategoryName = searchParams.get('category') || 'All';
+  const selectedPriceRange = searchParams.get('price') || 'All';
+  const selectedRating = searchParams.get('rating') || 'All';
   const searchQuery = searchParams.get('search') || '';
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 12;
+
+  const priceRanges = [
+    { label: 'All Prices', value: 'All' },
+    { label: 'Under ৳500', value: '0-500' },
+    { label: '৳500 - ৳1000', value: '500-1000' },
+    { label: '৳1000 - ৳2000', value: '1000-2000' },
+    { label: 'Above ৳2000', value: '2000-99999' },
+  ];
+
+  const ratingFilters = [
+    { label: 'All Reviews', value: 'All' },
+    { label: '4.5 & Up', value: '4.5' },
+    { label: '4.0 & Up', value: '4.0' },
+    { label: '3.0 & Up', value: '3.0' },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,10 +57,24 @@ const Shop = () => {
   const filteredProducts = useMemo(() => {
     let result = siteProducts || [];
     
+    // Category Filter
     if (selectedCategoryName !== 'All') {
       result = result.filter(p => p.category?.name === selectedCategoryName || p.category === selectedCategoryName);
     }
     
+    // Price Filter
+    if (selectedPriceRange !== 'All') {
+      const [min, max] = selectedPriceRange.split('-').map(Number);
+      result = result.filter(p => p.price >= min && p.price <= max);
+    }
+
+    // Rating Filter
+    if (selectedRating !== 'All') {
+      const minRating = Number(selectedRating);
+      result = result.filter(p => (p.rating || 5) >= minRating);
+    }
+    
+    // Search Filter
     if (searchQuery) {
       result = result.filter(p =>
         (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,7 +83,7 @@ const Shop = () => {
     }
     
     return result;
-  }, [selectedCategoryName, searchQuery, siteProducts]);
+  }, [selectedCategoryName, selectedPriceRange, selectedRating, searchQuery, siteProducts]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const currentItems = filteredProducts.slice(
@@ -62,20 +93,22 @@ const Shop = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategoryName, searchQuery]);
+  }, [selectedCategoryName, selectedPriceRange, selectedRating, searchQuery]);
 
-  const handleSearchChange = (value) => {
-    setLocalSearch(value);
-  };
-
-  const handleCategoryClick = (category) => {
+  const handleFilterChange = (key, value) => {
     const newParams = new URLSearchParams(searchParams);
-    if (category === 'All') {
-      newParams.delete('category');
+    if (value === 'All') {
+      newParams.delete(key);
     } else {
-      newParams.set('category', category);
+      newParams.set(key, value);
     }
     setSearchParams(newParams, { replace: true });
+    setActiveDropdown(null);
+  };
+
+  const clearAllFilters = () => {
+    setSearchParams({}, { replace: true });
+    setLocalSearch('');
   };
 
   return (
@@ -84,148 +117,305 @@ const Shop = () => {
         <title>Shop | Taja Shutki - Premium Dried Fish & Seafood</title>
         <meta name="description" content="Browse our premium collection of naturally dried fish and seafood." />
       </Helmet>
-      <div className="bg-cream min-h-screen pb-20">
-      {/* Header */}
-      <div className="bg-maroon py-24 text-cream relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-black/10 z-0" />
-        <div className="container-custom relative z-10">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-cream/60 mb-4">Premium Selection</p>
-          <h1 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tight text-white uppercase">Taja Shutki <span className="italic opacity-50">Market</span></h1>
-          <p className="text-cream/70 max-w-2xl text-lg font-medium leading-relaxed">
-            Discover the finest sun-dried delicacies from the Bay of Bengal, delivered with coastal authenticity.
-          </p>
-        </div>
-      </div>
-
-      <div className="container-custom mt-[-60px] relative z-20">
-        {/* Toolbar */}
-        <div className={clsx(
-          "bg-white/90 backdrop-blur-2xl rounded-[40px] shadow-premium p-8 mb-16 flex flex-col lg:flex-row gap-10 items-center justify-between border border-white/50",
-          isDropdownOpen ? "relative z-50" : "relative z-20"
-        )}>
-          <div className="relative w-full lg:w-[500px]">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search your favorites..."
-              className="w-full pl-16 pr-8 py-5 bg-slate-100/50 border border-transparent rounded-[24px] focus:outline-none focus:ring-4 focus:ring-maroon/5 focus:bg-white focus:border-maroon/20 transition-all text-sm font-bold"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-            />
+      
+      <div className="bg-[#FAF9F6] min-h-screen pt-10 pb-20">
+        <div className="container-custom">
+          {/* Header Area - Minimal */}
+          <div className="mb-10">
+            <h1 className="text-4xl md:text-5xl font-display font-black text-slate-900 tracking-tight mb-2 uppercase italic">
+              Shutki <span className="text-maroon">Market</span>
+            </h1>
+            <p className="text-slate-400 font-medium tracking-wide text-sm">
+              Discover {filteredProducts.length} premium sun-dried delicacies.
+            </p>
           </div>
-          
-          <div className="relative group w-full lg:w-auto">
-            <button 
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className={clsx(
-                "w-full lg:w-64 flex items-center justify-between px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border",
-                selectedCategoryName !== 'All' 
-                  ? "bg-maroon text-cream border-maroon shadow-2xl shadow-maroon/20" 
-                  : "bg-slate-100/50 text-slate-500 border-transparent hover:border-slate-200"
-              )}
-            >
-              <span>{selectedCategoryName === 'All' ? 'Filter Categories' : selectedCategoryName}</span>
-              <ChevronDown size={16} className={clsx("transition-transform duration-500", isDropdownOpen && "rotate-180")} />
-            </button>
 
-            <AnimatePresence>
-              {isDropdownOpen && (
-                <>
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-40"
-                    onClick={() => setIsDropdownOpen(false)}
-                  />
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-3 w-full md:w-72 bg-white rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-5 border border-slate-100 z-[100] overflow-hidden"
-                  >
-                    <div className="grid grid-cols-1 gap-2">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:block w-80 shrink-0">
+              <div className="bg-white rounded-[32px] shadow-premium p-8 border border-slate-100 sticky top-28">
+                <div className="space-y-10">
+                  {/* Search */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-2">Search</h3>
+                    <div className="relative">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                      <input 
+                        type="text" 
+                        placeholder="Search products..."
+                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:bg-white focus:border-maroon/20 transition-all text-xs font-bold"
+                        value={localSearch}
+                        onChange={(e) => setLocalSearch(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Categories */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-2">Categories</h3>
+                    <div className="flex flex-wrap gap-2">
                       <button
-                        onClick={() => { handleCategoryClick('All'); setIsDropdownOpen(false); }}
+                        onClick={() => handleFilterChange('category', 'All')}
                         className={clsx(
-                          "w-full text-left px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                          selectedCategoryName === 'All' ? "bg-maroon text-cream" : "hover:bg-slate-50 text-slate-400 hover:text-slate-900"
+                          "px-4 py-2 rounded-xl text-[10px] font-bold transition-all border",
+                          selectedCategoryName === 'All' 
+                            ? "bg-maroon text-white border-maroon shadow-lg" 
+                            : "bg-slate-50 text-slate-500 border-transparent hover:border-slate-200"
                         )}
                       >
-                        All Categories
+                        All
                       </button>
-                      <div className="h-px bg-slate-100 my-1 mx-2" />
                       {categories.map((cat) => (
                         <button
                           key={cat.id}
-                          onClick={() => { handleCategoryClick(cat.name); setIsDropdownOpen(false); }}
+                          onClick={() => handleFilterChange('category', cat.name)}
                           className={clsx(
-                            "w-full text-left px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                            selectedCategoryName === cat.name ? "bg-maroon text-cream shadow-lg" : "hover:bg-slate-50 text-slate-400 hover:text-slate-900"
+                            "px-4 py-2 rounded-xl text-[10px] font-bold transition-all border",
+                            selectedCategoryName === cat.name 
+                              ? "bg-maroon text-white border-maroon shadow-lg" 
+                              : "bg-slate-50 text-slate-500 border-transparent hover:border-slate-200"
                           )}
                         >
                           {cat.name}
                         </button>
                       ))}
                     </div>
-                  </motion.div>
-                </>
+                  </div>
+
+                  {/* Price Range */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-2">Price Range</h3>
+                    <div className="space-y-2">
+                      {priceRanges.map((range) => (
+                        <button
+                          key={range.value}
+                          onClick={() => handleFilterChange('price', range.value)}
+                          className={clsx(
+                            "w-full text-left px-5 py-3 rounded-xl text-[10px] font-bold transition-all flex items-center justify-between group",
+                            selectedPriceRange === range.value 
+                              ? "bg-slate-900 text-white shadow-lg" 
+                              : "text-slate-500 hover:bg-slate-50"
+                          )}
+                        >
+                          {range.label}
+                          {selectedPriceRange === range.value && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-2">Reviews</h3>
+                    <div className="space-y-2">
+                      {ratingFilters.map((rating) => (
+                        <button
+                          key={rating.value}
+                          onClick={() => handleFilterChange('rating', rating.value)}
+                          className={clsx(
+                            "w-full text-left px-5 py-3 rounded-xl text-[10px] font-bold transition-all flex items-center justify-between",
+                            selectedRating === rating.value 
+                              ? "bg-slate-900 text-white shadow-lg" 
+                              : "text-slate-500 hover:bg-slate-50"
+                          )}
+                        >
+                          {rating.label}
+                          {selectedRating === rating.value && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={clearAllFilters}
+                    className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-maroon hover:bg-maroon/5 rounded-2xl transition-all"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <div className="flex-grow">
+              {/* Mobile Toolbar */}
+              <div className="lg:hidden mb-8 space-y-4">
+                <div className="grid grid-cols-3 gap-3">
+                  {/* Category Dropdown */}
+                  <div className="relative">
+                    <button 
+                      onClick={() => setActiveDropdown(activeDropdown === 'category' ? null : 'category')}
+                      className={clsx(
+                        "w-full px-3 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider border flex items-center justify-between",
+                        selectedCategoryName !== 'All' ? "bg-maroon text-white border-maroon" : "bg-white text-slate-600 border-slate-100 shadow-sm"
+                      )}
+                    >
+                      <span className="truncate">{selectedCategoryName === 'All' ? 'Cat' : selectedCategoryName}</span>
+                      <ChevronDown size={12} />
+                    </button>
+                    <AnimatePresence>
+                      {activeDropdown === 'category' && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-premium border border-slate-50 z-50 p-2 overflow-hidden"
+                        >
+                          {[{ name: 'All' }, ...categories].map((cat) => (
+                            <button
+                              key={cat.id || 'all'}
+                              onClick={() => handleFilterChange('category', cat.name || 'All')}
+                              className="w-full text-left px-4 py-3 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+                            >
+                              {cat.name || 'All Categories'}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Price Dropdown */}
+                  <div className="relative">
+                    <button 
+                      onClick={() => setActiveDropdown(activeDropdown === 'price' ? null : 'price')}
+                      className={clsx(
+                        "w-full px-3 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider border flex items-center justify-between",
+                        selectedPriceRange !== 'All' ? "bg-maroon text-white border-maroon" : "bg-white text-slate-600 border-slate-100 shadow-sm"
+                      )}
+                    >
+                      <span>Price</span>
+                      <ChevronDown size={12} />
+                    </button>
+                    <AnimatePresence>
+                      {activeDropdown === 'price' && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-premium border border-slate-50 z-50 p-2"
+                        >
+                          {priceRanges.map((range) => (
+                            <button
+                              key={range.value}
+                              onClick={() => handleFilterChange('price', range.value)}
+                              className="w-full text-left px-4 py-3 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+                            >
+                              {range.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Rating Dropdown */}
+                  <div className="relative">
+                    <button 
+                      onClick={() => setActiveDropdown(activeDropdown === 'rating' ? null : 'rating')}
+                      className={clsx(
+                        "w-full px-3 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider border flex items-center justify-between",
+                        selectedRating !== 'All' ? "bg-maroon text-white border-maroon" : "bg-white text-slate-600 border-slate-100 shadow-sm"
+                      )}
+                    >
+                      <span>Review</span>
+                      <ChevronDown size={12} />
+                    </button>
+                    <AnimatePresence>
+                      {activeDropdown === 'rating' && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute top-full right-0 mt-2 w-48 bg-white rounded-2xl shadow-premium border border-slate-50 z-50 p-2"
+                        >
+                          {ratingFilters.map((rating) => (
+                            <button
+                              key={rating.value}
+                              onClick={() => handleFilterChange('rating', rating.value)}
+                              className="w-full text-left px-4 py-3 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+                            >
+                              {rating.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* Search Mobile */}
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                  <input 
+                    type="text" 
+                    placeholder="Search products..."
+                    className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/10 transition-all text-[10px] font-bold shadow-sm"
+                    value={localSearch}
+                    onChange={(e) => setLocalSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Product Grid */}
+              {!siteProducts || siteProducts.length === 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                  {Array(8).fill(0).map((_, i) => <SkeletonCard key={i} />)}
+                </div>
+              ) : filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                  {currentItems.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-40 bg-white rounded-[48px] border border-slate-50 shadow-sm">
+                  <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Search size={32} className="text-slate-200" />
+                  </div>
+                  <h3 className="text-xl font-display font-black text-slate-800 mb-2">No results found</h3>
+                  <p className="text-slate-400 font-medium text-sm">Try adjusting your filters or clearing all.</p>
+                  <button 
+                    onClick={clearAllFilters}
+                    className="mt-6 text-maroon font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-transform"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
               )}
-            </AnimatePresence>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-20 flex justify-center items-center gap-2">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setCurrentPage(i + 1);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className={clsx(
+                        "w-10 h-10 rounded-xl font-black transition-all",
+                        currentPage === i + 1 
+                          ? "bg-maroon text-white shadow-glow" 
+                          : "bg-white text-slate-400 hover:text-slate-800 border border-slate-100"
+                      )}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Product Grid */}
-        {!siteProducts || siteProducts.length === 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-            {Array(8).fill(0).map((_, i) => <SkeletonCard key={i} />)}
-          </div>
-        ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-            {currentItems.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-32 bg-white/50 backdrop-blur-xl rounded-[48px] border border-white/60 shadow-premium">
-            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-              <Search size={36} className="text-slate-300" />
-            </div>
-            <h3 className="text-2xl font-display font-black text-slate-800 mb-3">No Treasures Found</h3>
-            <p className="text-slate-400 font-medium">Try adjusting your filters or refining your search.</p>
-            <button 
-              onClick={() => setSearchParams({}, { replace: true })}
-              className="mt-8 text-maroon font-black uppercase tracking-widest text-[10px] hover:scale-110 transition-transform"
-            >
-              Clear all filters
-            </button>
-          </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="mt-16 flex justify-center items-center gap-2">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setCurrentPage(i + 1);
-                  window.scrollTo({ top: 300, behavior: 'smooth' });
-                }}
-                className={clsx(
-                  "w-10 h-10 rounded-xl font-bold transition-all",
-                  currentPage === i + 1 
-                    ? "bg-slate-900 text-white shadow-lg scale-110" 
-                    : "bg-white text-slate-400 hover:text-slate-800 border border-slate-100"
-                )}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
-    </div>
+    </>
+  );
+};
+
+export default Shop;
+
     </>
   );
 };
