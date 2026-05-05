@@ -18,84 +18,71 @@ const Footer = () => {
   ].filter(s => s.url);
 
   return (
-    <footer className="bg-slate-950 text-slate-400 pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-slate-950 text-slate-400 pt-12 pb-8 overflow-hidden relative border-t border-white/5">
       {/* Background Decor */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-maroon/5 rounded-full blur-[120px] -z-0" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-maroon/5 rounded-full blur-[120px] -z-0" />
       
       <div className="container-custom relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           
           {/* Brand Identity */}
-          <div className="space-y-10">
-            <Link to="/" className="group inline-flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-maroon text-2xl font-black italic shadow-2xl group-hover:rotate-12 transition-transform duration-500">
+          <div className="space-y-6">
+            <Link to="/" className="group inline-flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-maroon text-xl font-black italic shadow-2xl transition-transform duration-500 group-hover:rotate-12">
                 T
               </div>
-              <span className="text-3xl font-display font-black text-white tracking-tighter">
+              <span className="text-2xl font-display font-black text-white tracking-tighter">
                 Taja<span className="text-maroon">Shutki</span>
               </span>
             </Link>
-            <p className="text-lg leading-relaxed text-slate-400 max-w-sm font-medium">
-              Elevating the tradition of sun-dried delicacies with artisanal precision and coastal integrity.
+            <p className="text-sm leading-relaxed text-slate-400 max-w-sm font-medium">
+              সাগরপাড়ের সেরা শুঁটকি আপনার দোরগোড়ায়। কক্সবাজারের ঐতিহ্যবাহী উপায়ে রোদে শুকানো এবং সম্পূর্ণ বিষমুক্ত।
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {socials.map((social) => (
                 <a 
                   key={social.id} 
                   href={social.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-maroon hover:border-maroon transition-all duration-500 hover:scale-110"
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-maroon hover:border-maroon transition-all duration-500"
                 >
-                  <social.icon size={20} />
+                  <social.icon size={18} />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Quick Curations */}
-          <div>
-            <h4 className="text-white font-black uppercase tracking-[0.3em] text-[10px] mb-10">Collections</h4>
-            <ul className="space-y-6">
-              {['All Products', 'Premium Selection', 'Spicy Coastal', 'Seasonal Specials'].map((item) => (
-                <li key={item}>
-                  <Link to="/shop" className="group flex items-center gap-2 hover:text-white transition-colors">
-                    <span className="w-0 h-px bg-maroon group-hover:w-4 transition-all duration-500" />
-                    <span className="font-bold tracking-tight">{item}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Client Concierge */}
-          <div>
-            <h4 className="text-white font-black uppercase tracking-[0.3em] text-[10px] mb-10">Concierge</h4>
-            <ul className="space-y-6 font-bold tracking-tight">
-              <li><Link to="/track" className="hover:text-white transition-colors flex items-center gap-2">Order Tracking <ArrowUpRight size={14} className="opacity-40" /></Link></li>
-              <li><Link to="/about" className="hover:text-white transition-colors">Our Story / About</Link></li>
-              <li><Link to="/reviews" className="hover:text-white transition-colors">Customer Reviews</Link></li>
-              <li><Link to="/faq" className="hover:text-white transition-colors">Client FAQ</Link></li>
+          {/* Quick Links */}
+          <div className="md:pl-12">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Quick Links</h4>
+            <ul className="grid grid-cols-2 gap-y-4 gap-x-4 font-bold tracking-tight text-xs">
+              <li><Link to="/shop" className="hover:text-white transition-colors">Shop All</Link></li>
+              <li><Link to="/track" className="hover:text-white transition-colors">Track Order</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">Our Story</Link></li>
+              <li><Link to="/reviews" className="hover:text-white transition-colors">Reviews</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy & Data</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
             </ul>
           </div>
 
-          {/* Connection */}
-          <div>
-            <h4 className="text-white font-black uppercase tracking-[0.3em] text-[10px] mb-10">Get in Touch</h4>
-            <ul className="space-y-8 font-bold tracking-tight">
-              <li className="flex gap-4">
-                <MapPin className="text-maroon shrink-0" size={20} />
-                <span className="text-sm leading-relaxed">{contact.address}</span>
+          {/* Contact Us */}
+          <div className="md:pl-12">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Contact Us</h4>
+            <ul className="space-y-4 font-bold tracking-tight">
+              <li className="flex gap-3 items-start text-xs">
+                <MapPin className="text-maroon shrink-0" size={16} />
+                <span className="leading-relaxed">{contact.address}</span>
               </li>
-              <li className="flex gap-4">
-                <Phone className="text-maroon shrink-0" size={20} />
-                <span className="text-sm">{contact.phone}</span>
+              <li className="flex gap-3 items-center text-xs">
+                <Phone className="text-maroon shrink-0" size={16} />
+                <span>{contact.phone}</span>
               </li>
-              <li className="flex gap-4">
-                <Mail className="text-maroon shrink-0" size={20} />
-                <span className="text-sm">{contact.email}</span>
+              <li className="flex gap-3 items-center text-xs">
+                <Mail className="text-maroon shrink-0" size={16} />
+                <span>{contact.email}</span>
               </li>
             </ul>
           </div>
@@ -103,18 +90,16 @@ const Footer = () => {
         </div>
 
         {/* Final Credits */}
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-           <div className="flex items-center gap-8 text-[10px] font-black uppercase tracking-widest text-slate-500">
-              <p>© {currentYear} Taja Shutki Luxury</p>
-              <div className="w-px h-4 bg-white/10" />
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[10px] font-black uppercase tracking-widest text-slate-500">
+              <p>© {currentYear} Taja Shutki</p>
+              <div className="hidden md:block w-px h-3 bg-white/10" />
               <p>Direct from Cox's Bazar</p>
-              <div className="w-px h-4 bg-white/10" />
-              <Link to="/developer" className="hover:text-white transition-colors text-maroon/80 font-bold">Developer Credits</Link>
            </div>
            
            <div className="flex items-center gap-4 text-slate-500">
               <span className="text-[10px] font-black uppercase tracking-widest">Handcrafted in</span>
-              <span className="px-4 py-1.5 bg-white/5 rounded-full text-white text-[10px] font-black uppercase tracking-widest border border-white/10">Bangladesh</span>
+              <span className="px-3 py-1 bg-white/5 rounded-full text-white text-[9px] font-black uppercase tracking-widest border border-white/10 italic">Bangladesh</span>
            </div>
         </div>
       </div>
