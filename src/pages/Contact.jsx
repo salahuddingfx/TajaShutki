@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, Loader2, CheckCircle2, Instagram, Facebook, Twitter, MessageCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, Loader2, CheckCircle2, MessageCircle } from 'lucide-react';
+import { Facebook, Instagram, Twitter } from '../components/BrandIcons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { selectContact } from '../store/settingsSlice';
