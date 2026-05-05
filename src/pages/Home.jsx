@@ -84,9 +84,6 @@ const Home = () => {
     }
   };
 
-  const whatsappUrl = contact?.whatsapp
-    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}`
-    : 'https://wa.me/';
 
   return (
     <>
@@ -153,27 +150,6 @@ const Home = () => {
         </section>
       )}
 
-      {/* How It Works */}
-      <section className="py-24 bg-slate-950 text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-teal-700/5 blur-[200px]" />
-        <div className="container-custom relative z-10 text-center mb-20">
-          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-teal-400 mb-3">Our Process</p>
-          <h2 className="text-4xl md:text-5xl font-display font-black">Sea to Your Table</h2>
-          <div className="w-20 h-1 bg-maroon mx-auto rounded-full mt-5" />
-        </div>
-        <div className="container-custom grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {processSteps.map((step, i) => (
-            <motion.div key={i} className="relative z-10 bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 hover:border-white/20 transition-all duration-300 h-full">
-              <div className="text-5xl font-display font-black mb-6 opacity-20" style={{ color: step.color }}>{step.step || `0${i+1}`}</div>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: step.color + '25' }}>
-                <CheckCircle size={22} style={{ color: step.color }} />
-              </div>
-              <h3 className="text-xl font-black mb-3">{step.title}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
 
       {/* Real Reviews */}
       <section className="py-24 bg-cream">
@@ -207,33 +183,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* WhatsApp Strip */}
-      <section className="bg-green-600 py-6">
-        <div className="container-custom flex flex-col sm:flex-row items-center justify-between gap-4 text-white">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center"><MessageCircle size={22} /></div>
-            <div>
-              <p className="font-black text-lg">Chat with Us on WhatsApp</p>
-              <p className="text-green-100 text-sm">Quick support & custom orders</p>
-            </div>
-          </div>
-          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white text-green-600 font-black px-8 py-4 rounded-2xl shadow-lg">Start Chat</a>
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="py-24 bg-slate-950 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-teal-700/10 blur-[150px]" />
-        <div className="container-custom relative z-10 max-w-2xl text-center">
-          <div className="w-16 h-16 bg-teal-700/20 rounded-3xl flex items-center justify-center mx-auto mb-8"><Mail size={28} className="text-teal-400" /></div>
-          <h2 className="text-4xl font-display font-black mb-4">{homeSettings?.newsletter_title || 'Stay in the Loop'}</h2>
-          <p className="text-slate-400 text-lg mb-10">{homeSettings?.newsletter_subtitle || 'Get notified about seasonal catches.'}</p>
-          <form onSubmit={handleNewsletterSubmit} className="flex gap-3 max-w-md mx-auto">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="your@email.com" className="flex-1 px-6 py-4 bg-white/10 border border-white/10 rounded-2xl text-white outline-none focus:border-maroon" />
-            <button type="submit" className="px-8 py-4 bg-maroon text-white font-black rounded-2xl disabled:opacity-50">Subscribe</button>
-          </form>
-        </div>
-      </section>
     </div>
     </>
   );
