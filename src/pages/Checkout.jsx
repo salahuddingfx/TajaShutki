@@ -87,6 +87,7 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error('Order failed', error);
+      toast.error(error.response?.data?.message || 'Failed to place order. Please check your connection.');
     } finally {
       setIsSubmitting(false);
     }
