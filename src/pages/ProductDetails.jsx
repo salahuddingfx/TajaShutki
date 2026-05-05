@@ -354,6 +354,8 @@ const ProductDetails = () => {
             <div 
               className="group relative aspect-[4/5] rounded-[40px] overflow-hidden bg-white shadow-soft-xl border border-slate-100 cursor-zoom-in"
               onClick={() => setIsLightboxOpen(true)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
               <AnimatePresence mode='wait'>
                 <motion.img 
