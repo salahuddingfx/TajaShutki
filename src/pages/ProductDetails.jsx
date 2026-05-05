@@ -287,6 +287,34 @@ const ProductDetails = () => {
         <meta name="twitter:title" content={translate(product.name, product.name_bn)} />
         <meta name="twitter:description" content={translate(product.description, product.description_bn)?.substring(0, 160)} />
         <meta name="twitter:image" content={product.image} />
+        
+        {/* Google Structured Data (JSON-LD) */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": translate(product.name, product.name_bn),
+            "image": [product.image, ...product.allImages],
+            "description": translate(product.description, product.description_bn),
+            "sku": product.slug,
+            "brand": {
+              "@type": "Brand",
+              "name": settings.store_name || "TajaShutki"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": window.location.href,
+              "priceCurrency": "BDT",
+              "price": product.price,
+              "availability": "https://schema.org/InStock"
+            },
+            "aggregateRating": productReviews.length > 0 ? {
+              "@type": "AggregateRating",
+              "ratingValue": (productReviews.reduce((acc, rev) => acc + Number(rev.rating), 0) / productReviews.length).toFixed(1),
+              "reviewCount": productReviews.length
+            } : undefined
+          })}
+        </script>
       </Helmet>
 
       <div className="bg-cream min-h-screen pb-20 pt-10">
