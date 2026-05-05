@@ -143,7 +143,7 @@ const ProductDetails = () => {
   if (loading) {
     return (
       <div className="container-custom py-40 flex items-center justify-center min-h-[60vh]">
-        <Loader2 size={40} className="animate-spin text-maroon" />
+        <Loader2 size={40} className="animate-spin text-teal-600" />
       </div>
     );
   }
@@ -270,9 +270,9 @@ const ProductDetails = () => {
         <div className="container-custom max-w-7xl">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-slate-500 mb-8">
-          <Link to="/" className="hover:text-maroon transition-colors">Home</Link>
+          <Link to="/" className="hover:text-teal-600 transition-colors">Home</Link>
           <ChevronLeft size={14} className="rotate-180" />
-          <Link to="/shop" className="hover:text-maroon transition-colors">Shop</Link>
+          <Link to="/shop" className="hover:text-teal-600 transition-colors">Shop</Link>
           <ChevronLeft size={14} className="rotate-180" />
           <span className="text-slate-800 font-bold">{translate(product.name, product.name_bn)}</span>
         </div>
@@ -315,11 +315,11 @@ const ProductDetails = () => {
                     key={idx}
                     onClick={() => setActiveImage(img)}
                     className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all bg-white relative ${
-                      activeImage === img ? 'border-maroon shadow-lg scale-105 z-10' : 'border-slate-100 opacity-60 hover:opacity-100 hover:border-slate-300'
+                      activeImage === img ? 'border-teal-600 shadow-lg scale-105 z-10' : 'border-slate-100 opacity-60 hover:opacity-100 hover:border-slate-300'
                     }`}
                   >
                     <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
-                    {activeImage === img && <motion.div layoutId="activeThumb" className="absolute inset-0 bg-maroon/5" />}
+                    {activeImage === img && <motion.div layoutId="activeThumb" className="absolute inset-0 bg-teal-600/5" />}
                   </button>
                 ))}
               </div>
@@ -334,7 +334,7 @@ const ProductDetails = () => {
           >
             {/* Card 1: Essential Info & Actions */}
             <div className="bg-white rounded-3xl p-8 md:p-10 shadow-soft-lg border border-slate-100 h-full flex flex-col justify-center">
-              <span className="text-maroon font-bold tracking-widest uppercase text-xs mb-3 block">{product.category?.name || product.category || 'Uncategorized'}</span>
+              <span className="text-teal-600 font-bold tracking-widest uppercase text-xs mb-3 block">{product.category?.name || product.category || 'Uncategorized'}</span>
               <h1 className={clsx(
                 "text-3xl md:text-5xl font-display font-black mb-4 text-slate-800 leading-tight",
                 language === 'bn' && "text-4xl md:text-6xl"
@@ -400,19 +400,19 @@ const ProductDetails = () => {
 
         {/* Card 2: Delivery & Benefits (Full Width) */}
         <div className="bg-white rounded-[40px] p-8 md:p-12 border border-slate-100 shadow-soft-xl mb-12 overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-maroon/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-teal-600/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
             
             {/* Left side: Delivery Pricing Cards */}
             <div className="lg:col-span-7 flex flex-col gap-6">
               <h4 className="font-display font-black text-slate-800 text-2xl flex items-center gap-3">
-                <Truck size={28} className="text-maroon" />
+                <Truck size={28} className="text-teal-600" />
                 Delivery Information
               </h4>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div className="bg-slate-50 border border-slate-100 p-8 rounded-3xl hover:border-maroon/30 transition-all group hover:bg-white hover:shadow-soft-lg">
-                  <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-maroon mb-6 group-hover:scale-110 transition-transform">
+                <div className="bg-slate-50 border border-slate-100 p-8 rounded-3xl hover:border-teal-600/30 transition-all group hover:bg-white hover:shadow-soft-lg">
+                  <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 transition-transform">
                     <MapPin size={24} />
                   </div>
                   <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Inside Cox's Bazar</h5>
@@ -422,8 +422,8 @@ const ProductDetails = () => {
                   <p className="text-sm text-slate-500 font-medium">Estimated Delivery: 1-2 Days</p>
                 </div>
                 
-                <div className="bg-slate-50 border border-slate-100 p-8 rounded-3xl hover:border-maroon/30 transition-all group hover:bg-white hover:shadow-soft-lg">
-                  <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-maroon mb-6 group-hover:scale-110 transition-transform">
+                <div className="bg-slate-50 border border-slate-100 p-8 rounded-3xl hover:border-teal-600/30 transition-all group hover:bg-white hover:shadow-soft-lg">
+                  <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 transition-transform">
                     <Globe size={24} />
                   </div>
                   <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Outside Cox's Bazar</h5>
@@ -434,18 +434,20 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              <div className="bg-maroon/5 border border-maroon/10 p-6 md:p-8 rounded-3xl flex items-center justify-between hover:bg-maroon/10 transition-all group overflow-hidden relative">
+              {/* Quality Assurance Card */}
+              <div className="bg-teal-600/5 border border-teal-600/10 p-6 md:p-8 rounded-3xl flex items-center justify-between hover:bg-teal-600/10 transition-all group overflow-hidden relative">
                 <div className="relative z-10">
-                  <h5 className="text-[10px] font-black text-maroon uppercase tracking-[0.2em] mb-2 opacity-70">bKash Payment Number</h5>
-                  <p className="text-xl md:text-2xl font-black text-slate-800 tracking-wider group-hover:text-maroon transition-colors">
-                    {settings.bkash_number || '01886460526'}
+                  <h5 className="text-[10px] font-black text-teal-600 uppercase tracking-[0.2em] mb-2 opacity-70">Quality Assurance</h5>
+                  <p className="text-xl md:text-2xl font-black text-slate-800 tracking-tight group-hover:text-teal-600 transition-colors">
+                    100% Handpicked & Fresh
                   </p>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Sourced directly from the finest local producers</p>
                 </div>
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-maroon text-white rounded-2xl shadow-xl shadow-maroon/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform relative z-10">
-                  <CreditCard size={28} />
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-teal-600 text-white rounded-2xl shadow-xl shadow-teal-600/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform relative z-10">
+                  <ShieldCheck size={28} />
                 </div>
                 {/* Decorative background element */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-maroon/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-600/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
               </div>
             </div>
 
@@ -453,7 +455,7 @@ const ProductDetails = () => {
             <div className="lg:col-span-5 flex flex-col justify-between pt-2">
               <div>
                 <h4 className="font-display font-black text-slate-800 text-2xl flex items-center gap-3 mb-8">
-                  <ShieldCheck size={28} className="text-maroon" />
+                  <ShieldCheck size={28} className="text-teal-600" />
                   Buyer Protection
                 </h4>
                 <ul className="space-y-6 mb-8">
@@ -501,19 +503,19 @@ const ProductDetails = () => {
           <div className="flex border-b border-slate-100 overflow-x-auto scrollbar-hide px-4 pt-4">
             <button 
               onClick={() => setActiveTab('description')}
-              className={`px-8 py-5 font-bold text-base whitespace-nowrap transition-all rounded-t-2xl ${activeTab === 'description' ? 'bg-maroon/5 text-maroon border-b-2 border-maroon' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+              className={`px-8 py-5 font-bold text-base whitespace-nowrap transition-all rounded-t-2xl ${activeTab === 'description' ? 'bg-teal-600/5 text-teal-600 border-b-2 border-teal-600' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
             >
               {translate('Product Details', 'প্রোডাক্টের বিবরণ')}
             </button>
             <button 
               onClick={() => setActiveTab('delivery')}
-              className={`px-8 py-5 font-bold text-base whitespace-nowrap transition-all rounded-t-2xl ${activeTab === 'delivery' ? 'bg-maroon/5 text-maroon border-b-2 border-maroon' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+              className={`px-8 py-5 font-bold text-base whitespace-nowrap transition-all rounded-t-2xl ${activeTab === 'delivery' ? 'bg-teal-600/5 text-teal-600 border-b-2 border-teal-600' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
             >
               {translate('Delivery & Return', 'ডেলিভারি ও রিটার্ন')}
             </button>
             <button 
               onClick={() => setActiveTab('reviews')}
-              className={`px-8 py-5 font-bold text-base whitespace-nowrap transition-all rounded-t-2xl ${activeTab === 'reviews' ? 'bg-maroon/5 text-maroon border-b-2 border-maroon' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
+              className={`px-8 py-5 font-bold text-base whitespace-nowrap transition-all rounded-t-2xl ${activeTab === 'reviews' ? 'bg-teal-600/5 text-teal-600 border-b-2 border-teal-600' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'}`}
             >
               {translate('Reviews', 'রিভিউ')} ({productReviews.length})
             </button>
