@@ -115,6 +115,22 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
+  // Auto-slide logic for product images
+  const [isHovered, setIsHovered] = useState(false);
+  useEffect(() => {
+    if (!product?.allImages || product.allImages.length <= 1 || isHovered) return;
+
+    const interval = setInterval(() => {
+      setActiveImage(prev => {
+        const currentIndex = product.allImages.indexOf(prev);
+        const nextIndex = (currentIndex + 1) % product.allImages.length;
+        return product.allImages[nextIndex];
+      });
+    }, 4000); // Change image every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [product, isHovered]);
+
   // SEO tags are handled by <Helmet> in the return block
 
   if (loading) {
