@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const loadCart = () => {
   try {
-    const savedCart = localStorage.getItem('acharu-cart-redux');
+    const savedCart = localStorage.getItem('tajashutki-cart-redux');
     return savedCart ? JSON.parse(savedCart) : [];
   } catch (err) {
     return [];
@@ -35,14 +35,18 @@ const cartSlice = createSlice({
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const item = state.items.find(item => item.id === id);
-      if (item && quantity > 0) {
-        item.quantity = quantity;
-        localStorage.setItem('acharu-cart-redux', JSON.stringify(state.items));
+      if (item) {
+        if (quantity > 0) {
+          item.quantity = quantity;
+        } else {
+          state.items = state.items.filter(i => i.id !== id);
+        }
+        localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
       }
     },
     clearCart: (state) => {
       state.items = [];
-      localStorage.removeItem('acharu-cart-redux');
+      localStorage.removeItem('tajashutki-cart-redux');
     }
   }
 });
