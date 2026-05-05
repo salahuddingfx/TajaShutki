@@ -387,30 +387,6 @@ const ProductDetails = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-
-                
-                <a 
-                  href={`tel:${settings.support_phone || '01330336084'}`}
-                  className="col-span-2 bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-100 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 hover:border-slate-300 transition-all group"
-                >
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-maroon group-hover:text-white transition-colors">
-                    <Phone size={18} />
-                  </div>
-                  <span className="text-slate-500 font-medium">Click to Call :</span>
-                  <span className="font-black tracking-wider">{settings.support_phone || '01330336084'}</span>
-                </a>
-                
-                <a 
-                  href={`https://wa.me/88${settings.whatsapp_number || '01330336084'}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="col-span-2 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-green-500/20 hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all"
-                >
-                  <MessageCircle size={22} />
-                  WhatsApp Message : {settings.whatsapp_number || '01330336084'}
-                </a>
-              </div>
             </div>
           </motion.div>
         </div>
