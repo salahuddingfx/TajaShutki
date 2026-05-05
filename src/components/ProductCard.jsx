@@ -49,41 +49,44 @@ const ProductCard = ({ product }) => {
         {/* Badge */}
         {product.original_price && product.original_price > product.price && (
           <div className="absolute top-3 left-3 bg-teal-600 text-white text-[8px] font-black px-2 py-1 rounded-full shadow-lg z-10">
-            -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
+            SAVE ৳{Math.round(product.original_price - product.price)}
           </div>
         )}
 
-        {/* Hover Actions Overlay */}
-        <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center gap-1.5 backdrop-blur-[1px]">
-           <button 
-             onClick={handleAddToCart}
-             className="w-9 h-9 rounded-full bg-white text-slate-900 flex items-center justify-center hover:bg-teal-600 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 shadow-xl"
-           >
-             <ShoppingCart size={16} />
-           </button>
-        </div>
+        {/* Quick View Link overlay */}
+        <Link 
+          to={`/product/${product.slug || product.id}`}
+          className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100 backdrop-blur-[0.5px]"
+        >
+          <div className="w-10 h-10 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-xl transform scale-50 group-hover:scale-100 transition-all duration-500">
+            <Eye size={18} />
+          </div>
+        </Link>
       </div>
 
-      {/* Product Info - Minimalist */}
-      <div className="p-3 flex flex-col flex-grow">
+      {/* Product Info */}
+      <div className="p-4 flex flex-col flex-grow">
         <div className="flex-grow">
           <Link 
             to={`/product/${product.slug || product.id}`}
             className={clsx(
-              "text-sm font-bold text-slate-800 hover:text-teal-600 transition-colors line-clamp-2 leading-tight mb-1",
+              "text-sm font-bold text-slate-800 hover:text-teal-600 transition-colors line-clamp-1 leading-tight mb-1",
               language === 'bn' ? "font-hindi" : "font-display"
             )}
           >
             {translate(product.name, product.name_bn)}
           </Link>
+          <p className="text-[10px] text-slate-400 line-clamp-1 font-medium italic mb-2">
+            {translate(product.description, product.description_bn)}
+          </p>
         </div>
 
-        {/* Bottom CTA Area - Extremely Compact */}
-        <div className="mt-2 pt-2 border-t border-slate-50 flex items-center justify-between">
-          <div className="flex flex-col">
+        {/* Bottom CTA Area - Balanced */}
+        <div className="mt-2 pt-3 border-t border-slate-50 flex items-center justify-between gap-2">
+          <div className="flex flex-col min-w-0">
             <div className="flex items-baseline gap-0.5 text-teal-600">
               <span className="text-[9px] font-black">৳</span>
-              <span className="text-lg font-black tracking-tighter">
+              <span className="text-lg font-black tracking-tighter truncate">
                 {Number(product.price).toFixed(0)}
               </span>
             </div>
@@ -92,12 +95,22 @@ const ProductCard = ({ product }) => {
             )}
           </div>
 
-          <button 
-            onClick={handleOrderNow}
-            className="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-lg shadow-teal-600/10 hover:shadow-teal-600/20 hover:-translate-y-0.5 transition-all group/btn"
-          >
-            <ShoppingBag size={16} className="group-hover/btn:scale-110 transition-transform" />
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button 
+              onClick={handleAddToCart}
+              className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-teal-600 hover:text-white transition-all shadow-sm"
+              title="Add to Cart"
+            >
+              <ShoppingCart size={16} />
+            </button>
+            <button 
+              onClick={handleOrderNow}
+              className="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center shadow-lg shadow-teal-600/10 hover:shadow-teal-600/20 hover:-translate-y-0.5 transition-all group/btn"
+              title="Order Now"
+            >
+              <ShoppingBag size={16} className="group-hover/btn:scale-110 transition-transform" />
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>
