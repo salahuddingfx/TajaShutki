@@ -35,6 +35,7 @@ const OrderSuccess = () => {
     };
   }, []);
 
+  return (
     <>
       <Helmet>
         <title>Order Confirmed | TajaShutki</title>
