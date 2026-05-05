@@ -1,14 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../store/cartSlice';
-import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle, Star, Truck, MapPin, Globe, CreditCard, ShieldCheck, AlertTriangle, X, Maximize2, Minus, Plus, ShoppingBag, Image as ImageIcon, Video, Trash2, PlayCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { clsx } from 'clsx';
-import { getProductDetails, getProducts, getReviews, submitReview } from '../api/api';
-import ProductCard from '../components/ProductCard';
-import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2';
+import { selectCartItems, updateQuantity } from '../store/cartSlice';
 import { useLanguage } from '@/context/LanguageContext';
 
 const ProductDetails = () => {
@@ -35,6 +28,15 @@ const ProductDetails = () => {
 
   const initData = useSelector((state) => state.settings?.initData);
   const settings = initData?.site?.settings || {};
+
+  const cartItems = useSelector(selectCartItems);
+  const cartItem = cartItems.find(i => i.id === product?.id);
+
+  useEffect(() => {
+    if (cartItem) {
+      setQuantity(cartItem.quantity);
+    }
+  }, [product?.id]);
 
   const productWeight = Math.max(1, Math.ceil(product?.weight || 1));
   const extraWeight = Math.max(0, productWeight - 1);
@@ -154,6 +156,15 @@ const ProductDetails = () => {
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
       quantity: quantity 
     }));
+    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+  };
+
+  const updateProductQuantity = (newQty) => {
+    const qty = Math.max(1, newQty);
+    setQuantity(qty);
+    if (cartItem) {
+      dispatch(updateQuantity({ id: product.id, quantity: qty }));
+    }
   };
 
   const handleOrderNow = () => {
@@ -339,17 +350,23 @@ const ProductDetails = () => {
 
               <div className="h-px bg-slate-100 mb-8" />
 
+              {/* Total Price Display */}
+              <div className="mb-8 p-6 bg-teal-600/5 rounded-2xl border border-teal-600/10 flex items-center justify-between">
+                <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Price</span>
+                <span className="text-3xl font-black text-teal-600">৳ {(product.price * quantity).toFixed(0)}</span>
+              </div>
+
               {/* Action Buttons Grid */}
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <div className="flex items-center bg-slate-100 rounded-2xl p-1 shrink-0 border border-slate-200">
                   <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-teal-600"
+                    onClick={() => updateProductQuantity(quantity - 1)}
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-teal-600 transition-colors"
                   ><Minus size={20} /></button>
                   <span className="w-12 text-center font-black text-slate-900 text-lg">{quantity}</span>
                   <button 
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-teal-600"
+                    onClick={() => updateProductQuantity(quantity + 1)}
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-teal-600 transition-colors"
                   ><Plus size={20} /></button>
                 </div>
                 
@@ -365,7 +382,7 @@ const ProductDetails = () => {
                   onClick={handleOrderNow}
                   className="flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-teal-600 text-white hover:bg-teal-700 hover:scale-[1.02] active:scale-95 shadow-teal-600/20"
                 >
-                  <ShoppingCart size={18} />
+                  <ShoppingBag size={18} />
                   Order Now
                 </button>
               </div>
