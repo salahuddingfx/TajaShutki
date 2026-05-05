@@ -143,8 +143,34 @@ const ProductDetails = () => {
 
   if (loading) {
     return (
-      <div className="container-custom py-40 flex items-center justify-center min-h-[60vh]">
-        <Loader2 size={40} className="animate-spin text-teal-600" />
+      <div className="container-custom py-12 md:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {/* Left: Images Skeleton */}
+          <div className="space-y-6">
+            <div className="aspect-square bg-slate-100 rounded-[40px] animate-pulse" />
+            <div className="grid grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="aspect-square bg-slate-100 rounded-2xl animate-pulse" />
+              ))}
+            </div>
+          </div>
+          
+          {/* Right: Info Skeleton */}
+          <div className="space-y-8 pt-4">
+            <div className="space-y-4">
+              <div className="h-4 w-24 bg-slate-100 rounded animate-pulse" />
+              <div className="h-12 w-3/4 bg-slate-100 rounded-2xl animate-pulse" />
+              <div className="h-6 w-1/2 bg-slate-100 rounded-xl animate-pulse" />
+            </div>
+            
+            <div className="h-24 w-full bg-slate-50 rounded-3xl animate-pulse" />
+            
+            <div className="space-y-4 pt-4">
+              <div className="h-16 w-full bg-slate-100 rounded-2xl animate-pulse" />
+              <div className="h-16 w-full bg-slate-100 rounded-2xl animate-pulse" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
