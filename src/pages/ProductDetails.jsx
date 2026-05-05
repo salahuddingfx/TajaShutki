@@ -152,14 +152,14 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     dispatch(addItem({ 
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
-      quantity: 1 
+      quantity: quantity 
     }));
   };
 
   const handleOrderNow = () => {
     dispatch(addItem({ 
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
-      quantity: 1 
+      quantity: quantity 
     }));
     navigate('/checkout');
   };
@@ -322,82 +322,20 @@ const ProductDetails = () => {
                 language === 'bn' && "text-4xl md:text-6xl"
               )}>{translate(product.name, product.name_bn)}</h1>
               
-              <div className="flex items-center gap-4 mb-2">
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl font-black text-maroon">৳ {product.price}</span>
-                    {product.original_price && Number(product.original_price) > Number(product.price) && (
-                      <span className="text-xl text-slate-400 line-through font-bold">৳{product.original_price}</span>
-                    )}
-                    {product.original_price && Number(product.original_price) > Number(product.price) && (
-                      <span className="bg-maroon text-white text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-wider animate-pulse">
-                        {Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)}% OFF
-                      </span>
-                    )}
-                  </div>
-                </div>
-                {product.stock > 0 ? (
-                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-                    {product.stock} Units In Stock
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-black uppercase tracking-widest text-rose-500 bg-rose-50 px-3 py-1 rounded-full border border-rose-100">
-                    Out of Stock
-                  </span>
+              <div className="flex items-center gap-4 mb-8">
+                {product.original_price && product.original_price > product.price && (
+                  <span className="text-2xl font-bold text-slate-900 line-through opacity-50">৳ {product.original_price}</span>
                 )}
+                <span className="text-4xl font-black text-teal-600">৳ {product.price}</span>
               </div>
 
               <div className="flex flex-wrap items-center gap-y-4 gap-x-8 mb-10 py-6 border-y border-slate-50">
-                <div className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${product.stock > 0 ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" : "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]"}`}></div>
-                  <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Status</span>
-                  <span className={`text-sm font-black uppercase tracking-wider ${product.stock > 0 ? "text-green-600" : "text-rose-600"}`}>
-                    {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                  </span>
-                </div>
-                <div className="hidden sm:block w-px h-4 bg-slate-200"></div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Product Code</span>
                   <span className="text-sm font-black text-slate-700 uppercase tracking-wider">{product.slug}</span>
                 </div>
               </div>
 
-              {/* Discounted Price Section */}
-              <div className="flex items-baseline gap-4 mb-6">
-                <span className="text-4xl font-black text-slate-900 tracking-tight">৳{product.price}</span>
-                {product.original_price && Number(product.original_price) > Number(product.price) && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl text-slate-400 line-through font-bold">৳{product.original_price}</span>
-                    <span className="text-sm font-black text-maroon">
-                      (Save ৳{Number(product.original_price) - Number(product.price)})
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Stock Status Indicator */}
-              <div className="flex flex-col gap-2 mb-8">
-                 <div className="flex items-center gap-2">
-                    <div className={clsx(
-                      "w-2.5 h-2.5 rounded-full animate-pulse",
-                      product.stock > 10 ? "bg-emerald-500" : product.stock > 0 ? "bg-amber-500" : "bg-rose-500"
-                    )} />
-                    <span className={clsx(
-                      "text-xs font-black uppercase tracking-widest",
-                      product.stock > 10 ? "text-emerald-600" : product.stock > 0 ? "text-amber-600" : "text-rose-600"
-                    )}>
-                      {product.stock > 10 ? "In Stock" : product.stock > 0 ? "Limited Stock" : "Out of Stock"}
-                    </span>
-                 </div>
-                 {product.stock > 0 && (
-                   <p className="text-sm font-bold text-slate-500">
-                     {product.stock <= 10 
-                       ? `Hurry! Only ${product.stock} units left in our warehouse.` 
-                       : `${product.stock} units currently available for immediate shipping.`
-                     }
-                   </p>
-                 )}
-              </div>
 
               <div className="h-px bg-slate-100 mb-8" />
 
@@ -406,40 +344,26 @@ const ProductDetails = () => {
                 <div className="flex items-center bg-slate-100 rounded-2xl p-1 shrink-0 border border-slate-200">
                   <button 
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={product.stock === 0}
-                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-maroon disabled:opacity-30"
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-teal-600"
                   ><Minus size={20} /></button>
-                  <span className="w-12 text-center font-black text-slate-900 text-lg">{product.stock === 0 ? 0 : quantity}</span>
+                  <span className="w-12 text-center font-black text-slate-900 text-lg">{quantity}</span>
                   <button 
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                    disabled={product.stock === 0 || quantity >= product.stock}
-                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-maroon disabled:opacity-30"
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-12 h-12 flex items-center justify-center text-slate-600 hover:text-teal-600"
                   ><Plus size={20} /></button>
                 </div>
                 
                 <button 
                   onClick={handleAddToCart}
-                  disabled={product.stock === 0}
-                  className={clsx(
-                    "flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl",
-                    product.stock > 0 
-                      ? "bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 shadow-slate-100" 
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-                  )}
+                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 shadow-slate-100"
                 >
-                  <ShoppingBag size={18} />
-                  {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                  <ShoppingCart size={18} />
+                  Add to Cart
                 </button>
 
                 <button 
                   onClick={handleOrderNow}
-                  disabled={product.stock === 0}
-                  className={clsx(
-                    "flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl",
-                    product.stock > 0 
-                      ? "bg-maroon text-white hover:bg-maroon/90 hover:scale-[1.02] active:scale-95 shadow-maroon/20" 
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
-                  )}
+                  className="flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-teal-600 text-white hover:bg-teal-700 hover:scale-[1.02] active:scale-95 shadow-teal-600/20"
                 >
                   <ShoppingCart size={18} />
                   Order Now
@@ -810,9 +734,9 @@ const ProductDetails = () => {
             </div>
             
             <div className="relative group">
-              <div className="flex gap-6 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
+              <div className="flex gap-4 md:gap-6 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
                 {relatedProducts.map(p => (
-                  <div key={p.id} className="min-w-[280px] md:min-w-[320px] snap-start">
+                  <div key={p.id} className="w-[160px] md:w-[220px] shrink-0 snap-start">
                     <ProductCard product={p} />
                   </div>
                 ))}

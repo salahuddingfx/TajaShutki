@@ -4,7 +4,6 @@ import { formatPrice } from '../utils/delivery';
 import { Search, Package, MapPin, Truck, CheckCircle2, Clock, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import echo from '../lib/echo';
 
 const OrderTracking = () => {
   const location = useLocation();
@@ -25,40 +24,35 @@ const OrderTracking = () => {
     performSearch(trackingId);
   };
 
-  const performSearch = async (id) => {
-    setIsSearching(true);
+  useEffect(() => {
+    let interval;
+    if (order?.tracking_id && (order.status !== 'delivered' && order.status !== 'cancelled')) {
+      interval = setInterval(() => {
+        performSearch(order.tracking_id, true);
+      }, 5000); // 5 second polling for order status
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [order?.tracking_id, order?.status]);
+
+  const performSearch = async (id, isPoll = false) => {
+    if (!isPoll) setIsSearching(true);
     setError('');
-    setOrder(null);
     
     try {
       const response = await trackOrder(id);
       if (response.success) {
         setOrder(response.data);
       } else {
-        setError('No order found with that tracking ID.');
+        if (!isPoll) setError('No order found with that tracking ID.');
       }
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      if (!isPoll) setError('Something went wrong. Please try again.');
     } finally {
-      setIsSearching(false);
+      if (!isPoll) setIsSearching(false);
     }
   };
-
-  useEffect(() => {
-    if (order?.tracking_id) {
-      const channel = `orders.${order.tracking_id}`;
-      echo.channel(channel)
-        .listen('OrderStatusChanged', (e) => {
-          setOrder(prev => ({
-            ...prev,
-            status: e.status,
-            payment_status: e.payment_status
-          }));
-        });
-
-      return () => echo.leave(channel);
-    }
-  }, [order?.tracking_id]);
 
   const getStatusIcon = (status) => {
     switch (status) {
