@@ -456,7 +456,7 @@ const ProductDetails = () => {
               <div>
                 <h4 className="font-display font-black text-slate-800 text-2xl flex items-center gap-3 mb-8">
                   <ShieldCheck size={28} className="text-teal-600" />
-                  Buyer Protection
+                  Shopping Benefits
                 </h4>
                 <ul className="space-y-6 mb-8">
                   <li className="flex items-start gap-4">
