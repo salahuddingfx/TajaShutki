@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
 import { useSelector } from 'react-redux';
@@ -7,10 +7,10 @@ import { selectCurrentSiteId, selectCategories, selectContact, selectHomeSetting
 import { motion } from 'framer-motion';
 import {
   ArrowRight, Star, ShieldCheck, Truck, ArrowUpRight, Leaf, Heart,
-  CheckCircle, MessageCircle, Mail, Flame, Award, Waves, Clock, ChevronRight
+  CheckCircle, Flame, Award, Waves, Clock, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getReviews, submitContact } from '@/api/api';
+import { getReviews } from '@/api/api';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
 
@@ -25,11 +25,33 @@ const Home = () => {
   const categories = useSelector(selectCategories);
   const contact = useSelector(selectContact);
   const homeSettings = useSelector(selectHomeSettings);
-  const featuredProducts = siteProducts.slice(0, 4);
+  const bestSellers = siteProducts.slice(0, 10);
+  const featuredCollection = siteProducts.slice(0, 25);
 
   const [reviews, setReviews] = useState([]);
-  const [email, setEmail] = useState('');
-  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const sliderRef = useRef(null);
+
+  const scroll = (direction) => {
+    if (sliderRef.current) {
+      const { scrollLeft, clientWidth } = sliderRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2;
+      sliderRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (sliderRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          sliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scroll('right');
+        }
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Fallback data if DB settings aren't set yet
   const whyUs = homeSettings?.why_us || [
@@ -47,13 +69,7 @@ const Home = () => {
 
   const displayCategories = categories
     .filter(c => c.is_featured)
-    .map(cat => {
-      const product = siteProducts.find(p => p.category_id === cat.id);
-      return {
-        name: cat.name,
-        image: cat.image_path || product?.image || siteProducts[0]?.image || 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=400&auto=format&fit=crop',
-      };
-    })
+    .map(cat => ({ name: cat.name }))
     .slice(0, 4);
 
   useEffect(() => {
@@ -69,20 +85,6 @@ const Home = () => {
     fetchReviews();
   }, []);
 
-  const handleNewsletterSubmit = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setNewsletterLoading(true);
-    try {
-      await submitContact({ name: 'Newsletter', email, message: 'Newsletter subscription request.', site_id: 2 });
-      toast.success('Subscribed! We\'ll keep you posted. 🎉');
-      setEmail('');
-    } catch {
-      toast.error('Something went wrong. Please try again.');
-    } finally {
-      setNewsletterLoading(false);
-    }
-  };
 
 
   return (
@@ -123,32 +125,106 @@ const Home = () => {
 
       {/* Featured Categories */}
       {displayCategories.length > 0 && (
-        <section className="py-24 overflow-hidden">
+        <section className="py-10 bg-white border-y border-slate-50">
           <div className="container-custom">
-            <div className="mb-16">
-              <span className="text-maroon font-bold tracking-widest uppercase text-sm">Coastal Collections</span>
-              <h2 className="text-5xl font-display font-bold mt-4 tracking-tighter">Featured Categories</h2>
+            <div className="text-center mb-8">
+              <h2 className="text-xl font-display font-black text-slate-800">Browse by Category</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {displayCategories.map((cat, index) => (
-                <motion.div key={cat.name}>
-                  <Link to={`/shop?category=${cat.name}`} className="group relative block aspect-[4/5] overflow-hidden rounded-[40px] shadow-premium">
-                    <img src={cat.image} alt={cat.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-                    <div className="absolute inset-0 p-10 flex flex-col justify-end">
-                      <p className="text-cream/60 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Coastal</p>
-                      <h3 className="text-2xl font-display font-black text-white mb-6 group-hover:text-maroon transition-colors">{cat.name}</h3>
-                      <div className="flex items-center gap-4 text-white font-black uppercase tracking-widest text-[10px] opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                        <span>Explore</span><ArrowUpRight size={14} />
+            <div className="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
+              {displayCategories.map((cat, index) => {
+                const Icon = cat.name.toLowerCase().includes('fish') || cat.name.toLowerCase().includes('shutki') ? Waves : 
+                             cat.name.toLowerCase().includes('prawn') || cat.name.toLowerCase().includes('shrimp') ? Heart : 
+                             cat.name.toLowerCase().includes('spicy') ? Flame : Leaf;
+                
+                return (
+                  <motion.div
+                    key={cat.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    viewport={{ once: true }}
+                  >
+                    <Link
+                      to={`/shop?category=${cat.name}`}
+                      className="group flex flex-col items-center gap-2 text-center"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 group-hover:bg-teal-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-teal-600/20 group-hover:-translate-y-1">
+                        <Icon size={20} />
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-teal-600 transition-colors">{cat.name}</span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Best Sellers Slider */}
+      {bestSellers.length > 0 && (
+        <section className="py-24 bg-white overflow-hidden">
+          <div className="container-custom">
+            <div className="flex justify-between items-end mb-12 px-4 md:px-0">
+              <div>
+                <span className="text-teal-600 font-black uppercase tracking-[0.4em] text-[10px]">Most Wanted</span>
+                <h2 className="text-4xl md:text-5xl font-display font-black mt-3 text-slate-900 tracking-tight">Best Sellers</h2>
+              </div>
+              <div className="hidden md:flex gap-4">
+                 <button 
+                  onClick={() => scroll('left')}
+                  className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-teal-600 hover:text-white transition-all"
+                >
+                  <ChevronRight size={20} className="rotate-180" />
+                </button>
+                 <button 
+                  onClick={() => scroll('right')}
+                  className="w-12 h-12 rounded-full border border-teal-600 flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative group">
+            <div 
+              ref={sliderRef}
+              className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar snap-x snap-mandatory scroll-smooth"
+            >
+              {bestSellers.map((product) => (
+                <div key={product.id} className="w-[160px] md:w-[220px] shrink-0 snap-start">
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
+
+      {/* Featured Collection Grid */}
+      <section className="py-24 bg-teal-50/30">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <span className="text-teal-600 font-black uppercase tracking-[0.4em] text-[10px]">Pure Coastal Bounty</span>
+            <h2 className="text-4xl md:text-5xl font-display font-black mt-3 text-slate-900 tracking-tight">Featured Collection</h2>
+            <p className="text-slate-400 mt-4 max-w-lg mx-auto font-medium">Naturally sun-dried seafood, sourced directly from the fishermen of Cox's Bazar.</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+            {featuredCollection.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          <div className="mt-20 text-center">
+            <Link 
+              to="/shop" 
+              className="inline-flex items-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-teal-600 hover:scale-105 transition-all shadow-2xl shadow-slate-900/20"
+            >
+              Discover Full Shop <ArrowRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </section>
 
 
       {/* Real Reviews */}
