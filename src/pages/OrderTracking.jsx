@@ -183,9 +183,33 @@ const OrderTracking = () => {
                           <span className="font-bold text-slate-800">{formatPrice(item.price * item.quantity)}</span>
                         </div>
                       ))}
-                      <div className="pt-4 border-t border-slate-100 flex justify-between items-center font-bold text-lg">
-                        <span>Total Paid</span>
-                        <span className="text-maroon">{formatPrice(order.total_amount)}</span>
+                      
+                      <div className="pt-4 border-t border-slate-100 space-y-3">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-slate-500">Product Price</span>
+                          <span className="font-bold text-slate-800">{formatPrice(order.subtotal)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-slate-500">Delivery Fee</span>
+                          <span className="font-bold text-slate-800">{formatPrice(order.delivery_charge)}</span>
+                        </div>
+                        
+                        <div className="pt-3 border-t border-slate-100">
+                          <div className="flex justify-between items-center font-black text-xl">
+                            <span className="text-slate-900">Total Payable</span>
+                            <span className="text-maroon">{formatPrice(order.total_amount)}</span>
+                          </div>
+                          
+                          <div className="mt-4 flex items-center justify-between px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
+                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Payment Status</span>
+                             <span className={clsx(
+                               "text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full",
+                               order.payment_status === 'paid' ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"
+                             )}>
+                               {order.payment_status || 'Unpaid'}
+                             </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
