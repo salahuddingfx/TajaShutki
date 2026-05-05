@@ -112,9 +112,6 @@ const Navbar = () => {
     { name: t.shop, href: '/shop' },
   ];
 
-  // Get top 2 categories for navbar
-  const topCategories = categories?.slice(0, 2) || [];
-
   return (
     <nav className={clsx(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center px-4 md:px-8",
@@ -165,52 +162,7 @@ const Navbar = () => {
             </Link>
           ))}
 
-          {/* Category Links */}
-          {topCategories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/shop?category=${cat.name}`}
-              className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-maroon transition-all duration-500"
-            >
-              {cat.name}
-            </Link>
-          ))}
-
           <div className="w-px h-4 bg-slate-100 mx-2" />
-
-          {/* Categories Button Dropdown */}
-          <div 
-            className="relative group"
-            onMouseEnter={() => setIsCategoriesOpen(true)}
-            onMouseLeave={() => setIsCategoriesOpen(false)}
-          >
-            <button className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-maroon transition-all duration-500">
-               {t.categories} <ChevronDown size={12} className={clsx("transition-transform duration-500", isCategoriesOpen && "rotate-180")} />
-            </button>
-            
-            <AnimatePresence>
-              {isCategoriesOpen && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-0 mt-2 w-56 bg-white rounded-3xl shadow-premium p-4 border border-black/[0.03] backdrop-blur-xl"
-                >
-                  <div className="grid grid-cols-1 gap-1">
-                    {categories.map((cat) => (
-                      <Link
-                        key={cat.id}
-                        to={`/shop?category=${cat.name}`}
-                        className="px-4 py-2 rounded-xl hover:bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-maroon transition-all"
-                      >
-                        {cat.name}
-                      </Link>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
           {[
             { name: t.track, href: '/track' },
@@ -226,7 +178,6 @@ const Navbar = () => {
             </Link>
           ))}
         </div>
-        
 
         {/* Icons Area */}
         <div className="flex items-center gap-4">
