@@ -10,6 +10,7 @@ import ProductCard from '../components/ProductCard';
 import Swal from 'sweetalert2';
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'sonner';
+import { Helmet } from 'react-helmet-async';
 
 const ProductDetails = () => {
   const { language, t: translate } = useLanguage();
@@ -114,32 +115,7 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
-  // Update SEO Meta Tags when product is loaded
-  useEffect(() => {
-    if (product) {
-      document.title = `${product.name} | ${settings.store_name || 'Store'}`;
-      
-      const setMetaTag = (property, content) => {
-        let element = document.querySelector(`meta[property="${property}"]`);
-        if (!element) {
-          element = document.createElement('meta');
-          element.setAttribute('property', property);
-          document.head.appendChild(element);
-        }
-        element.setAttribute('content', content);
-      };
-
-      setMetaTag('og:title', product.name);
-      setMetaTag('og:description', product.description ? product.description.substring(0, 150) + '...' : '');
-      setMetaTag('og:image', product.image);
-      setMetaTag('og:url', window.location.href);
-      setMetaTag('og:type', 'product');
-
-      return () => {
-        document.title = settings.store_name || 'Store';
-      };
-    }
-  }, [product, settings.store_name]);
+  // SEO tags are handled by <Helmet> in the return block
 
   if (loading) {
     return (
@@ -293,6 +269,26 @@ const ProductDetails = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{translate(product.name, product.name_bn)} | {settings.store_name || 'TajaShutki'}</title>
+        <meta name="description" content={translate(product.description, product.description_bn)?.substring(0, 160)} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:title" content={translate(product.name, product.name_bn)} />
+        <meta property="og:description" content={translate(product.description, product.description_bn)?.substring(0, 160)} />
+        <meta property="og:image" content={product.image} />
+        <meta property="og:site_name" content={settings.store_name || 'TajaShutki'} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={window.location.href} />
+        <meta name="twitter:title" content={translate(product.name, product.name_bn)} />
+        <meta name="twitter:description" content={translate(product.description, product.description_bn)?.substring(0, 160)} />
+        <meta name="twitter:image" content={product.image} />
+      </Helmet>
+
       <div className="bg-cream min-h-screen pb-20 pt-10">
         <div className="container-custom max-w-7xl">
         {/* Breadcrumb */}
