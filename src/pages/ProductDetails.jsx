@@ -434,21 +434,6 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              {/* Quality Assurance Card */}
-              <div className="bg-teal-600/5 border border-teal-600/10 p-6 md:p-8 rounded-3xl flex items-center justify-between hover:bg-teal-600/10 transition-all group overflow-hidden relative">
-                <div className="relative z-10">
-                  <h5 className="text-[10px] font-black text-teal-600 uppercase tracking-[0.2em] mb-2 opacity-70">Quality Assurance</h5>
-                  <p className="text-xl md:text-2xl font-black text-slate-800 tracking-tight group-hover:text-teal-600 transition-colors">
-                    100% Handpicked & Fresh
-                  </p>
-                  <p className="text-xs text-slate-500 font-medium mt-1">Sourced directly from the finest local producers</p>
-                </div>
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-teal-600 text-white rounded-2xl shadow-xl shadow-teal-600/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform relative z-10">
-                  <ShieldCheck size={28} />
-                </div>
-                {/* Decorative background element */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-600/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
-              </div>
             </div>
 
             {/* Right side: Benefits & Terms */}
@@ -475,7 +460,7 @@ const ProductDetails = () => {
                     <div className="bg-green-50 text-green-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle2 size={18} />
                     </div>
-                    <span className="text-slate-700 font-medium leading-relaxed text-lg">100% authentic and meticulously hand-picked ingredients.</span>
+                    <span className="text-slate-700 font-medium leading-relaxed text-lg">Premium quality & traditional taste guaranteed.</span>
                   </li>
                 </ul>
               </div>
