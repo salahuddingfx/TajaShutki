@@ -30,7 +30,20 @@ const cartSlice = createSlice({
         existingItem.quantity += quantity;
       } else {
         const itemPrice = selectedVariation ? selectedVariation.price : product.price;
-        const itemWeight = selectedVariation ? selectedVariation.weight : product.weight;
+        const itemWeightRaw = selectedVariation ? selectedVariation.weight : product.weight;
+        let itemWeight = 0;
+        if (typeof itemWeightRaw === 'string') {
+          const numericPart = parseFloat(itemWeightRaw) || 0;
+          if (itemWeightRaw.toLowerCase().includes('kg')) {
+            itemWeight = numericPart;
+          } else if (itemWeightRaw.toLowerCase().includes('g')) {
+            itemWeight = numericPart / 1000;
+          } else {
+            itemWeight = numericPart;
+          }
+        } else {
+          itemWeight = Number(itemWeightRaw) || 0;
+        }
 
         state.items.push({ 
           ...product, 

@@ -21,12 +21,12 @@ export const calculateDeliveryCharge = (location, totalWeight, totalAmount, sett
   
   let baseCharge = location === 'Cox\'s Bazar' ? insideCity : outsideCity;
   
-  if (weight <= 1) {
+  if (weight <= 0.5) {
     return baseCharge;
   }
   
-  // Add weightCharge for every extra 0.5kg over 1kg
-  const extraWeight = weight - 1;
+  // Add weightCharge for every extra 0.5kg over 0.5kg
+  const extraWeight = weight - 0.5;
   const extraUnits = Math.ceil(extraWeight / 0.5);
   const additionalCharge = extraUnits * weightCharge;
   
