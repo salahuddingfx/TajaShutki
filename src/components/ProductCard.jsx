@@ -1,12 +1,31 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, Star, StarHalf } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../store/cartSlice';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 import { useLanguage } from '../context/LanguageContext';
+
+const StarRating = ({ rating }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  return (
+    <div className="flex items-center gap-0.5">
+      {[...Array(fullStars)].map((_, i) => (
+        <Star key={`full-${i}`} size={10} fill="currentColor" className="text-amber-400" />
+      ))}
+      {hasHalfStar && <StarHalf size={10} fill="currentColor" className="text-amber-400" />}
+      {[...Array(emptyStars)].map((_, i) => (
+        <Star key={`empty-${i}`} size={10} className="text-slate-200" />
+      ))}
+    </div>
+  );
+};
 
 const ProductCard = ({ product }) => {
   const { language, t: translate } = useLanguage();
@@ -16,14 +35,28 @@ const ProductCard = ({ product }) => {
   const handleOrderNow = (e) => {
     e.preventDefault();
     dispatch(addItem({ product }));
-    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${translate(product.name, product.name_bn)} added to cart!`,
+      confirmButtonColor: '#0D9488',
+      timer: 2000,
+      timerProgressBar: true
+    });
     navigate('/checkout');
   };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     dispatch(addItem({ product }));
-    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${translate(product.name, product.name_bn)} added to cart!`,
+      confirmButtonColor: '#0D9488',
+      timer: 2000,
+      timerProgressBar: true
+    });
   };
 
   return (
@@ -53,15 +86,36 @@ const ProductCard = ({ product }) => {
       {/* Content Area - Very Compact */}
       <div className="p-3 flex flex-col flex-grow">
         <div className="flex-grow">
-          <Link 
-            to={`/product/${product.slug || product.id}`}
-            className={clsx(
-              "text-[13px] font-bold text-slate-800 hover:text-teal-600 transition-colors line-clamp-1 leading-tight mb-0.5",
-              language === 'bn' ? "font-hindi" : "font-display"
+          <div className="flex items-center gap-2 mb-0.5">
+            <Link 
+              to={`/product/${product.slug || product.id}`}
+              className={clsx(
+                "text-[13px] font-bold text-slate-800 hover:text-emerald-600 transition-colors line-clamp-1 leading-tight",
+                language === 'bn' ? "font-hindi" : "font-display"
+              )}
+            >
+              {translate(product.name, product.name_bn)}
+            </Link>
+            {product.weight && (
+              <span className="shrink-0 px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-black rounded-md border border-emerald-100">
+                {product.weight}
+              </span>
             )}
-          >
-            {translate(product.name, product.name_bn)}
-          </Link>
+          </div>
+          
+          {/* Rating Section */}
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <StarRating rating={product.average_rating ? Number(product.average_rating) : 5.0} />
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] font-black text-slate-800 leading-none">
+                {product.average_rating ? Number(product.average_rating).toFixed(1) : "5.0"}
+              </span>
+              <span className="text-[10px] text-slate-300 font-bold tracking-tight leading-none">
+                ({product.reviews_count || 0})
+              </span>
+            </div>
+          </div>
+
           <p className="text-[9px] text-slate-400 line-clamp-1 font-medium italic">
             {translate(product.description, product.description_bn)}
           </p>
@@ -70,14 +124,14 @@ const ProductCard = ({ product }) => {
         {/* Action Row - Ultra Compact */}
         <div className="mt-2 pt-2 border-t border-slate-50 flex items-center justify-between">
           <div className="flex flex-col min-w-0">
-            <div className="flex items-baseline gap-0.5 text-teal-600 leading-none">
+            <div className="flex items-baseline gap-0.5 text-emerald-600 leading-none">
               <span className="text-[10px] font-black">৳</span>
               <span className="text-base font-black tracking-tighter truncate">
                 {Number(product.price).toFixed(0)}
               </span>
             </div>
             {product.original_price && product.original_price > product.price && (
-              <span className="text-[8px] font-bold text-slate-300 line-through">৳{Number(product.original_price).toFixed(0)}</span>
+              <span className="text-[8px] font-bold text-rose-600 line-through">৳{Number(product.original_price).toFixed(0)}</span>
             )}
           </div>
 
