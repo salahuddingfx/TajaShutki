@@ -107,7 +107,7 @@ const Cart = () => {
             <AnimatePresence mode="popLayout">
               {items.map((item) => (
                 <motion.div 
-                  key={item.id}
+                  key={item.cartItemId || item.id}
                   layout
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -117,7 +117,7 @@ const Cart = () => {
                   {/* Quantity Controls - Vertical */}
                   <div className="flex flex-col items-center gap-1 md:gap-2 shrink-0">
                     <button 
-                      onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
+                      onClick={() => dispatch(updateQuantity({ id: item.cartItemId || item.id, quantity: item.quantity + 1 }))}
                       className="text-blue-600 hover:scale-125 transition-transform p-1"
                     >
                       <Plus size={18} className="font-bold" />
@@ -126,7 +126,7 @@ const Cart = () => {
                       {item.quantity}
                     </div>
                     <button 
-                      onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}
+                      onClick={() => dispatch(updateQuantity({ id: item.cartItemId || item.id, quantity: item.quantity - 1 }))}
                       disabled={item.quantity <= 1}
                       className="text-blue-600 hover:scale-125 transition-transform disabled:opacity-30 p-1"
                     >
@@ -145,7 +145,9 @@ const Cart = () => {
                   
                   {/* Details */}
                   <div className="flex-grow min-w-0">
-                    <h3 className="font-bold text-sm md:text-lg text-slate-800 leading-tight mb-1 truncate">{item.name}</h3>
+                    <h3 className="font-bold text-sm md:text-lg text-slate-800 leading-tight mb-1 truncate">
+                      {item.name} {item.variation_info && <span className="text-teal-600">({item.variation_info})</span>}
+                    </h3>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                       <span className="text-base md:text-xl font-black text-blue-600">৳{item.price}</span>
                       <span className="text-[10px] md:text-sm font-bold text-slate-500 whitespace-nowrap">(৳{item.price} x {item.quantity})</span>
@@ -155,7 +157,7 @@ const Cart = () => {
                   {/* Remove */}
                   <button 
                     onClick={() => {
-                      dispatch(removeItem(item.id));
+                      dispatch(removeItem(item.cartItemId || item.id));
                       Swal.fire({
                         icon: 'warning',
                         title: 'Removed',
