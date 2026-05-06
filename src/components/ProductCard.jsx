@@ -34,7 +34,10 @@ const ProductCard = ({ product }) => {
 
   const handleOrderNow = (e) => {
     e.preventDefault();
-    dispatch(addItem({ product }));
+    dispatch(addItem({ 
+      product,
+      selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
+    }));
     Swal.fire({
       icon: 'success',
       title: 'Added to Cart',
@@ -48,7 +51,10 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    dispatch(addItem({ product }));
+    dispatch(addItem({ 
+      product,
+      selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
+    }));
     Swal.fire({
       icon: 'success',
       title: 'Added to Cart',
