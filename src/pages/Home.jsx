@@ -97,9 +97,9 @@ const Home = () => {
       <Hero />
 
       {/* Why Us */}
-      <section className="py-24 bg-white">
+      <section className="py-12 bg-white">
         <div className="container-custom">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-maroon mb-3">Why Taja Shutki</p>
             <h2 className="text-4xl md:text-5xl font-display font-black text-slate-800">The Taja Shutki Difference</h2>
             <div className="w-20 h-1 bg-maroon mx-auto rounded-full mt-5" />
@@ -108,9 +108,9 @@ const Home = () => {
             {whyUs.map((item, i) => {
               const Icon = IconMap[item.icon] || Waves;
               return (
-                <motion.div key={i} className="group flex gap-5 p-8 rounded-3xl bg-cream border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-400">
+                <motion.div key={i} className="group flex gap-4 p-4 rounded-3xl bg-cream border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-400">
                   <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center shrink-0 group-hover:bg-teal-100 transition-colors">
-                    <Icon size={22} className="text-teal-700" />
+                    <Icon size={24} className="text-teal-700" />
                   </div>
                   <div>
                     <h3 className="font-black text-slate-800 mb-2">{item.title}</h3>
@@ -148,10 +148,10 @@ const Home = () => {
                       to={`/shop?category=${cat.name}`}
                       className="group flex flex-col items-center gap-2 text-center"
                     >
-                      <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 group-hover:bg-teal-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-teal-600/20 group-hover:-translate-y-1">
-                        <Icon size={20} />
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-3xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 group-hover:bg-teal-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:shadow-teal-600/20 group-hover:-translate-y-1">
+                        <Icon size={32} />
                       </div>
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-teal-600 transition-colors">{cat.name}</span>
+                      <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest group-hover:text-teal-600 transition-colors">{cat.name}</span>
                     </Link>
                   </motion.div>
                 );
@@ -163,7 +163,7 @@ const Home = () => {
 
       {/* Best Sellers Slider */}
       {bestSellers.length > 0 && (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="py-12 bg-white overflow-hidden">
           <div className="container-custom">
             <div className="flex justify-between items-end mb-12 px-4 md:px-0">
               <div>
@@ -203,9 +203,9 @@ const Home = () => {
       )}
 
       {/* Featured Collection Grid */}
-      <section className="py-24 bg-teal-50/30">
+      <section className="py-12 bg-teal-50/30">
         <div className="container-custom">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <span className="text-teal-600 font-black uppercase tracking-[0.4em] text-[10px]">Pure Coastal Bounty</span>
             <h2 className="text-4xl md:text-5xl font-display font-black mt-3 text-slate-900 tracking-tight">Featured Collection</h2>
             <p className="text-slate-400 mt-4 max-w-lg mx-auto font-medium">Naturally sun-dried seafood, sourced directly from the fishermen of Cox's Bazar.</p>
@@ -215,7 +215,7 @@ const Home = () => {
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-          <div className="mt-20 text-center">
+          <div className="mt-10 text-center">
             <Link 
               to="/shop" 
               className="inline-flex items-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-teal-600 hover:scale-105 transition-all shadow-2xl shadow-slate-900/20"
@@ -228,9 +228,9 @@ const Home = () => {
 
 
       {/* Real Reviews */}
-      <section className="py-24 bg-cream">
+      <section className="py-12 bg-cream">
         <div className="container-custom">
-          <div className="flex justify-between items-end mb-16 flex-wrap gap-4">
+          <div className="flex justify-between items-end mb-10 flex-wrap gap-4">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-maroon mb-3">Customer Stories</p>
               <h2 className="text-4xl md:text-5xl font-display font-black text-slate-800">What They're Saying</h2>
@@ -240,12 +240,12 @@ const Home = () => {
           {reviews.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {reviews.map((rev, i) => (
-                <motion.div key={rev.id || i} className="bg-white p-10 rounded-[40px] shadow-soft border border-slate-50 flex flex-col justify-between">
+                <motion.div key={rev.id || i} className="bg-white p-8 rounded-[40px] shadow-soft border border-slate-50 flex flex-col justify-between">
                   <div>
                     <div className="flex gap-1 mb-6 text-amber-400">
                       {[...Array(rev.rating || 5)].map((_, idx) => <Star key={idx} size={16} fill="currentColor" />)}
                     </div>
-                    <p className="text-slate-600 font-medium italic leading-relaxed mb-8">"{rev.comment || rev.review}"</p>
+                    <p className="text-slate-600 font-medium italic leading-relaxed mb-6">"{rev.comment || rev.review}"</p>
                   </div>
                   <div className="flex justify-between items-center pt-6 border-t border-slate-50">
                     <span className="font-black text-slate-900 text-sm">{rev.customer_name || rev.name}</span>
