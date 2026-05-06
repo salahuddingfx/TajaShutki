@@ -109,13 +109,10 @@ const Shop = () => {
       <div className="bg-[#FAF9F6] min-h-screen pt-10 pb-20">
         <div className="container-custom">
           {/* Header Area - Minimal */}
-          <div className="mb-10">
-            <h1 className="text-4xl md:text-5xl font-display font-black text-slate-900 tracking-tight mb-2 uppercase italic">
-              Shutki <span className="text-maroon">Market</span>
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-display font-black text-slate-900 tracking-tight uppercase italic">
+              Shutki <span className="text-emerald-600">Collection</span>
             </h1>
-            <p className="text-slate-400 font-medium tracking-wide text-sm">
-              Discover {filteredProducts.length} premium sun-dried delicacies.
-            </p>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
@@ -131,7 +128,7 @@ const Shop = () => {
                       <input 
                         type="text" 
                         placeholder="Search products..."
-                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:bg-white focus:border-maroon/20 transition-all text-xs font-bold"
+                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-transparent rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-600/20 focus:bg-white focus:border-emerald-600/20 transition-all text-xs font-bold"
                         value={localSearch}
                         onChange={(e) => setLocalSearch(e.target.value)}
                       />
@@ -147,7 +144,7 @@ const Shop = () => {
                         className={clsx(
                           "px-4 py-2 rounded-xl text-[10px] font-bold transition-all border",
                           selectedCategoryName === 'All' 
-                            ? "bg-maroon text-white border-maroon shadow-lg" 
+                            ? "bg-emerald-600 text-white border-emerald-600 shadow-lg" 
                             : "bg-slate-50 text-slate-500 border-transparent hover:border-slate-200"
                         )}
                       >
@@ -160,7 +157,7 @@ const Shop = () => {
                           className={clsx(
                             "px-4 py-2 rounded-xl text-[10px] font-bold transition-all border",
                             selectedCategoryName === cat.name 
-                              ? "bg-maroon text-white border-maroon shadow-lg" 
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-lg" 
                               : "bg-slate-50 text-slate-500 border-transparent hover:border-slate-200"
                           )}
                         >
@@ -195,7 +192,7 @@ const Shop = () => {
 
                   <button 
                     onClick={clearAllFilters}
-                    className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-maroon hover:bg-maroon/5 rounded-2xl transition-all"
+                    className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-600/5 rounded-2xl transition-all"
                   >
                     Clear All
                   </button>
@@ -214,7 +211,7 @@ const Shop = () => {
                       onClick={() => setActiveDropdown(activeDropdown === 'category' ? null : 'category')}
                       className={clsx(
                         "w-full px-3 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider border flex items-center justify-between",
-                        selectedCategoryName !== 'All' ? "bg-maroon text-white border-maroon" : "bg-white text-slate-600 border-slate-100 shadow-sm"
+                        selectedCategoryName !== 'All' ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-slate-600 border-slate-100 shadow-sm"
                       )}
                     >
                       <span className="truncate">{selectedCategoryName === 'All' ? 'Cat' : selectedCategoryName}</span>
@@ -248,7 +245,7 @@ const Shop = () => {
                       onClick={() => setActiveDropdown(activeDropdown === 'price' ? null : 'price')}
                       className={clsx(
                         "w-full px-3 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider border flex items-center justify-between",
-                        selectedPriceRange !== 'All' ? "bg-maroon text-white border-maroon" : "bg-white text-slate-600 border-slate-100 shadow-sm"
+                        selectedPriceRange !== 'All' ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-slate-600 border-slate-100 shadow-sm"
                       )}
                     >
                       <span>Price</span>
@@ -284,7 +281,7 @@ const Shop = () => {
                   <input 
                     type="text" 
                     placeholder="Search products..."
-                    className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-maroon/10 transition-all text-[10px] font-bold shadow-sm"
+                    className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-600/10 transition-all text-[10px] font-bold shadow-sm"
                     value={localSearch}
                     onChange={(e) => setLocalSearch(e.target.value)}
                   />
@@ -311,7 +308,7 @@ const Shop = () => {
                   <p className="text-slate-400 font-medium text-sm">Try adjusting your filters or clearing all.</p>
                   <button 
                     onClick={clearAllFilters}
-                    className="mt-6 text-maroon font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-transform"
+                    className="mt-6 text-emerald-600 font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-transform"
                   >
                     Clear Filters
                   </button>
@@ -331,7 +328,7 @@ const Shop = () => {
                       className={clsx(
                         "w-10 h-10 rounded-xl font-black transition-all",
                         currentPage === i + 1 
-                          ? "bg-maroon text-white shadow-glow" 
+                          ? "bg-emerald-600 text-white shadow-glow" 
                           : "bg-white text-slate-400 hover:text-slate-800 border border-slate-100"
                       )}
                     >
