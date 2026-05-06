@@ -13,50 +13,11 @@ import { useLanguage } from '@/context/LanguageContext';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const cartItemsCount = useSelector(selectCartCount);
   const categories = useSelector(selectCategories);
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const searchInputRef = useRef(null);
-
-  useEffect(() => {
-    if (searchOpen && searchInputRef.current) searchInputRef.current.focus();
-  }, [searchOpen]);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (searchQuery.length >= 2) {
-        setIsSearching(true);
-        try {
-          const results = await api.searchProducts(searchQuery);
-          setSearchResults(results);
-        } catch (error) {
-          console.error("Search failed", error);
-        } finally {
-          setIsSearching(false);
-        }
-      } else {
-        setSearchResults([]);
-      }
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-      setSearchQuery('');
-      setSearchResults([]);
-    }
-  };
+  const clickTimer = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,16 +27,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Shop', href: '/shop' },
-    { name: 'Reviews', href: '/reviews' },
-    { name: 'About', href: '/about' },
-    { name: 'Track', href: '/track' },
-    { name: 'Contact', href: '/contact' },
-  ];
-
-  const { language, toggleLanguage } = useLanguage();
+  const { language, t: translate } = useLanguage();
 
   const translations = {
     en: {
@@ -87,7 +39,6 @@ const Navbar = () => {
       wishlist: "Wishlist",
       about: "About Us",
       contact: "Contact",
-      searchPlaceholder: "Search for seafood...",
       cart: "Cart"
     },
     bn: {
@@ -99,7 +50,6 @@ const Navbar = () => {
       wishlist: "উইশলিস্ট",
       about: "আমাদের সম্পর্কে",
       contact: "যোগাযোগ",
-      searchPlaceholder: "খুঁজুন...",
       cart: "কার্ট"
     }
   };
@@ -115,8 +65,8 @@ const Navbar = () => {
     <nav className={clsx(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center px-4 md:px-8",
       isScrolled 
-        ? "bg-white/95 backdrop-blur-xl border-b border-slate-100 h-14 md:h-16 shadow-lg" 
-        : "bg-white/80 backdrop-blur-md border-b border-black/[0.03] h-16 md:h-20"
+        ? "bg-white/95 backdrop-blur-xl border-b border-slate-100 h-12 md:h-14 shadow-lg" 
+        : "bg-white/80 backdrop-blur-md border-b border-black/[0.03] h-14 md:h-16"
     )}>
       <div className="container-custom flex items-center justify-between w-full">
         <div className="flex items-center gap-3 md:gap-6">
@@ -131,12 +81,12 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="group relative flex items-center gap-2 md:gap-3">
             <div className={clsx(
-              "w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center font-black italic transition-all duration-500 group-hover:rotate-12",
+              "w-7 h-7 md:w-9 md:h-9 rounded-xl flex items-center justify-center font-black italic transition-all duration-500 group-hover:scale-110 group-active:scale-95 group-hover:-translate-y-1",
               "bg-maroon text-cream shadow-lg shadow-maroon/20"
             )}>
               T
             </div>
-            <span className="text-lg md:text-xl font-display font-black tracking-tighter text-slate-900">
+            <span className="text-lg md:text-xl font-display font-black tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
               Taja<span className="text-maroon">Shutki</span>
             </span>
           </Link>
@@ -149,7 +99,7 @@ const Navbar = () => {
               key={link.name}
               to={link.href}
               className={clsx(
-                "text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500 hover:text-maroon relative group",
+                "text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 hover:text-maroon relative group",
                 location.pathname === link.href ? "text-maroon" : "text-slate-600"
               )}
             >
@@ -171,7 +121,7 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.href}
-              className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-maroon transition-all duration-500"
+              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-maroon transition-all duration-500"
             >
               {link.name}
             </Link>
@@ -180,98 +130,33 @@ const Navbar = () => {
 
         {/* Icons Area */}
         <div className="flex items-center gap-4">
-          {/* Search */}
-          <div className="">
-            <AnimatePresence>
-              {searchOpen && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="fixed inset-x-0 top-0 h-24 bg-white/95 backdrop-blur-2xl z-[120] flex items-center shadow-2xl border-b border-slate-100"
-                >
-                  <div className="container-custom flex items-center gap-6">
-                    <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-4">
-                      <Search size={24} className="text-maroon shrink-0" />
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
-                        placeholder={t.searchPlaceholder}
-                        className="w-full bg-transparent border-none outline-none text-xl font-bold text-slate-800 placeholder:text-slate-300"
-                      />
-                      {isSearching && <Loader2 size={20} className="animate-spin text-maroon" />}
-                    </form>
-                    <button 
-                      onClick={() => { setSearchOpen(false); setSearchQuery(''); setSearchResults([]); }}
-                      className="p-3 bg-slate-100 hover:bg-maroon hover:text-white rounded-2xl transition-all"
-                    >
-                      <X size={24} />
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            
-            <button
-              onClick={() => setSearchOpen(true)}
-              className={clsx(
-                "p-3 md:p-4 rounded-2xl transition-all duration-500 hover:scale-110",
-                isScrolled ? "text-slate-800 hover:bg-slate-100" : "text-slate-800 hover:bg-slate-100"
-              )}
-            >
-              <Search size={20} />
-            </button>
-
-            {/* Autocomplete Results Dropdown */}
-            <AnimatePresence>
-              {searchResults.length > 0 && searchOpen && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full right-0 mt-4 w-72 md:w-96 bg-white rounded-3xl shadow-premium border border-black/[0.03] overflow-hidden z-[100]"
-                >
-                  <div className="p-2">
-                    {searchResults.map((p) => (
-                      <Link
-                        key={p.id}
-                        to={`/product/${p.slug}`}
-                        onClick={() => { setSearchOpen(false); setSearchQuery(''); setSearchResults([]); }}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-all group"
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
-                          <img src={p.images?.[0]?.image_path || p.image_path} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                          <p className="text-xs font-bold text-slate-800 truncate">{p.name}</p>
-                          <p className="text-[10px] font-black text-maroon uppercase tracking-widest">৳{p.price}</p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          
-          <Link to="/cart" className="relative group">
+          <div 
+            className="relative group cursor-pointer"
+            onClick={(e) => {
+              if (clickTimer.current) {
+                clearTimeout(clickTimer.current);
+                clickTimer.current = null;
+                navigate('/');
+              } else {
+                clickTimer.current = setTimeout(() => {
+                  clickTimer.current = null;
+                  navigate('/cart');
+                }, 300);
+              }
+            }}
+          >
             <div className={clsx(
-              "p-3 md:p-4 rounded-2xl transition-all duration-500 group-hover:scale-110",
-              isScrolled ? "bg-maroon text-white shadow-xl shadow-maroon/20" : "bg-maroon text-white shadow-lg shadow-maroon/20"
+              "w-7 h-7 md:w-9 md:h-9 rounded-xl transition-all duration-500 flex items-center justify-center group-hover:scale-110 group-active:scale-95 group-hover:-translate-y-1",
+              "bg-maroon text-white shadow-lg shadow-maroon/20"
             )}>
-              <ShoppingCart size={20} />
+              <ShoppingCart size={16} className="md:w-[18px] md:h-[18px]" />
               {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-6 h-6 bg-maroon text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+                <span className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-slate-900 text-white text-[8px] md:text-[9px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:bg-maroon transition-colors">
                   {cartItemsCount}
                 </span>
               )}
             </div>
-          </Link>
-
+          </div>
         </div>
       </div>
 
