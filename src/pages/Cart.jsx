@@ -13,7 +13,7 @@ import { formatPrice } from '../utils/delivery';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, RefreshCcw, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../api/api';
-import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -34,9 +34,20 @@ const Cart = () => {
     try {
       const response = await api.post('/validate-coupon', { code: couponCode });
       setAppliedCoupon(response.data.coupon);
-      toast.success('Coupon applied successfully!');
+      Swal.fire({
+        icon: 'success',
+        title: 'Coupon Applied',
+        text: 'Coupon applied successfully!',
+        confirmButtonColor: '#0D9488',
+        timer: 2000
+      });
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Invalid coupon code');
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Coupon',
+        text: error.response?.data?.message || 'Invalid coupon code',
+        confirmButtonColor: '#0D9488'
+      });
       setAppliedCoupon(null);
     } finally {
       setLoading(false);
@@ -143,7 +154,16 @@ const Cart = () => {
 
                   {/* Remove */}
                   <button 
-                    onClick={() => dispatch(removeItem(item.id))}
+                    onClick={() => {
+                      dispatch(removeItem(item.id));
+                      Swal.fire({
+                        icon: 'warning',
+                        title: 'Removed',
+                        text: `${item.name} removed from cart`,
+                        confirmButtonColor: '#0D9488',
+                        timer: 1500
+                      });
+                    }}
                     className="w-8 h-8 md:w-10 md:h-10 bg-orange-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg shrink-0"
                   >
                     <Trash2 size={16} className="md:w-5 md:h-5" />
