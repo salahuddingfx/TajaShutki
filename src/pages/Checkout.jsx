@@ -26,7 +26,7 @@ const Checkout = () => {
     name: '',
     phone: '',
     address: '',
-    location: 'Dhaka', // Default
+    location: "Cox's Bazar", // Default to local for better UX
     notes: '',
     paymentMethod: 'cod',
     paymentNumber: '',
@@ -369,7 +369,7 @@ const Checkout = () => {
                   <span className="font-medium">{formatPrice(deliveryCharge)}</span>
                 </div>
                 <div className="pt-4 mt-4 border-t-2 border-dashed border-slate-100 flex justify-between items-center">
-                  <span className="text-lg font-bold">Total Amount</span>
+                  <span className="text-lg font-bold">Total Payable Amount</span>
                   <span className="text-3xl font-bold text-maroon">{formatPrice(totalAmount)}</span>
                 </div>
               </div>
