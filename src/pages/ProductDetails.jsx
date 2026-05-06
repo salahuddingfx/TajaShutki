@@ -23,6 +23,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariation, setSelectedVariation] = useState(null);
   const [activeImage, setActiveImage] = useState(null);
   const [activeTab, setActiveTab] = useState('description');
   const [rating, setRating] = useState(0);
@@ -62,7 +63,7 @@ const ProductDetails = () => {
         window.scrollTo(0, 0);
         
         const response = await getProductDetails(id);
-        const prod = response.data;
+        const prod = response.data?.data || response.data;  // handle both wrapped and unwrapped responses
         
         const images = prod.images && prod.images.length > 0 
           ? prod.images.map(img => img.image_path)
@@ -79,6 +80,13 @@ const ProductDetails = () => {
 
         setProduct(normalizedProduct);
         setActiveImage(images[0]);
+
+        // Set default variation immediately (first one) so price shows correctly from the start
+        if (prod.variations?.length > 0) {
+          setSelectedVariation(prod.variations[0]);
+        } else {
+          setSelectedVariation(null);
+        }
         
         if (prod.category?.slug) {
           try {
@@ -135,7 +143,7 @@ const ProductDetails = () => {
 
   if (loading) {
     return (
-      <div className="container-custom py-12 md:py-24">
+      <div className="container-custom py-8 md:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left: Images Skeleton */}
           <div className="space-y-6">
@@ -182,14 +190,28 @@ const ProductDetails = () => {
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
       quantity: quantity 
     }));
-    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${translate(product.name, product.name_bn)} added to cart!`,
+      confirmButtonColor: '#0D9488',
+      timer: 2000,
+      timerProgressBar: true
+    });
   };
 
   const updateProductQuantity = (newQty) => {
     if (newQty < 1) {
       if (cartItem) {
         dispatch(removeItem(product.id));
-        toast.warning(`${translate(product.name, product.name_bn)} removed from cart`);
+        Swal.fire({
+          icon: 'warning',
+          title: 'Removed from Cart',
+          text: `${translate(product.name, product.name_bn)} removed from cart`,
+          confirmButtonColor: '#0D9488',
+          timer: 2000,
+          timerProgressBar: true
+        });
       }
       setQuantity(1);
       return;
@@ -344,12 +366,25 @@ const ProductDetails = () => {
       <div className="bg-cream min-h-screen pb-20 pt-10">
         <div className="container-custom max-w-7xl">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-slate-500 mb-8">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 mb-8">
           <Link to="/" className="hover:text-teal-600 transition-colors">Home</Link>
-          <ChevronLeft size={14} className="rotate-180" />
+          <ChevronLeft size={14} className="rotate-180 opacity-50" />
           <Link to="/shop" className="hover:text-teal-600 transition-colors">Shop</Link>
-          <ChevronLeft size={14} className="rotate-180" />
-          <span className="text-slate-800 font-bold">{translate(product.name, product.name_bn)}</span>
+          
+          {product.category && (
+            <>
+              <ChevronLeft size={14} className="rotate-180 opacity-50" />
+              <Link 
+                to={`/shop?category=${product.category.name || product.category}`} 
+                className="hover:text-teal-600 transition-colors truncate max-w-[100px] md:max-w-none"
+              >
+                {product.category.name || product.category}
+              </Link>
+            </>
+          )}
+
+          <ChevronLeft size={14} className="rotate-180 opacity-50" />
+          <span className="text-slate-800 font-bold truncate max-w-[150px] md:max-w-none">{translate(product.name, product.name_bn)}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
@@ -410,34 +445,95 @@ const ProductDetails = () => {
             className="lg:col-span-7 flex flex-col"
           >
             {/* Card 1: Essential Info & Actions */}
-            <div className="bg-white rounded-3xl p-8 md:p-10 shadow-soft-lg border border-slate-100 h-full flex flex-col justify-center">
+            <div className="bg-white rounded-3xl p-8 md:p-10 shadow-soft-lg border border-slate-100 flex-1 flex flex-col">
               <span className="text-teal-600 font-bold tracking-widest uppercase text-xs mb-3 block">{product.category?.name || product.category || 'Uncategorized'}</span>
               <h1 className={clsx(
                 "text-3xl md:text-5xl font-display font-black mb-4 text-slate-800 leading-tight",
                 language === 'bn' && "text-4xl md:text-6xl"
               )}>{translate(product.name, product.name_bn)}</h1>
+
+              {/* Short Description */}
+              <p className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-3 italic">
+                {translate(product.description, product.description_bn)}
+              </p>
               
-              <div className="flex items-center gap-4 mb-8">
-                {product.original_price && product.original_price > product.price && (
-                  <span className="text-2xl font-bold text-slate-900 line-through opacity-50">৳ {product.original_price}</span>
+              {/* Price Block - shows selling + original (strikethrough) */}
+              <div className="flex items-baseline gap-3 mb-8 flex-wrap">
+                <span className="text-4xl font-black text-emerald-600">
+                  ৳ {selectedVariation ? Number(selectedVariation.price).toFixed(0) : Number(product.price).toFixed(0)}
+                </span>
+                {selectedVariation ? (
+                  selectedVariation.original_price && Number(selectedVariation.original_price) > Number(selectedVariation.price) && (
+                    <span className="text-xl font-bold text-rose-400 line-through">৳ {Number(selectedVariation.original_price).toFixed(0)}</span>
+                  )
+                ) : (
+                  product.original_price && Number(product.original_price) > Number(product.price) && (
+                    <span className="text-xl font-bold text-rose-400 line-through">৳ {Number(product.original_price).toFixed(0)}</span>
+                  )
                 )}
-                <span className="text-4xl font-black text-teal-600">৳ {product.price}</span>
+                {(() => {
+                  const origP = selectedVariation ? selectedVariation.original_price : product.original_price;
+                  const sellP = selectedVariation ? selectedVariation.price : product.price;
+                  const disc = origP && Number(origP) > Number(sellP)
+                    ? Math.round(((Number(origP) - Number(sellP)) / Number(origP)) * 100)
+                    : 0;
+                  return disc > 0 ? (
+                    <span className="px-2.5 py-1 bg-rose-50 text-rose-600 text-[10px] font-black rounded-lg border border-rose-100">
+                      -{disc}% OFF
+                    </span>
+                  ) : null;
+                })()}
               </div>
 
-              <div className="flex flex-wrap items-center gap-y-4 gap-x-8 mb-10 py-6 border-y border-slate-50">
+              <div className="flex flex-wrap items-center gap-y-4 gap-x-8 mb-6 py-6 border-y border-slate-50">
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Product Code</span>
                   <span className="text-sm font-black text-slate-700 uppercase tracking-wider">{product.slug}</span>
                 </div>
               </div>
 
+              {/* Variation Selection (Weight + Price) */}
+              {product.variations?.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-2">Available Pack Sizes</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {product.variations.map((v, idx) => {
+                      const isSelected = selectedVariation?.id === v.id || (!selectedVariation && idx === 0);
+                      const hasDiscount = v.original_price && Number(v.original_price) > Number(v.price);
+                      return (
+                        <button
+                          key={v.id || idx}
+                          onClick={() => setSelectedVariation(v)}
+                          className={clsx(
+                            "flex flex-col items-center px-5 py-3 rounded-2xl border-2 transition-all active:scale-95 min-w-[76px]",
+                            isSelected
+                              ? "bg-teal-600 text-white border-teal-600 shadow-lg shadow-teal-600/20"
+                              : "bg-white text-slate-700 border-slate-100 hover:border-teal-600/40 hover:shadow-md"
+                          )}
+                        >
+                          <span className="text-[11px] font-black tracking-wide">{v.weight}</span>
+                          <span className={clsx("text-[11px] font-black mt-0.5", isSelected ? "text-white" : "text-teal-600")}>
+                            ৳{Number(v.price).toFixed(0)}
+                          </span>
+                          {hasDiscount && (
+                            <span className={clsx("text-[8px] font-bold line-through leading-none", isSelected ? "text-white/50" : "text-slate-400")}>
+                              ৳{Number(v.original_price).toFixed(0)}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
 
               <div className="h-px bg-slate-100 mb-8" />
 
               {/* Total Price Display */}
-              <div className="mb-8 p-6 bg-teal-600/5 rounded-2xl border border-teal-600/10 flex items-center justify-between">
+              <div className="mb-8 p-6 bg-emerald-600/5 rounded-2xl border border-emerald-600/10 flex items-center justify-between">
                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Price</span>
-                <span className="text-3xl font-black text-teal-600">৳ {(product.price * quantity).toFixed(0)}</span>
+                <span className="text-3xl font-black text-emerald-600">৳ {((selectedVariation ? selectedVariation.price : product.price) * quantity).toFixed(0)}</span>
               </div>
 
               {/* Action Buttons Grid */}
@@ -795,7 +891,7 @@ const ProductDetails = () => {
 
         {/* Related Products Carousel */}
         {relatedProducts.length > 0 && (
-          <div className="mt-20">
+          <div className="mt-10">
             <div className="flex items-center justify-between mb-10">
               <div className="flex items-center gap-4 flex-1">
                 <h2 className="text-3xl font-display font-black text-slate-800">Related Products</h2>
