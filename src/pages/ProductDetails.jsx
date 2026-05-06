@@ -471,18 +471,6 @@ const ProductDetails = () => {
                     <span className="text-xl font-bold text-rose-400 line-through">৳ {Number(product.original_price).toFixed(0)}</span>
                   )
                 )}
-                {(() => {
-                  const origP = selectedVariation ? selectedVariation.original_price : product.original_price;
-                  const sellP = selectedVariation ? selectedVariation.price : product.price;
-                  const disc = origP && Number(origP) > Number(sellP)
-                    ? Math.round(((Number(origP) - Number(sellP)) / Number(origP)) * 100)
-                    : 0;
-                  return disc > 0 ? (
-                    <span className="px-2.5 py-1 bg-rose-50 text-rose-600 text-[10px] font-black rounded-lg border border-rose-100">
-                      -{disc}% OFF
-                    </span>
-                  ) : null;
-                })()}
               </div>
 
               <div className="flex flex-wrap items-center gap-y-4 gap-x-8 mb-6 py-6 border-y border-slate-50">
