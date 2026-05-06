@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { getDynamicPage } from '../api/api';
 import { useSelector } from 'react-redux';
 import { Loader2, Star, Award, Leaf, Heart, Users, TrendingUp, ShieldCheck, Package, Waves } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -38,8 +37,7 @@ const defaultAbout = {
 };
 
 const About = () => {
-  const [pageData, setPageData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const initData = useSelector((state) => state.settings?.initData);
   const rawAbout = initData?.site?.settings?.about;
@@ -51,20 +49,7 @@ const About = () => {
   const statsRef = useRef(null);
   const teamRef = useRef(null);
 
-  useEffect(() => {
-    const fetchAbout = async () => {
-      try {
-        setLoading(true);
-        const response = await getDynamicPage('about-us');
-        setPageData(response.data || response);
-      } catch (err) {
-        console.error('About us page not found', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAbout();
-  }, []);
+
 
   useEffect(() => {
     if (loading) return;
@@ -130,7 +115,7 @@ const About = () => {
       </section>
 
       {/* STATS */}
-      <section ref={statsRef} className="py-24 bg-white border-b border-slate-100">
+      <section ref={statsRef} className="py-12 bg-white border-b border-slate-100">
         <div className="container-custom max-w-5xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {(about.stats || []).map(({ label, value }, i) => {
@@ -150,9 +135,9 @@ const About = () => {
       </section>
 
       {/* TIMELINE */}
-      <section ref={timelineRef} className="py-32 bg-cream">
+      <section ref={timelineRef} className="py-16 bg-cream">
         <div className="container-custom max-w-5xl">
-          <div className="text-center mb-20">
+          <div className="text-center mb-10">
             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-maroon mb-4">Our Journey</p>
             <h2 className="text-4xl md:text-5xl font-display font-black text-slate-800">A Story Worth Telling</h2>
             <div className="w-20 h-1 bg-maroon mx-auto rounded-full mt-6" />
@@ -191,9 +176,9 @@ const About = () => {
       </section>
 
       {/* TEAM */}
-      <section ref={teamRef} className="py-32 bg-white">
+      <section ref={teamRef} className="py-16 bg-white">
         <div className="container-custom max-w-6xl">
-          <div className="text-center mb-20">
+          <div className="text-center mb-10">
             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-maroon mb-4">The People</p>
             <h2 className="text-4xl md:text-5xl font-display font-black text-slate-800">Meet the Team</h2>
             <p className="text-slate-500 mt-4 max-w-xl mx-auto">The passionate humans behind every product — dedicated to coastal excellence.</p>
@@ -220,27 +205,10 @@ const About = () => {
         </div>
       </section>
 
-      {/* DYNAMIC ADMIN CONTENT */}
-      {pageData?.content && (
-        <section className="py-24 bg-cream">
-          <div className="container-custom max-w-4xl">
-            <div className="bg-white rounded-[40px] p-10 md:p-16 shadow-soft border border-slate-100">
-              <h2 className="text-3xl font-display font-black text-slate-800 mb-8 text-center">{pageData.title}</h2>
-              <style>{`
-                .about-content h2,.about-content h3{font-weight:800;color:#1e293b;margin-bottom:.75rem;margin-top:1.5rem}
-                .about-content h2{font-size:1.5rem}.about-content h3{font-size:1.15rem;color:#0f766e}
-                .about-content p{margin-bottom:1rem;font-size:1.05rem;color:#475569;line-height:1.8}
-                .about-content ul{padding-left:1.5rem;margin-bottom:1rem}
-                .about-content li{margin-bottom:.4rem;list-style:disc;font-size:1.05rem;color:#475569}
-              `}</style>
-              <div className="about-content" dangerouslySetInnerHTML={{ __html: pageData.content }} />
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {/* CTA */}
-      <section className="py-24 bg-slate-950 text-center relative overflow-hidden">
+      <section className="py-12 bg-slate-950 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-teal-700/10 blur-[200px]" />
         <div className="container-custom relative z-10 max-w-2xl">
           <h2 className="text-4xl font-display font-black text-white mb-6">{about.cta_title}</h2>
