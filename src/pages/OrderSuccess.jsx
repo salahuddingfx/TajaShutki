@@ -1,14 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { CheckCircle2, ShoppingBag, Truck, ArrowRight } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, ShoppingBag, Truck, ArrowRight, MessageCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Helmet } from 'react-helmet-async';
+import { trackOrder } from '../api/api';
 
 const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const orderId = searchParams.get('id');
+  const initData = useSelector((state) => state.settings?.initData);
+  const settings = initData?.site?.settings || {};
+  
+  const [orderStatus, setOrderStatus] = useState('placed');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     // Launch confetti
@@ -20,123 +27,159 @@ const OrderSuccess = () => {
 
     const interval = setInterval(function() {
       const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
+      if (timeLeft <= 0) return clearInterval(interval);
 
       const particleCount = 50 * (timeLeft / duration);
       confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
       confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
     }, 250);
 
-    return () => {
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
+
+  // Poll for status updates
+  useEffect(() => {
+    if (!orderId) return;
+
+    const fetchStatus = async () => {
+      try {
+        const response = await trackOrder(orderId);
+        if (response.success && response.data.status !== orderStatus) {
+          setOrderStatus(response.data.status);
+          setIsUpdating(true);
+          setTimeout(() => setIsUpdating(false), 2000);
+        }
+      } catch (err) {
+        console.error("Failed to fetch order status", err);
+      }
+    };
+
+    fetchStatus();
+    const pollInterval = setInterval(fetchStatus, 5000);
+    return () => clearInterval(pollInterval);
+  }, [orderId, orderStatus]);
+
+  const statusMap = {
+    'placed': { label: 'Catching Fresh', color: 'bg-blue-500' },
+    'confirmed': { label: 'Order Confirmed', color: 'bg-emerald-500' },
+    'packed': { label: 'Sourcing Quality', color: 'bg-orange-500' },
+    'shipped': { label: 'At Sea / Transit', color: 'bg-purple-500' },
+    'delivered': { label: 'Docked / Delivered', color: 'bg-green-500' },
+    'cancelled': { label: 'Cancelled', color: 'bg-red-500' }
+  };
+
+  const currentStatus = statusMap[orderStatus] || statusMap['placed'];
 
   return (
     <>
       <Helmet>
         <title>Order Confirmed | TajaShutki</title>
       </Helmet>
-      <div className="bg-[#F4F7FA] min-h-screen py-20 flex items-center relative overflow-hidden">
+      <div className="bg-[#F4F7FA] min-h-screen py-10 md:py-16 flex items-center relative overflow-hidden">
         {/* Animated Background Shapes - Sea themed colors */}
         <motion.div 
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 15, repeat: Infinity }}
-          className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-blue-100/30 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute -top-32 -left-32 w-64 md:w-96 h-64 md:h-96 bg-blue-100/30 rounded-full blur-3xl"
         />
         <motion.div 
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 18, repeat: Infinity }}
-          className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-slate-200/30 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.1, 1], rotate: -360 }}
+          transition={{ duration: 25, repeat: Infinity }}
+          className="absolute -bottom-32 -right-32 w-64 md:w-96 h-64 md:h-96 bg-slate-200/30 rounded-full blur-3xl"
         />
 
-        <div className="container-custom max-w-4xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+        <div className="container-custom max-w-6xl mx-auto relative z-10 px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
             {/* Left Column: Success Card */}
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="lg:col-span-3 bg-white rounded-[50px] p-10 md:p-14 text-center shadow-[0_40px_120px_-20px_rgba(0,0,0,0.1)] border border-slate-100 relative overflow-hidden"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="lg:col-span-7 bg-white rounded-[40px] md:rounded-[60px] p-8 md:p-16 text-center shadow-[0_40px_120px_-20px_rgba(0,0,0,0.1)] border border-slate-100 relative overflow-hidden"
             >
               <motion.div 
                 initial={{ rotate: -180, scale: 0 }}
                 animate={{ rotate: 0, scale: 1 }}
                 transition={{ type: "spring", damping: 15, delay: 0.2 }}
-                className="w-28 h-28 bg-slate-900 text-white rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-slate-900/20"
+                className="w-20 md:w-28 h-20 md:h-28 bg-slate-900 text-white rounded-[24px] md:rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-slate-900/20"
               >
-                <CheckCircle2 size={56} strokeWidth={2.5} />
+                <CheckCircle2 size={40} className="md:w-14 md:h-14" strokeWidth={2.5} />
               </motion.div>
 
-              <h1 className="text-4xl md:text-5xl font-display font-black text-slate-900 mb-4 tracking-tight">Got it! Order Confirmed.</h1>
-              <p className="text-slate-500 mb-10 text-lg leading-relaxed max-w-md mx-auto">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-black text-slate-900 mb-4 tracking-tight">Got it! Order Confirmed.</h1>
+              <p className="text-slate-500 mb-10 text-base md:text-lg leading-relaxed max-w-lg mx-auto">
                 Thank you for choosing TajaShutki. Your premium dried delicacies are being sourced and packed with care.
               </p>
 
-              <div className="bg-slate-50 rounded-[40px] p-8 mb-10 border border-slate-100 group hover:border-slate-900/10 transition-all">
+              <div className="bg-slate-50 rounded-[30px] md:rounded-[40px] p-6 md:p-10 mb-10 border border-slate-100 group hover:border-slate-900/10 transition-all">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-3">Order Number</p>
-                <h2 className="text-3xl md:text-4xl font-display font-black text-slate-900 tracking-wider mb-8">{orderId || 'ORDER-PENDING'}</h2>
+                <h2 className="text-2xl md:text-4xl font-display font-black text-slate-900 tracking-wider mb-8">{orderId || 'ORDER-PENDING'}</h2>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link 
                     to={`/track?id=${orderId}`}
-                    className="flex-1 flex items-center justify-center gap-2 px-8 py-5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all hover:shadow-xl active:scale-95"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 md:px-8 py-4 md:py-5 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-slate-800 transition-all hover:shadow-xl active:scale-95"
                   >
-                    <Truck size={20} />
+                    <Truck size={18} />
                     Track Order
                   </Link>
                   <a 
-                    href={`https://wa.me/8801700000000?text=Hi, I want to track my order #${orderId}.`}
+                    href={`https://wa.me/${(settings.whatsapp_number || settings.phone || '8801851075537').replace(/[^0-9]/g, '')}?text=Hi, I want to track my order #${orderId}. Current status is: ${orderStatus}.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 px-8 py-5 bg-[#25D366] text-white rounded-2xl font-bold hover:bg-[#1da851] transition-all hover:shadow-xl active:scale-95 shadow-lg shadow-green-100"
+                    className="flex-1 flex items-center justify-center gap-2 px-6 md:px-8 py-4 md:py-5 bg-[#25D366] text-white rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-[#1da851] transition-all hover:shadow-xl active:scale-95 shadow-lg shadow-green-100"
                   >
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                    </svg>
+                    <MessageCircle size={18} />
                     WhatsApp Support
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-6 text-slate-400">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Sourcing Fresh</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8">
+                <div className="flex items-center gap-3 bg-slate-50 px-5 py-2.5 rounded-full border border-slate-100">
+                  <motion.div 
+                    animate={isUpdating ? { scale: [1, 1.5, 1], opacity: [1, 0.5, 1] } : {}}
+                    className={`w-2 h-2 ${currentStatus.color} rounded-full animate-pulse`} 
+                  />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-800">
+                    Status: <span className="text-blue-600">{currentStatus.label}</span>
+                  </span>
                 </div>
-                <div className="w-[1px] h-4 bg-slate-100" />
-                <Link to="/shop" className="text-[10px] font-black uppercase tracking-widest hover:text-slate-900 transition-colors flex items-center gap-1">
-                  Back to Shop <ArrowRight size={12} />
+                <Link to="/shop" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-2 group">
+                  Back to Shop <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </motion.div>
 
             {/* Right Column: Next Steps & Promo */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-5 space-y-6">
               <motion.div 
-                initial={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-soft"
+                className="bg-white rounded-[30px] md:rounded-[40px] p-8 md:p-10 border border-slate-100 shadow-soft"
               >
-                <h4 className="text-lg font-bold text-slate-900 mb-6 font-display">What's Next?</h4>
-                <div className="space-y-6">
+                <h4 className="text-xl font-display font-black text-slate-900 mb-8">What's Next?</h4>
+                <div className="space-y-8">
                   {[
-                    { icon: ShoppingBag, title: "Order Sourcing", desc: "We select the best quality dried fish for you." },
-                    { icon: Truck, title: "Quality Check", desc: "Each item passes a hygiene and quality audit." },
-                    { icon: CheckCircle2, title: "Fast Delivery", desc: "Straight from the coast to your kitchen." }
+                    { icon: ShoppingBag, title: "Sourcing", desc: "We select the best quality dried fish for you.", active: orderStatus === 'placed' },
+                    { icon: Truck, title: "Audit", desc: "Each item passes a hygiene and quality audit.", active: orderStatus === 'shipped' },
+                    { icon: CheckCircle2, title: "Delivering", desc: "Straight from the coast to your kitchen.", active: orderStatus === 'delivered' }
                   ].map((step, i) => (
-                    <div key={i} className="flex gap-4">
-                      <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center shrink-0">
-                        <step.icon size={18} className="text-slate-900" />
+                    <div key={i} className={`flex gap-5 relative ${step.active ? 'opacity-100' : 'opacity-40'}`}>
+                      <div className={`w-12 h-12 ${step.active ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-400'} rounded-2xl flex items-center justify-center shrink-0 transition-all duration-500`}>
+                        <step.icon size={20} />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-slate-900 mb-0.5">{step.title}</p>
-                        <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
+                        <p className="text-sm md:text-base font-black text-slate-900 mb-1 uppercase tracking-tight">{step.title}</p>
+                        <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-medium">{step.desc}</p>
                       </div>
+                      {step.active && (
+                        <motion.div 
+                          layoutId="active-indicator"
+                          className="absolute -left-2 top-0 bottom-0 w-1 bg-blue-500 rounded-full"
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
@@ -146,18 +189,26 @@ const OrderSuccess = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="bg-slate-900 rounded-[40px] p-8 text-white relative overflow-hidden group"
+                className="bg-slate-900 rounded-[30px] md:rounded-[40px] p-8 md:p-10 text-white relative overflow-hidden group"
               >
                 <div className="relative z-10">
-                  <h4 className="text-lg font-bold mb-2 font-display uppercase tracking-wider">Loyalty Reward 🌊</h4>
-                  <p className="text-sm text-white/60 mb-4 leading-relaxed">As a valued customer, get 10% off on your next haul.</p>
-                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex justify-between items-center group-hover:bg-white/10 transition-all">
-                    <span className="font-mono font-bold tracking-widest uppercase text-blue-300">TAJA10</span>
-                    <button className="text-[10px] font-black uppercase tracking-widest bg-blue-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-blue-500/20">Copy</button>
+                  <h4 className="text-2xl font-display font-black mb-3 tracking-wider">Loyalty Reward 🌊</h4>
+                  <p className="text-sm text-white/60 mb-8 leading-relaxed font-medium">As a valued customer, get 10% off on your next haul.</p>
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[24px] p-5 flex justify-between items-center group-hover:bg-white/10 transition-all">
+                    <span className="font-mono font-black text-xl tracking-[0.2em] uppercase text-blue-300">TAJA10</span>
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText('TAJA10');
+                        alert('Code copied!');
+                      }}
+                      className="text-[10px] font-black uppercase tracking-widest bg-blue-500 text-white px-5 py-3 rounded-xl shadow-lg active:scale-95 transition-transform"
+                    >
+                      Copy
+                    </button>
                   </div>
                 </div>
                 {/* Wave Decoration */}
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all" />
+                <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700" />
               </motion.div>
             </div>
 
