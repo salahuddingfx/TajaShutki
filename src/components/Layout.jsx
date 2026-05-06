@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Toaster } from 'sonner';
+import { clsx } from 'clsx';
 
 const Layout = ({ children }) => {
   const { pathname } = useLocation();
@@ -17,7 +18,10 @@ const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen font-sans selection:bg-maroon selection:text-cream">
       <Navbar />
-      <main className="flex-grow pt-20 pb-20 md:pb-0">
+      <main className={clsx(
+        "flex-grow pb-20 md:pb-0",
+        pathname === '/' ? "pt-0" : "pt-16"
+      )}>
         {children}
       </main>
       <Footer />
