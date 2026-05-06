@@ -39,7 +39,7 @@ const Checkout = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
 
-  const deliveryCharge = calculateDeliveryCharge(formData.location, totalWeight, deliverySettings);
+  const deliveryCharge = calculateDeliveryCharge(formData.location, totalWeight, totalPrice, deliverySettings);
   const totalAmount = totalPrice + deliveryCharge;
 
   useEffect(() => {
