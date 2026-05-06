@@ -39,7 +39,10 @@ const ProductDetails = () => {
   const settings = initData?.site?.settings || {};
 
   const cartItems = useSelector(selectCartItems);
-  const cartItem = cartItems.find(i => i.id === product?.id);
+  
+  // Find cart item considering variation
+  const currentCartItemId = selectedVariation ? `${product?.id}-${selectedVariation.id}` : product?.id;
+  const cartItem = cartItems.find(i => (i.cartItemId || i.id) === currentCartItemId);
 
   useEffect(() => {
     if (cartItem) {
@@ -188,7 +191,8 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     dispatch(addItem({ 
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
-      quantity: quantity 
+      quantity: quantity,
+      selectedVariation: selectedVariation
     }));
     Swal.fire({
       icon: 'success',
@@ -201,13 +205,15 @@ const ProductDetails = () => {
   };
 
   const updateProductQuantity = (newQty) => {
+    const targetId = cartItem ? (cartItem.cartItemId || cartItem.id) : (selectedVariation ? `${product.id}-${selectedVariation.id}` : product.id);
+
     if (newQty < 1) {
       if (cartItem) {
-        dispatch(removeItem(product.id));
+        dispatch(removeItem(targetId));
         Swal.fire({
           icon: 'warning',
           title: 'Removed from Cart',
-          text: `${translate(product.name, product.name_bn)} removed from cart`,
+          text: `${translate(product.name, product.name_bn)} ${selectedVariation ? `(${selectedVariation.weight})` : ''} removed from cart`,
           confirmButtonColor: '#0D9488',
           timer: 2000,
           timerProgressBar: true
@@ -219,14 +225,15 @@ const ProductDetails = () => {
 
     setQuantity(newQty);
     if (cartItem) {
-      dispatch(updateQuantity({ id: product.id, quantity: newQty }));
+      dispatch(updateQuantity({ id: targetId, quantity: newQty }));
     }
   };
 
   const handleOrderNow = () => {
     dispatch(addItem({ 
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
-      quantity: quantity 
+      quantity: quantity,
+      selectedVariation: selectedVariation
     }));
     navigate('/checkout');
   };
