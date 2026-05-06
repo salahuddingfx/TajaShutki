@@ -18,28 +18,45 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action) => {
-      const { product, quantity = 1 } = action.payload;
-      const existingItem = state.items.find(item => item.id === product.id);
+      const { product, quantity = 1, selectedVariation } = action.payload;
+      
+      const cartItemId = selectedVariation 
+        ? `${product.id}-${selectedVariation.id}` 
+        : product.id;
+
+      const existingItem = state.items.find(item => item.cartItemId === cartItemId || item.id === cartItemId);
       
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        state.items.push({ ...product, quantity });
+        const itemPrice = selectedVariation ? selectedVariation.price : product.price;
+        const itemWeight = selectedVariation ? selectedVariation.weight : product.weight;
+
+        state.items.push({ 
+          ...product, 
+          cartItemId,
+          variation_id: selectedVariation ? selectedVariation.id : null,
+          variation_info: selectedVariation ? selectedVariation.weight : null,
+          price: itemPrice,
+          weight: itemWeight,
+          original_product_weight: product.weight,
+          quantity 
+        });
       }
       localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter(item => (item.cartItemId || item.id) !== action.payload);
       localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
     },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
-      const item = state.items.find(item => item.id === id);
+      const item = state.items.find(item => (item.cartItemId || item.id) === id);
       if (item) {
         if (quantity > 0) {
           item.quantity = quantity;
         } else {
-          state.items = state.items.filter(i => i.id !== id);
+          state.items = state.items.filter(i => (i.cartItemId || i.id) !== id);
         }
         localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
       }
