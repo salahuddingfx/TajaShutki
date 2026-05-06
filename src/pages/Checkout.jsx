@@ -66,6 +66,8 @@ const Checkout = () => {
         location: formData.location === "Cox's Bazar" ? 'Cox' : 'Outside',
         items: items.map(item => ({
           product_id: item.id,
+          variation_id: item.variation_id || null,
+          variation_info: item.variation_info || null,
           quantity: item.quantity
         })),
         payment_method: formData.paymentMethod,
@@ -342,7 +344,9 @@ const Checkout = () => {
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-grow">
-                      <p className="font-bold text-slate-800 text-sm line-clamp-1">{item.name}</p>
+                      <p className="font-bold text-slate-800 text-sm line-clamp-1">
+                        {item.name} {item.variation_info && <span className="text-teal-600">({item.variation_info})</span>}
+                      </p>
                       <p className="text-xs text-slate-400">{item.quantity} x {formatPrice(item.price)}</p>
                     </div>
                     <p className="font-bold text-slate-800 text-sm">{formatPrice(item.price * item.quantity)}</p>
