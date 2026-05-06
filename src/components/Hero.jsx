@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from '../store/cartSlice';
@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, ShoppingCart, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
+import Swal from 'sweetalert2';
 
 const Hero = () => {
   const currentSiteId = useSelector(selectCurrentSiteId);
@@ -19,30 +20,45 @@ const Hero = () => {
   const contentRef = useRef(null);
   const dispatch = useDispatch();
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (slides.length === 0) return;
     setCurrentSlide((prev) => (prev + 1) % slides.length);
     setProgress(0);
-  };
+  }, [slides.length]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     if (slides.length === 0) return;
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     setProgress(0);
-  };
+  }, [slides.length]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return oldProgress + 0.5; // Controls speed of auto-slide
-      });
-    }, 30);
-    return () => clearInterval(timer);
-  }, [currentSlide]);
+    if (slides.length <= 1) {
+      setProgress(0);
+      return;
+    }
+
+    let startTime = Date.now();
+    let animationFrame;
+    const duration = 5000;
+
+    const tick = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const newProgress = Math.min((elapsed / duration) * 100, 100);
+      
+      setProgress(newProgress);
+
+      if (elapsed >= duration) {
+        nextSlide();
+      } else {
+        animationFrame = requestAnimationFrame(tick);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [currentSlide, slides.length, nextSlide]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -114,7 +130,18 @@ const Hero = () => {
             {activeSlide.product_id && (
               <>
                 <button 
-                  onClick={() => dispatch(addItem({ product: siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 } }))}
+                  onClick={() => {
+                    const product = siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 };
+                    dispatch(addItem({ product }));
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Added to Cart',
+                      text: `${product.name} added to cart!`,
+                      confirmButtonColor: '#0D9488',
+                      timer: 2000,
+                      timerProgressBar: true
+                    });
+                  }}
                   className="group relative px-8 py-4 bg-maroon text-cream font-black uppercase tracking-widest text-[10px] rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-maroon/20 flex items-center gap-3"
                 >
                   <ShoppingCart size={16} />
