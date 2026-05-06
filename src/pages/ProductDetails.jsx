@@ -41,7 +41,7 @@ const ProductDetails = () => {
   const cartItems = useSelector(selectCartItems);
   
   // Find cart item considering variation
-  const currentCartItemId = selectedVariation ? `${product?.id}-${selectedVariation.id}` : product?.id;
+  const currentCartItemId = selectedVariation ? `${product?.id}-${selectedVariation.id || 'base'}` : product?.id;
   const cartItem = cartItems.find(i => (i.cartItemId || i.id) === currentCartItemId);
 
   useEffect(() => {
@@ -72,12 +72,32 @@ const ProductDetails = () => {
           ? prod.images.map(img => img.image_path)
           : ['https://images.unsplash.com/photo-1514516348920-f319999a5e8f?q=80&w=200&auto=format&fit=crop'];
 
+        let combinedVariations = [];
+        if (prod.weight && prod.price) {
+          const baseWeightStr = Number(prod.weight) < 1 ? `${Number(prod.weight) * 1000}g` : `${Number(prod.weight)}kg`;
+          combinedVariations.push({
+              id: 'base',
+              weight: baseWeightStr,
+              price: prod.price,
+              original_price: prod.original_price,
+              stock: prod.stock
+          });
+        }
+        if (prod.variations && prod.variations.length > 0) {
+          const baseWeightStr = Number(prod.weight) < 1 ? `${Number(prod.weight) * 1000}g` : `${Number(prod.weight)}kg`;
+          const filteredVars = prod.variations.filter(
+              v => v.weight.toLowerCase() !== baseWeightStr.toLowerCase() && v.weight.toLowerCase() !== `${Number(prod.weight) * 1000}gm`.toLowerCase()
+          );
+          combinedVariations = [...combinedVariations, ...filteredVars];
+        }
+
         const normalizedProduct = {
           ...prod,
           category: prod.category?.name || 'Uncategorized',
           categorySlug: prod.category?.slug || '',
           image: images[0],
           allImages: images,
+          variations: combinedVariations,
           variants: [prod.weight ? `${prod.weight} kg` : '1 kg']
         };
 
@@ -205,7 +225,7 @@ const ProductDetails = () => {
   };
 
   const updateProductQuantity = (newQty) => {
-    const targetId = cartItem ? (cartItem.cartItemId || cartItem.id) : (selectedVariation ? `${product.id}-${selectedVariation.id}` : product.id);
+    const targetId = cartItem ? (cartItem.cartItemId || cartItem.id) : (selectedVariation ? `${product.id}-${selectedVariation.id || 'base'}` : product.id);
 
     if (newQty < 1) {
       if (cartItem) {
