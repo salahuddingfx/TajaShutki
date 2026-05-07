@@ -32,8 +32,8 @@ const Cart = () => {
     if (!couponCode) return;
     setLoading(true);
     try {
-      const response = await api.post('/validate-coupon', { code: couponCode });
-      setAppliedCoupon(response.data.coupon);
+      const response = await api.validateCoupon(couponCode);
+      setAppliedCoupon(response.coupon);
       Swal.fire({
         icon: 'success',
         title: 'Coupon Applied',
