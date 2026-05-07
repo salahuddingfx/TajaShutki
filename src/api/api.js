@@ -91,6 +91,11 @@ export const submitReview = async (reviewData) => {
   return response.data;
 };
 
+export const validateCoupon = async (code) => {
+  const response = await apiClient.post('/validate-coupon', { code });
+  return response.data;
+};
+
 // Export as an object for backward compatibility
 export const api = {
   getInitData,
@@ -105,7 +110,8 @@ export const api = {
   submitContact,
   getDynamicPage,
   getReviews,
-  submitReview
+  submitReview,
+  validateCoupon
 };
 
 export default apiClient;
