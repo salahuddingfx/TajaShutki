@@ -46,7 +46,7 @@ const Navbar = () => {
       categories: "ক্যাটাগরি",
       home: "হোম",
       shop: "দোকান",
-      track: "অর্ডার ট্র্যাক",
+      track: "ট্র্যাক অর্ডার",
       wishlist: "উইশলিস্ট",
       about: "আমাদের সম্পর্কে",
       contact: "যোগাযোগ",
@@ -65,8 +65,8 @@ const Navbar = () => {
     <nav className={clsx(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center px-4 md:px-8",
       isScrolled 
-        ? "bg-white/95 backdrop-blur-xl border-b border-slate-100 h-12 md:h-14 shadow-lg" 
-        : "bg-white/80 backdrop-blur-md border-b border-black/[0.03] h-14 md:h-16"
+        ? "bg-white/95 backdrop-blur-xl border-b border-slate-100 h-14 md:h-16 shadow-lg" 
+        : "bg-white/80 backdrop-blur-md border-b border-black/[0.03] h-16 md:h-20"
     )}>
       <div className="container-custom flex items-center justify-between w-full">
         <div className="flex items-center gap-3 md:gap-6">
@@ -81,12 +81,12 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="group relative flex items-center gap-2 md:gap-3">
             <div className={clsx(
-              "w-7 h-7 md:w-9 md:h-9 rounded-xl flex items-center justify-center font-black italic transition-all duration-500 group-hover:scale-110 group-active:scale-95 group-hover:-translate-y-1",
-              "bg-maroon text-cream shadow-lg shadow-maroon/20"
+              "w-9 h-9 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-active:scale-95 group-hover:-translate-y-0.5 overflow-hidden",
+              "bg-white shadow-lg shadow-black/5 border border-slate-100"
             )}>
-              T
+              <img src="/TajaShutki.png" alt="Taja Shutki Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="text-lg md:text-xl font-display font-black tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
+            <span className="text-xl md:text-2xl font-display font-black tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
               Taja<span className="text-maroon">Shutki</span>
             </span>
           </Link>
@@ -146,12 +146,12 @@ const Navbar = () => {
             }}
           >
             <div className={clsx(
-              "w-7 h-7 md:w-9 md:h-9 rounded-xl transition-all duration-500 flex items-center justify-center group-hover:scale-110 group-active:scale-95 group-hover:-translate-y-1",
+              "w-9 h-9 md:w-12 md:h-12 rounded-xl transition-all duration-500 flex items-center justify-center group-hover:scale-105 group-active:scale-95 group-hover:-translate-y-0.5",
               "bg-maroon text-white shadow-lg shadow-maroon/20"
             )}>
-              <ShoppingCart size={16} className="md:w-[18px] md:h-[18px]" />
+              <ShoppingCart size={20} className="md:w-[24px] md:h-[24px]" />
               {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-slate-900 text-white text-[8px] md:text-[9px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:bg-maroon transition-colors">
+                <span className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-slate-900 text-white text-[9px] md:text-[10px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:bg-maroon transition-colors">
                   {cartItemsCount}
                 </span>
               )}
