@@ -76,6 +76,34 @@ function App() {
       }
     };
     init();
+
+    // Round favicon logic
+    const roundFavicon = (src) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.beginPath();
+        ctx.arc(64, 64, 64, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        
+        ctx.drawImage(img, 0, 0, 128, 128);
+        
+        const link = document.getElementById('favicon');
+        if (link) {
+          link.href = canvas.toDataURL("image/png");
+        }
+      };
+      img.src = src + '?v=' + Date.now();
+    };
+    
+    // Use a small delay to ensure link is in DOM
+    const timer = setTimeout(() => roundFavicon('/TajaShutki.png'), 500);
+    return () => clearTimeout(timer);
   }, [dispatch]);
 
   return (
