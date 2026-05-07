@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { trackOrder } from '../api/api';
 import { formatPrice } from '../utils/delivery';
-import { Search, Package, MapPin, Truck, CheckCircle2, Clock, Calendar, ShieldCheck, CreditCard, ArrowRight, User } from 'lucide-react';
+import { Search, Package, MapPin, Truck, CheckCircle2, Clock, Calendar, ShieldCheck, CreditCard, ArrowRight, User, Wifi, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -138,7 +138,7 @@ const OrderTracking = () => {
               animate={{ opacity: 1, y: 0 }}
               className="text-5xl md:text-6xl font-display font-black text-slate-900 mb-6 tracking-tighter"
             >
-              Where is my <span className="text-emerald-600 italic">Shutki?</span>
+              Where is my <span className="text-emerald-600 italic">Product?</span>
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
@@ -371,23 +371,80 @@ const OrderTracking = () => {
                            </div>
                         </div>
 
-                        <div className="bg-slate-900 rounded-[30px] p-8 text-white flex flex-col justify-between">
-                           <div className="flex items-center justify-between mb-4">
-                             <div className="flex items-center gap-2">
-                               <CreditCard size={18} className="text-emerald-500" />
-                               <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Payment</span>
-                             </div>
-                             <span className={clsx(
-                               "text-[9px] font-black uppercase px-3 py-1 rounded-full",
-                               selectedOrder.payment_status === 'paid' ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
-                             )}>
-                               {selectedOrder.payment_status || 'Unpaid'}
-                             </span>
-                           </div>
-                           <div>
-                             <p className="text-xl font-bold mb-1">{selectedOrder.payment_method?.toUpperCase()}</p>
-                             <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Transaction ID: {selectedOrder.transaction_id || 'N/A'}</p>
-                           </div>
+                        <div className="space-y-4">
+                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 ml-2">Payment Authentication</p>
+                          <div 
+                            className={clsx(
+                              "relative h-48 rounded-[24px] p-5 text-white overflow-hidden shadow-xl",
+                              selectedOrder.payment_status === 'paid' ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700" :
+                              selectedOrder.payment_method?.toLowerCase() === 'bkash' ? "bg-gradient-to-br from-[#D12053] via-[#E2136E] to-[#A01840]" :
+                              selectedOrder.payment_method?.toLowerCase() === 'nagad' ? "bg-gradient-to-br from-[#F7941D] via-[#F15A22] to-[#E41E26]" :
+                              "bg-gradient-to-br from-emerald-800 via-emerald-900 to-slate-900"
+                            )}
+                          >
+                            {/* Decorative Background Elements */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/20 rounded-full -ml-24 -mb-24 blur-2xl" />
+                            
+                            {/* Card Top: Chip & Status */}
+                            <div className="flex justify-between items-start mb-4 relative z-10">
+                              <div className="w-10 h-8 bg-gradient-to-br from-yellow-200 via-yellow-400 to-yellow-600 rounded-md relative overflow-hidden shadow-inner">
+                                <div className="absolute inset-0 opacity-30 border-[0.5px] border-black/20 grid grid-cols-3 grid-rows-3" />
+                                <div className="absolute top-1/2 left-0 w-full h-px bg-black/10" />
+                                <div className="absolute top-0 left-1/2 w-px h-full bg-black/10" />
+                              </div>
+                              <div className="flex flex-col items-end">
+                                <div className={clsx(
+                                  "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md border",
+                                  selectedOrder.payment_status === 'paid' ? "bg-white/20 border-white/30 text-white" : "bg-rose-500/20 border-rose-400/30 text-rose-300"
+                                )}>
+                                  {selectedOrder.payment_status || 'Unpaid'}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Card Middle: Number/Phone & Type */}
+                            <div className="mb-4 relative z-10">
+                              <div className="flex items-center gap-3 mb-2">
+                                <p className="text-xl font-mono font-bold tracking-[0.2em] drop-shadow-md">
+                                  {selectedOrder.payment_method === 'cod' ? 
+                                    '**** **** **** COD' : 
+                                    `${selectedOrder.customer_phone?.slice(0, 3)} ${selectedOrder.customer_phone?.slice(3, 5)}** **${selectedOrder.customer_phone?.slice(-2)}`
+                                  }
+                                </p>
+                                <Wifi size={16} className="rotate-90 opacity-40" />
+                              </div>
+                              {/* Clear Transaction ID */}
+                              {selectedOrder.transaction_id && (
+                                <p className="text-[10px] font-mono tracking-widest uppercase opacity-90 bg-black/30 px-3 py-1 rounded-lg border border-white/10 inline-block">
+                                  TXN ID: {selectedOrder.transaction_id}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Card Bottom: Name & Method Logo */}
+                            <div className="flex justify-between items-end relative z-10 mt-2">
+                              <div className="space-y-0.5">
+                                <p className="text-[7px] font-bold opacity-60 tracking-[0.2em] uppercase">Customer Name</p>
+                                <p className="text-sm font-black tracking-wider uppercase truncate max-w-[150px]">{selectedOrder.customer_name}</p>
+                              </div>
+                              <div className="text-right flex flex-col items-end">
+                                <span className="text-[7px] font-bold opacity-50 mb-1 tracking-widest uppercase">
+                                  {selectedOrder.payment_method === 'cod' ? 'Hand Cash' : 'Digital Gateway'}
+                                </span>
+                                {selectedOrder.payment_method?.toLowerCase() === 'bkash' ? (
+                                  <span className="text-lg font-black italic tracking-tighter leading-none">bKash</span>
+                                ) : selectedOrder.payment_method?.toLowerCase() === 'nagad' ? (
+                                  <span className="text-lg font-black italic tracking-tighter leading-none">Nagad</span>
+                                ) : (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-xs font-black uppercase tracking-widest">COD</span>
+                                    <Truck size={14} />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
