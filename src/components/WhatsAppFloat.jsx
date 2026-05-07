@@ -13,13 +13,8 @@ const WhatsAppFloat = () => {
   
   const cleanNumber = number.replace(/\D/g, '');
   
-  const topics = [
-    { id: 'general', label: 'General Inquiry', message: 'Hello! I would like to know more about your fresh dried fish.' },
-    { id: 'order', label: 'Order Support', message: 'Hi! I need help with my Taja Shutki order.' },
-    { id: 'wholesale', label: 'Wholesale/Business', message: 'Hello! I am interested in wholesale dried fish opportunities.' },
-  ];
-
-  const handleWhatsApp = (message) => {
+  const handleWhatsApp = () => {
+    const message = "Hello! I would like to know more about your fresh dried fish.";
     const url = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
     setIsOpen(false);
@@ -62,28 +57,38 @@ const WhatsAppFloat = () => {
             </div>
 
             {/* Content */}
-            <div className="p-3 space-y-1.5">
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] px-2 mb-1">Select a topic</p>
-              {topics.map((topic) => (
-                <button
-                  key={topic.id}
-                  onClick={() => handleWhatsApp(topic.message)}
-                  className="w-full group flex items-center justify-between p-3 bg-slate-50 hover:bg-emerald-50 rounded-xl transition-all border border-transparent hover:border-emerald-100"
-                >
-                  <span className="text-[11px] font-black text-slate-700 group-hover:text-emerald-700">{topic.label}</span>
-                  <ChevronRight size={14} className="text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
-                </button>
-              ))}
+            <div className="p-5 space-y-4">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <p className="text-[10px] text-slate-600 font-medium leading-relaxed mb-3">
+                  Thank you for visiting Taja Shutki! We are here to provide you the freshest dried fish from Cox's Bazar. 🐟
+                </p>
+                <div className="space-y-1">
+                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Phone Support</p>
+                  <p className="text-[11px] font-black text-slate-800">{phoneNumber || number}</p>
+                </div>
+              </div>
 
-              <div className="pt-1">
+              <div className="space-y-2">
+                <button
+                  onClick={handleWhatsApp}
+                  className="w-full flex items-center justify-center gap-2 p-3.5 bg-[#25D366] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#1da851] transition-all shadow-lg active:scale-95"
+                >
+                  <MessageCircle size={14} fill="currentColor" />
+                  Chat on WhatsApp
+                </button>
+                
                 <a
                   href={`tel:${phoneNumber}`}
-                  className="w-full flex items-center justify-center gap-2 p-3 bg-emerald-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
+                  className="w-full flex items-center justify-center gap-2 p-3 bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
                 >
                   <Phone size={12} fill="currentColor" />
                   Call Support
                 </a>
               </div>
+              
+              <p className="text-center text-[8px] font-bold text-slate-400 italic">
+                Taja Shutki - Freshness from the Sea
+              </p>
             </div>
           </motion.div>
         )}
