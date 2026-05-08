@@ -87,7 +87,7 @@ const Navbar = () => {
             )}>
               <img src="/TajaShutki.png" alt="Taja Shutki Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl md:text-2xl font-display font-bold tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
+            <span className="text-2xl md:text-3xl font-display font-bold tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
               Taja<span className="text-maroon">Shutki</span>
             </span>
           </Link>
@@ -100,7 +100,7 @@ const Navbar = () => {
               key={link.name}
               to={link.href}
               className={clsx(
-                "text-[12px] font-bold uppercase tracking-widest transition-all duration-500 hover:text-maroon relative group",
+                "text-sm font-bold uppercase tracking-widest transition-all duration-500 hover:text-maroon relative group",
                 location.pathname === link.href ? "text-maroon" : "text-slate-600"
               )}
             >
@@ -122,7 +122,7 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.href}
-              className="text-[12px] font-bold uppercase tracking-widest text-slate-500 hover:text-maroon transition-all duration-500"
+              className="text-sm font-bold uppercase tracking-widest text-slate-500 hover:text-maroon transition-all duration-500"
             >
               {link.name}
             </Link>
@@ -152,7 +152,7 @@ const Navbar = () => {
             )}>
               <ShoppingCart size={20} className="md:w-[24px] md:h-[24px]" />
               {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-slate-900 text-white text-[9px] md:text-[10px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:bg-maroon transition-colors">
+                <span className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-slate-900 text-white text-[10px] md:text-[11px] font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white group-hover:bg-maroon transition-colors">
                   {cartItemsCount}
                 </span>
               )}
@@ -194,7 +194,7 @@ const Navbar = () => {
             <div className="flex-1 overflow-y-auto px-6 py-8 bg-white z-10">
               <div className="space-y-8 pb-20">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6 px-4">{t.menu}</p>
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-6 px-4">{t.menu}</p>
                   <div className="flex flex-col gap-2">
                     {[
                       { name: t.home, href: '/' },
