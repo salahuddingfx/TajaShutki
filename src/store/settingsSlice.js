@@ -34,7 +34,7 @@ const initialState = {
 };
 
 const loadSettings = () => {
-  const saved = localStorage.getItem('acharu-multi-settings');
+  const saved = localStorage.getItem('taja-multi-settings');
   return saved ? JSON.parse(saved) : initialState;
 };
 
@@ -79,7 +79,7 @@ const settingsSlice = createSlice({
     updateSiteSettings: (state, action) => {
       const { siteId, settings } = action.payload;
       state.sites[siteId] = { ...state.sites[siteId], ...settings };
-      localStorage.setItem('acharu-multi-settings', JSON.stringify(state));
+      localStorage.setItem('taja-multi-settings', JSON.stringify(state));
     }
   }
 });
