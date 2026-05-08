@@ -66,7 +66,11 @@ const Checkout = () => {
     if (!couponCode) return;
     setCouponLoading(true);
     try {
-      const response = await validateCoupon(couponCode);
+      const cartItemsForValidation = items.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }));
+      const response = await validateCoupon(couponCode, cartItemsForValidation);
       const coupon = response.coupon;
       setAppliedCoupon(coupon);
       
