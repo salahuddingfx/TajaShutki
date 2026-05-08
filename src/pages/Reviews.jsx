@@ -76,8 +76,36 @@ const Reviews = () => {
                 
                 <div className="pt-4 border-t border-slate-100 mt-auto">
                   <p className="font-bold text-slate-800">{review.customer_name}</p>
+                  
+                  {/* Review Media */}
+                  {review.media && review.media.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {review.media.map((m, idx) => (
+                        <div key={idx} className="relative group w-16 h-16 rounded-xl overflow-hidden border border-slate-100 shadow-sm cursor-pointer hover:border-slate-800/30 transition-all">
+                          {m.type === 'image' ? (
+                            <img 
+                              src={m.file_path} 
+                              alt="Review" 
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform" 
+                              onClick={() => window.open(m.file_path, '_blank')}
+                            />
+                          ) : (
+                            <div 
+                              className="w-full h-full bg-slate-900 flex items-center justify-center text-white"
+                              onClick={() => window.open(m.file_path, '_blank')}
+                            >
+                              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                <div className="w-0 h-0 border-t-[5px] border-t-transparent border-l-[8px] border-l-white border-b-[5px] border-b-transparent ml-1" />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   {review.product && (
-                    <p className="text-xs font-bold text-maroon mt-1 bg-maroon/5 inline-block px-2 py-1 rounded-md">
+                    <p className="text-xs font-bold text-slate-600 mt-4 bg-slate-100 inline-block px-2 py-1 rounded-md uppercase tracking-wider">
                       {review.product.name}
                     </p>
                   )}
