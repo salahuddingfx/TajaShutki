@@ -28,7 +28,7 @@ const Home = () => {
   const contact = useSelector(selectContact);
   const homeSettings = useSelector(selectHomeSettings);
   const bestSellers = siteProducts.slice(0, 10);
-  const featuredCollection = siteProducts.slice(0, 25);
+  const featuredCollection = useSelector(selectFeaturedProducts);
 
   const [reviews, setReviews] = useState([]);
   const sliderRef = useRef(null);
