@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import LazyImage from './LazyImage';
 import { ShoppingBag, ShoppingCart, Star, StarHalf } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../store/cartSlice';
@@ -78,11 +79,9 @@ const ProductCard = ({ product }) => {
         to={`/product/${product.slug || product.id}`} 
         className="relative aspect-square overflow-hidden bg-slate-50 block"
       >
-        <img 
+        <LazyImage 
           src={product.images?.find(i => i.is_primary)?.image_path || (product.images && product.images.length > 0 ? product.images[0].image_path : (product.image_path || product.image || 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=400&auto=format&fit=crop'))} 
           alt={product.name}
-          loading="lazy"
-          decoding="async"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         {/* Subtle overlay on hover */}
