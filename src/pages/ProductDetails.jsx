@@ -215,7 +215,14 @@ const ProductDetails = () => {
       quantity: quantity,
       selectedVariation: selectedVariation
     }));
-    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${translate(product.name, product.name_bn)} added to cart!`,
+      confirmButtonColor: '#0D9488',
+      timer: 2000,
+      timerProgressBar: true
+    });
   };
 
   const updateProductQuantity = (newQty) => {
@@ -224,7 +231,14 @@ const ProductDetails = () => {
     if (newQty < 1) {
       if (cartItem) {
         dispatch(removeItem(targetId));
-        toast.warning(`${translate(product.name, product.name_bn)} ${selectedVariation ? `(${selectedVariation.weight})` : ''} removed from cart`);
+        Swal.fire({
+          icon: 'warning',
+          title: 'Removed from Cart',
+          text: `${translate(product.name, product.name_bn)} ${selectedVariation ? `(${selectedVariation.weight})` : ''} removed from cart`,
+          confirmButtonColor: '#0D9488',
+          timer: 2000,
+          timerProgressBar: true
+        });
       }
       setQuantity(1);
       return;
@@ -275,7 +289,12 @@ const ProductDetails = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!rating || !reviewName) {
-      toast.warning('Please provide both a rating and your name.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing Information',
+        text: 'Please provide both a rating and your name.',
+        confirmButtonColor: '#0D9488'
+      });
       return;
     }
     
@@ -296,14 +315,26 @@ const ProductDetails = () => {
 
       await submitReview(formData);
       
-      toast.success('Review submitted! Waiting for approval.');
+      Swal.fire({
+        icon: 'success',
+        title: 'Review Submitted!',
+        text: 'Thank you! Your review has been submitted and is waiting for approval.',
+        confirmButtonColor: '#0D9488',
+        timer: 3000,
+        timerProgressBar: true
+      });
 
       setRating(0);
       setReviewName('');
       setReviewComment('');
       setReviewMedia([]);
     } catch (err) {
-      toast.error('Failed to submit review. Please try again.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to submit review. Please try again.',
+        confirmButtonColor: '#0D9488'
+      });
       console.error(err);
     } finally {
       setSubmittingReview(false);
