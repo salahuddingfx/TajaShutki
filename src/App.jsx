@@ -129,15 +129,17 @@ function App() {
       navigator.clearAppBadge().catch(console.error);
     }
 
-    // Round favicon logic
-    const roundFavicon = (src) => {
+    // Dynamic circular favicon logic
+    const updateFavicon = (src) => {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       img.onload = () => {
         const canvas = document.createElement('canvas');
         canvas.width = 128;
         canvas.height = 128;
         const ctx = canvas.getContext('2d');
         
+        // Ensure perfect circular clipping
         ctx.beginPath();
         ctx.arc(64, 64, 64, 0, Math.PI * 2);
         ctx.closePath();
@@ -153,8 +155,7 @@ function App() {
       img.src = src + '?v=' + Date.now();
     };
     
-    // Use a small delay to ensure link is in DOM
-    const timer = setTimeout(() => roundFavicon('/TajaShutki.png'), 500);
+    const timer = setTimeout(() => updateFavicon('/TajaShutki.png'), 500);
     return () => clearTimeout(timer);
   }, [dispatch]);
 
