@@ -74,6 +74,7 @@ const Navbar = () => {
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="xl:hidden p-2 rounded-xl bg-slate-100 text-slate-800 transition-all active:scale-90"
+            aria-label="Open Menu"
           >
             <Menu size={20} />
           </button>
@@ -121,7 +122,7 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.href}
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-maroon transition-all duration-500"
+              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-maroon transition-all duration-500"
             >
               {link.name}
             </Link>
@@ -182,6 +183,7 @@ const Navbar = () => {
                 <button 
                   onClick={() => setIsMenuOpen(false)} 
                   className="p-3 bg-slate-50 rounded-full text-slate-400 active:scale-90 transition-transform"
+                  aria-label="Close Menu"
                 >
                   <X size={20} />
                 </button>
@@ -192,7 +194,7 @@ const Navbar = () => {
             <div className="flex-1 overflow-y-auto px-6 py-8 bg-white z-10">
               <div className="space-y-8 pb-20">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-6 px-4">{t.menu}</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6 px-4">{t.menu}</p>
                   <div className="flex flex-col gap-2">
                     {[
                       { name: t.home, href: '/' },
@@ -223,7 +225,7 @@ const Navbar = () => {
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-6 px-4">ক্যাটাগরি</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6 px-4">ক্যাটাগরি</p>
                   <div className="grid grid-cols-2 gap-3">
                     {categories.map(cat => (
                       <Link 

@@ -134,7 +134,7 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
 
-          <p className="text-[9px] text-slate-400 line-clamp-1 font-medium italic">
+          <p className="text-[9px] text-slate-500 line-clamp-1 font-medium italic">
             {translate(product.description, product.description_bn)}
           </p>
         </div>

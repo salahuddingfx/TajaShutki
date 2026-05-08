@@ -96,6 +96,7 @@ const Hero = () => {
             src={activeSlide.image_path} 
             alt={activeSlide.title}
             className="w-full h-full object-cover"
+            fetchpriority="high"
           />
         </motion.div>
       </AnimatePresence>
@@ -192,10 +193,18 @@ const Hero = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <button onClick={prevSlide} className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-slate-950 transition-all duration-500">
+              <button 
+                onClick={prevSlide} 
+                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-slate-950 transition-all duration-500"
+                aria-label="Previous Slide"
+              >
                 <ChevronLeft size={20} />
               </button>
-              <button onClick={nextSlide} className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-slate-950 transition-all duration-500">
+              <button 
+                onClick={nextSlide} 
+                className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-slate-950 transition-all duration-500"
+                aria-label="Next Slide"
+              >
                 <ChevronRight size={20} />
               </button>
             </div>

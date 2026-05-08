@@ -46,6 +46,7 @@ const Footer = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-maroon hover:border-maroon transition-all duration-500"
+                  aria-label={`Follow us on ${social.id}`}
                 >
                   <social.icon size={18} />
                 </a>
@@ -92,7 +93,7 @@ const Footer = () => {
 
         {/* Final Credits */}
         <div className="pt-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[10px] font-black uppercase tracking-widest text-slate-500">
+           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <p>© {currentYear} Taja Shutki</p>
               <div className="hidden md:block w-px h-3 bg-white/10" />
               <p>Direct from Cox's Bazar</p>
@@ -105,12 +106,11 @@ const Footer = () => {
                 <div className="w-5 h-5 rounded-md overflow-hidden border border-white/20 shrink-0">
                   <img src="https://github.com/salahuddingfx.png" alt="Dev" className="w-full h-full object-cover" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300 group-hover:text-white transition-colors flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-200 group-hover:text-white transition-colors flex items-center gap-2">
                    Architect: <span className="text-maroon">Salah Uddin Kader</span>
                    <ArrowUpRight size={10} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </span>
               </Link>
-
            </div>
            
            <div className="flex items-center gap-4 text-slate-500">

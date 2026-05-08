@@ -1,27 +1,32 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect, lazy, Suspense } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Toaster, toast } from 'sonner';
+
+// Lazy load pages for performance
+const Home = lazy(() => import('@/pages/Home'));
+const Shop = lazy(() => import('@/pages/Shop'));
+const ProductDetails = lazy(() => import('@/pages/ProductDetails'));
+const Cart = lazy(() => import('@/pages/Cart'));
+const Checkout = lazy(() => import('@/pages/Checkout'));
+const OrderTracking = lazy(() => import('@/pages/OrderTracking'));
+const Contact = lazy(() => import('@/pages/Contact'));
+const About = lazy(() => import('@/pages/About'));
+const Reviews = lazy(() => import('@/pages/Reviews'));
+const FAQ = lazy(() => import('@/pages/FAQ'));
+const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
+const Terms = lazy(() => import('@/pages/Terms'));
+const OrderSuccess = lazy(() => import('@/pages/OrderSuccess'));
+const Wishlist = lazy(() => import('@/pages/Wishlist'));
+const Developer = lazy(() => import('@/pages/Developer'));
+const NotFound = lazy(() => import('@/pages/NotFound'));
+
 import Layout from '@/components/Layout';
-import Home from '@/pages/Home';
-import Shop from '@/pages/Shop';
-import ProductDetails from '@/pages/ProductDetails';
-import Cart from '@/pages/Cart';
-import Checkout from '@/pages/Checkout';
-import OrderTracking from '@/pages/OrderTracking';
-import Contact from '@/pages/Contact';
-import About from '@/pages/About';
-import Reviews from '@/pages/Reviews';
-import FAQ from '@/pages/FAQ';
-import PrivacyPolicy from '@/pages/PrivacyPolicy';
-import Terms from '@/pages/Terms';
-import OrderSuccess from '@/pages/OrderSuccess';
-import Wishlist from '@/pages/Wishlist';
-import Developer from '@/pages/Developer';
-import NotFound from '@/pages/NotFound';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { fetchProducts } from './store/productsSlice';
 import { setInitData } from './store/settingsSlice';
 import { getInitData } from './api/api';
-import { motion, AnimatePresence } from 'framer-motion';
+import { selectCartItems } from './store/cartSlice';
+import PushNotificationPrompt from './components/PushNotificationPrompt';
 
 const PageTransition = ({ children }) => (
   <motion.div
@@ -37,34 +42,41 @@ const PageTransition = ({ children }) => (
 const AnimatedRoutes = () => {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-        <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-        <Route path="/product/:id" element={<PageTransition><ProductDetails /></PageTransition>} />
-        <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
-        <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
-        <Route path="/track" element={<PageTransition><OrderTracking /></PageTransition>} />
-        <Route path="/track-order" element={<PageTransition><OrderTracking /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-        <Route path="/reviews" element={<PageTransition><Reviews /></PageTransition>} />
-        <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
-        <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
-        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
-        <Route path="/order-success" element={<PageTransition><OrderSuccess /></PageTransition>} />
-        <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
-        <Route path="/developer" element={<PageTransition><Developer /></PageTransition>} />
-        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-      </Routes>
-    </AnimatePresence>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="w-16 h-16 bg-slate-900 rounded-full"
+        />
+      </div>
+    }>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+          <Route path="/product/:id" element={<PageTransition><ProductDetails /></PageTransition>} />
+          <Route path="/cart" element={<PageTransition><Cart /></PageTransition>} />
+          <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
+          <Route path="/track" element={<PageTransition><OrderTracking /></PageTransition>} />
+          <Route path="/track-order" element={<PageTransition><OrderTracking /></PageTransition>} />
+          <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+          <Route path="/reviews" element={<PageTransition><Reviews /></PageTransition>} />
+          <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
+          <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+          <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+          <Route path="/order-success" element={<PageTransition><OrderSuccess /></PageTransition>} />
+          <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
+          <Route path="/developer" element={<PageTransition><Developer /></PageTransition>} />
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
+    </Suspense>
   );
 };
 
-import { Toaster, toast } from 'sonner';
-import { useSelector } from 'react-redux';
-import { selectCartItems } from './store/cartSlice';
-import PushNotificationPrompt from './components/PushNotificationPrompt';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();

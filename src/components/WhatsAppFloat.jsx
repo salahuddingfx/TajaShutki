@@ -103,6 +103,7 @@ const WhatsAppFloat = () => {
           "w-12 h-12 md:w-14 md:h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-500 group",
           isOpen ? "bg-slate-900 text-white" : "bg-[#25D366] text-white shadow-green-500/30"
         )}
+        aria-label={isOpen ? "Close WhatsApp Menu" : "Open WhatsApp Chat"}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
