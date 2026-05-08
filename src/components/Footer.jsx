@@ -56,7 +56,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="md:pl-12">
-            <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Quick Links</h4>
+            <h3 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Quick Links</h3>
             <ul className="grid grid-cols-2 gap-y-4 gap-x-4 font-bold tracking-tight text-xs">
               <li><Link to="/shop" className="hover:text-white transition-colors">Shop All</Link></li>
               <li><Link to="/track" className="hover:text-white transition-colors">Track Order</Link></li>
@@ -72,7 +72,7 @@ const Footer = () => {
 
           {/* Contact Us */}
           <div className="md:pl-12">
-            <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Contact Us</h4>
+            <h3 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Contact Us</h3>
             <ul className="space-y-4 font-bold tracking-tight">
               <li className="flex gap-3 items-start text-xs">
                 <MapPin className="text-maroon shrink-0" size={16} />
@@ -93,7 +93,7 @@ const Footer = () => {
 
         {/* Final Credits */}
         <div className="pt-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[10px] font-black uppercase tracking-widest text-slate-400">
+           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[10px] font-black uppercase tracking-widest text-slate-300">
               <p>© {currentYear} Taja Shutki</p>
               <div className="hidden md:block w-px h-3 bg-white/10" />
               <p>Direct from Cox's Bazar</p>

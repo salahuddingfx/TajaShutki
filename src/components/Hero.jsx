@@ -96,7 +96,7 @@ const Hero = () => {
             src={activeSlide.image_path} 
             alt={activeSlide.title}
             className="w-full h-full object-cover"
-            fetchpriority="high"
+            fetchPriority="high"
           />
         </motion.div>
       </AnimatePresence>

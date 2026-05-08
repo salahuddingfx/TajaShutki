@@ -47,7 +47,12 @@ const BottomNav = () => {
                 </span>
               )}
               
-              <span className="text-[9px] font-black uppercase tracking-widest">{item.name}</span>
+              <span className={clsx(
+                "text-[9px] font-black uppercase tracking-widest transition-colors",
+                isActive ? "text-emerald-600" : "text-slate-600"
+              )}>
+                {item.name}
+              </span>
             </Link>
           );
         })}
