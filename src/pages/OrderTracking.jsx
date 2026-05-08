@@ -366,7 +366,7 @@ const OrderTracking = () => {
                              <span className="text-slate-800">{formatPrice(selectedOrder.delivery_charge)}</span>
                            </div>
                            <div className="flex justify-between items-center pt-4 border-t-2 border-dashed border-slate-100">
-                             <span className="text-lg font-black text-slate-900">Total Payable</span>
+                             <span className="text-lg font-black text-slate-900">{selectedOrder.payment_status === 'paid' ? 'Total Paid' : 'Total Payable'}</span>
                              <span className="text-3xl font-black text-emerald-600">{formatPrice(selectedOrder.total_amount)}</span>
                            </div>
                         </div>
