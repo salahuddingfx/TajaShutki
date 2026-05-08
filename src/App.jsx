@@ -62,6 +62,7 @@ const AnimatedRoutes = () => {
 import { Toaster, toast } from 'sonner';
 import { useSelector } from 'react-redux';
 import { selectCartItems } from './store/cartSlice';
+import PushNotificationPrompt from './components/PushNotificationPrompt';
 
 function App() {
   const dispatch = useDispatch();
@@ -143,6 +144,7 @@ function App() {
       <Toaster richColors position="top-right" />
       <Layout>
         <AnimatedRoutes />
+        <PushNotificationPrompt siteId={2} />
       </Layout>
     </Router>
   );
