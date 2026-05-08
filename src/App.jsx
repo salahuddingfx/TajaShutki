@@ -159,7 +159,7 @@ function App() {
     getInitData().then(res => {
       dispatch(setInitData(res.data));
     }).catch(console.error);
-  }, 30000);
+  }, 1000);
 
   return (
     <Router>
