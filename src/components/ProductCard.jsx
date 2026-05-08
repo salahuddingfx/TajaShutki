@@ -7,6 +7,7 @@ import { toggleWishlist, selectWishlistItems } from '../store/wishlistSlice';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 import { useLanguage } from '../context/LanguageContext';
 
@@ -41,7 +42,14 @@ const ProductCard = ({ product }) => {
       product,
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
     }));
-    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${translate(product.name, product.name_bn)} added to cart!`,
+      confirmButtonColor: '#0D9488',
+      timer: 2000,
+      timerProgressBar: true
+    });
     navigate('/checkout');
   };
 
@@ -51,7 +59,14 @@ const ProductCard = ({ product }) => {
       product,
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
     }));
-    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${translate(product.name, product.name_bn)} added to cart!`,
+      confirmButtonColor: '#0D9488',
+      timer: 2000,
+      timerProgressBar: true
+    });
   };
 
   const handleToggleWishlist = (e) => {

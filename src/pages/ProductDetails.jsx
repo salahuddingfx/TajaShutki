@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getProductDetails, getProducts, getReviews, submitReview } from '../api/api';
 import ProductCard from '../components/ProductCard';
+import Swal from 'sweetalert2';
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
