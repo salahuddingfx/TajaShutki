@@ -2,9 +2,9 @@
 
 @theme {
   --color-cream: #F8FAFC;
-  --color-maroon: #800000;
-  --color-maroon-dark: #600000;
-  --color-maroon-light: #a00000;
+  --color-maroon: #0D9488;        /* Teal-600 — TajaShutki primary */
+  --color-maroon-dark: #0F766E;   /* Teal-700 */
+  --color-maroon-light: #14B8A6;  /* Teal-500 */
   
   --font-sans: "Inter", "system-ui", "sans-serif";
   --font-display: "Outfit", "sans-serif";
@@ -73,9 +73,9 @@
   background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #0D9488;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #0F766E;
 }
