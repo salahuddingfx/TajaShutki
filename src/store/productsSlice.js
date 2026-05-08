@@ -17,7 +17,10 @@ const loadProducts = () => {
   };
 };
 
-const initialState = loadProducts();
+const initialState = {
+  ...loadProducts(),
+  loading: false
+};
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
@@ -51,20 +54,30 @@ const productsSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchProducts.fulfilled, (state, action) => {
-      if (!action.payload) return;
-      state.products = action.payload.map(p => ({
-        ...p,
-        image: p.images && p.images.length > 0 ? p.images[0].image_path : p.image,
-        siteId: 'site_2'
-      }));
-    });
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        if (!action.payload) return;
+        state.products = action.payload.map(p => ({
+          ...p,
+          image: p.images && p.images.length > 0 ? p.images[0].image_path : p.image,
+          siteId: 'site_2'
+        }));
+        localStorage.setItem('tajashutki-products', JSON.stringify(state.products));
+      })
+      .addCase(fetchProducts.rejected, (state) => {
+        state.loading = false;
+      });
   }
 });
 
 export const { addProduct, updateProduct, deleteProduct, syncInventory } = productsSlice.actions;
 
 export const selectAllProducts = (state) => state.products.products;
+export const selectProductsLoading = (state) => state.products.loading;
 
 export const selectProductsBySite = createSelector(
   [selectAllProducts, (state, siteId) => siteId],
