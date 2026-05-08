@@ -30,8 +30,10 @@ TajaShutki is powered by the **[Nexus Core Backend](https://github.com/salahuddi
 
 ---
 
-## 📜 License
-This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
+## 📜 Governance & Security
+- **[License](LICENSE)**: Licensed under Apache 2.0.
+- **[Code of Conduct](CODE_OF_CONDUCT.md)**: Our community standards and pledge.
+- **[Security Policy](SECURITY.md)**: Reporting vulnerabilities and security practices.
 
 ---
 
