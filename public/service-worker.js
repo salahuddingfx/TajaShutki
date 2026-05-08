@@ -10,14 +10,24 @@ self.addEventListener('push', function(event) {
     }
   };
 
+  const badgePromise = 'setAppBadge' in self.navigator ? self.navigator.setAppBadge() : Promise.resolve();
+
   event.waitUntil(
-    self.registration.showNotification(title, options)
+    Promise.all([
+      self.registration.showNotification(title, options),
+      badgePromise
+    ])
   );
 });
 
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
+  const clearBadgePromise = 'clearAppBadge' in self.navigator ? self.navigator.clearAppBadge() : Promise.resolve();
+
   event.waitUntil(
-    clients.openWindow(event.notification.data.url)
+    Promise.all([
+      clients.openWindow(event.notification.data.url),
+      clearBadgePromise
+    ])
   );
 });
