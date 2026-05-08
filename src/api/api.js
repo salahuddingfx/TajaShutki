@@ -96,6 +96,14 @@ export const validateCoupon = async (code, items = []) => {
   return response.data;
 };
 
+export const subscribePush = async (subscription, siteId) => {
+  const response = await apiClient.post('/push-subscribe', {
+    ...subscription,
+    site_id: siteId
+  });
+  return response.data;
+};
+
 // Export as an object for backward compatibility
 export const api = {
   getInitData,
