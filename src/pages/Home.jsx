@@ -210,7 +210,7 @@ const Home = () => {
           <div className="text-center mb-10">
             <span className="text-teal-600 font-black uppercase tracking-[0.4em] text-[10px]">Pure Coastal Bounty</span>
             <h2 className="text-4xl md:text-5xl font-display font-black mt-3 text-slate-900 tracking-tight">Featured Collection</h2>
-            <p className="text-slate-500 mt-4 max-w-lg mx-auto font-medium">Naturally sun-dried seafood, sourced directly from the fishermen of Cox's Bazar.</p>
+            <p className="text-slate-600 mt-4 max-w-lg mx-auto font-medium">Naturally sun-dried seafood, sourced directly from the fishermen of Cox's Bazar.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {featuredCollection.map((product) => (
