@@ -27,6 +27,7 @@ import { fetchProducts } from './store/productsSlice';
 import { setInitData } from './store/settingsSlice';
 import { getInitData } from './api/api';
 import { selectCartItems } from './store/cartSlice';
+import { usePolling } from './hooks/usePolling';
 import PushNotificationPrompt from './components/PushNotificationPrompt';
 
 const PageTransition = ({ children }) => (
@@ -151,6 +152,14 @@ function App() {
     const timer = setTimeout(() => updateFavicon('/TajaShutki.png'), 500);
     return () => clearTimeout(timer);
   }, [dispatch]);
+
+  // Background sync every 30 seconds to stay aligned with Admin Panel
+  usePolling(() => {
+    dispatch(fetchProducts());
+    getInitData().then(res => {
+      dispatch(setInitData(res.data));
+    }).catch(console.error);
+  }, 30000);
 
   return (
     <Router>
