@@ -26,7 +26,14 @@ TajaShutki is a specialized e-commerce platform for authentic dried fish product
 - **⚡ Performance First**: Zero-latency navigation powered by Vite.
 
 ## 🛰️ Integration
-TajaShutki is powered by the **[Nexus Core Backend](https://github.com/salahuddingfx/Multi-Vendor-Backend)** and managed via the **[Nexus Admin Dashboard](https://github.com/salahuddingfx/Multi-Vendor-Admin)**.
+TajaShutki is powered by the **[Nexus Core Backend](https://github.com/salahuddingfx/Multi_Vedor_Backend)** and managed via the **[Nexus Admin Dashboard](https://github.com/salahuddingfx/Multi_Vendor_Admin-Panel)**.
+
+---
+
+## 📜 License
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 🚀 Setup
 ```bash
@@ -37,6 +44,8 @@ npm run dev
 
 ---
 <p align="center">
+  <img src="https://img.shields.io/badge/License-Apache_2.0-maroon?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Brand-TajaShutki-475569?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Status-Optimized-blue?style=for-the-badge" />
 </p>
+
