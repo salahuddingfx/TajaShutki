@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster, toast } from 'sonner';
@@ -22,10 +22,11 @@ const Developer = lazy(() => import('@/pages/Developer'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 import Layout from '@/components/Layout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import PageSkeleton from '@/components/PageSkeleton';
 import { fetchProducts } from './store/productsSlice';
 import { setInitData } from './store/settingsSlice';
-import { getInitData } from './api/api';
+import { getInitData, getVersion } from './api/api';
 import { selectCartItems } from './store/cartSlice';
 import { usePolling } from './hooks/usePolling';
 import PushNotificationPrompt from './components/PushNotificationPrompt';
@@ -153,19 +154,65 @@ function App() {
     return () => clearTimeout(timer);
   }, [dispatch]);
 
-  // Background sync every 30 seconds to stay aligned with Admin Panel
-  usePolling(() => {
+  // Smart data sync — version-polling + visibility/focus + BroadcastChannel
+  const versionRef = useRef(null);
+
+  const refetchAll = useCallback(() => {
     dispatch(fetchProducts());
-    getInitData().then(res => {
-      dispatch(setInitData(res.data));
-    }).catch(console.error);
-  }, 1000);
+    getInitData().then(res => dispatch(setInitData(res.data))).catch(console.error);
+  }, [dispatch]);
+
+  // Check version — if changed, refetch everything
+  const checkVersion = useCallback(async () => {
+    try {
+      const res = await getVersion();
+      const serverVersion = res?.version ?? 0;
+      if (versionRef.current !== null && versionRef.current !== serverVersion) {
+        versionRef.current = serverVersion;
+        refetchAll();
+      } else if (versionRef.current === null) {
+        versionRef.current = serverVersion;
+      }
+    } catch (e) {}
+  }, [refetchAll]);
+
+  // Poll version every 10s (lightweight — just a number)
+  usePolling(checkVersion, 10000);
+
+  // Refetch on tab focus / visibility change (user comes back to tab)
+  useEffect(() => {
+    const onFocus = () => checkVersion();
+    const onVisible = () => { if (document.visibilityState === 'visible') checkVersion(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [checkVersion]);
+
+  // BroadcastChannel — instant update from admin in same browser
+  useEffect(() => {
+    let channel;
+    try {
+      channel = new BroadcastChannel('multivendor-storefront');
+      channel.onmessage = (event) => {
+        if (event.data?.type === 'data-changed') {
+          versionRef.current = null;
+          refetchAll();
+        }
+      };
+    } catch (e) {}
+    return () => { try { if (channel) channel.close(); } catch (e) {} };
+  }, [refetchAll]);
 
   return (
     <Router>
       <Toaster richColors position="top-right" />
       <Layout>
-        <AnimatedRoutes />
+        <ErrorBoundary>
+          <AnimatedRoutes />
+        </ErrorBoundary>
         <PushNotificationPrompt siteId={2} />
       </Layout>
     </Router>
