@@ -36,7 +36,8 @@ export const getProductsByCategory = async (categorySlug) => {
   const response = await apiClient.get('/products', {
     params: { category: categorySlug === 'All' ? undefined : categorySlug }
   });
-  return response.data.data.data;
+  const d = response.data;
+  return d?.data?.data || d?.data || d || [];
 };
 
 export const searchProducts = async (query) => {
@@ -44,7 +45,9 @@ export const searchProducts = async (query) => {
   const response = await apiClient.get('/products', {
     params: { search: query }
   });
-  return response.data.data.data.slice(0, 5);
+  const d = response.data;
+  const items = d?.data?.data || d?.data || d || [];
+  return Array.isArray(items) ? items.slice(0, 5) : [];
 };
 
 // Orders
