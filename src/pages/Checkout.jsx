@@ -71,7 +71,7 @@ const Checkout = () => {
         product_id: item.id,
         quantity: item.quantity
       }));
-      const response = await validateCoupon(couponCode, cartItemsForValidation);
+      const response = await validateCoupon(couponCode, cartItemsForValidation, formData.phone);
       const coupon = response.coupon;
       setAppliedCoupon(coupon);
       
