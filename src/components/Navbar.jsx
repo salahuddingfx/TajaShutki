@@ -225,14 +225,14 @@ const Navbar = () => {
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-6 px-4">ক্যাটাগরি</p>
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-6 px-4">ক্যাটাগরি</p>
                   <div className="grid grid-cols-2 gap-3">
                     {categories.map(cat => (
                       <Link 
                         key={cat.id} 
                         to={`/shop?category=${cat.name}`} 
                         onClick={() => setIsMenuOpen(false)}
-                        className="px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-700 hover:bg-maroon hover:text-white transition-all active:scale-95"
+                        className="px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-base font-bold text-slate-700 hover:bg-maroon hover:text-white transition-all active:scale-95"
                       >
                         {cat.name}
                       </Link>
