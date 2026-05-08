@@ -96,7 +96,20 @@ const Footer = () => {
               <div className="hidden md:block w-px h-3 bg-white/10" />
               <p>Direct from Cox's Bazar</p>
               <div className="hidden md:block w-px h-3 bg-white/10" />
-              <Link to="/developer" className="hover:text-white transition-colors text-maroon/80 font-bold lowercase">Developer Credits</Link>
+              <Link 
+                to="/developer" 
+                className="group relative flex items-center gap-3 px-5 py-2.5 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-maroon transition-all duration-500 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-maroon/0 via-maroon/10 to-maroon/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                <div className="w-5 h-5 rounded-md overflow-hidden border border-white/20 shrink-0">
+                  <img src="https://github.com/salahuddingfx.png" alt="Dev" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300 group-hover:text-white transition-colors flex items-center gap-2">
+                   Architect: <span className="text-maroon">Salah Uddin Kader</span>
+                   <ArrowUpRight size={10} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </span>
+              </Link>
+
            </div>
            
            <div className="flex items-center gap-4 text-slate-500">
