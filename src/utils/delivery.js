@@ -34,9 +34,12 @@ export const calculateDeliveryCharge = (location, totalWeight, totalAmount, sett
 };
 
 export const formatPrice = (price) => {
+  const val = parseFloat(price);
+  if (isNaN(val)) return '৳0';
+  
   return new Intl.NumberFormat('en-BD', {
     style: 'currency',
     currency: 'BDT',
     minimumFractionDigits: 0,
-  }).format(price);
+  }).format(val);
 };
