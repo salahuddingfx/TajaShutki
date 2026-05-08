@@ -4,7 +4,7 @@ import ProductCard from '@/components/ProductCard';
 import { useSelector } from 'react-redux';
 import { selectProductsBySite, selectProductsLoading } from '@/store/productsSlice';
 import SkeletonCard from '@/components/SkeletonCard';
-import { selectCurrentSiteId, selectCategories, selectContact, selectHomeSettings } from '@/store/settingsSlice';
+import { selectCurrentSiteId, selectCategories, selectContact, selectHomeSettings, selectFeaturedProducts } from '@/store/settingsSlice';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, Star, ShieldCheck, Truck, ArrowUpRight, Leaf, Heart,

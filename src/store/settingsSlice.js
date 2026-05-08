@@ -100,5 +100,6 @@ export const selectDeliverySettings = (state) => state.settings.sites[state.sett
 export const selectHomeSettings = (state) => state.settings.sites[state.settings.currentSiteId].home;
 export const selectAboutSettings = (state) => state.settings.sites[state.settings.currentSiteId].about;
 export const selectSocialLinks = (state) => state.settings.sites[state.settings.currentSiteId].socialLinks;
+export const selectFeaturedProducts = (state) => state.settings.initData?.featured_products ?? [];
 
 export default settingsSlice.reducer;
