@@ -256,7 +256,7 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-3xl border border-slate-100"><p className="text-slate-400">No reviews yet.</p></div>
+            <div className="text-center py-16 bg-white rounded-3xl border border-slate-100"><p className="text-slate-500 font-medium">No reviews yet.</p></div>
           )}
         </div>
       </section>
