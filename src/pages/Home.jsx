@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
 import { useSelector } from 'react-redux';
-import { selectProductsBySite } from '@/store/productsSlice';
+import { selectProductsBySite, selectProductsLoading } from '@/store/productsSlice';
+import SkeletonCard from '@/components/SkeletonCard';
 import { selectCurrentSiteId, selectCategories, selectContact, selectHomeSettings } from '@/store/settingsSlice';
 import { motion } from 'framer-motion';
 import {
@@ -22,6 +23,7 @@ const IconMap = {
 const Home = () => {
   const currentSiteId = useSelector(selectCurrentSiteId);
   const siteProducts = useSelector(state => selectProductsBySite(state, currentSiteId));
+  const loading = useSelector(selectProductsLoading);
   const categories = useSelector(selectCategories);
   const contact = useSelector(selectContact);
   const homeSettings = useSelector(selectHomeSettings);
@@ -194,11 +196,19 @@ const Home = () => {
               ref={sliderRef}
               className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar snap-x snap-mandatory scroll-smooth"
             >
-              {bestSellers.map((product) => (
-                <div key={product.id} className="w-[160px] md:w-[220px] shrink-0 snap-start">
-                  <ProductCard product={product} />
-                </div>
-              ))}
+              {loading ? (
+                [...Array(5)].map((_, i) => (
+                  <div key={i} className="w-[160px] md:w-[220px] shrink-0 snap-start">
+                    <SkeletonCard />
+                  </div>
+                ))
+              ) : (
+                bestSellers.map((product) => (
+                  <div key={product.id} className="w-[160px] md:w-[220px] shrink-0 snap-start">
+                    <ProductCard product={product} />
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -213,9 +223,15 @@ const Home = () => {
             <p className="text-slate-600 mt-4 max-w-lg mx-auto font-medium">Naturally sun-dried seafood, sourced directly from the fishermen of Cox's Bazar.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-            {featuredCollection.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              [...Array(10)].map((_, i) => (
+                <SkeletonCard key={i} />
+              ))
+            ) : (
+              featuredCollection.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
           <div className="mt-10 text-center">
             <Link 
