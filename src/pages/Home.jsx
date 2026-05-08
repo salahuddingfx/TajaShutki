@@ -173,7 +173,7 @@ const Home = () => {
               <div className="hidden md:flex gap-4">
                  <button 
                   onClick={() => scroll('left')}
-                  className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-500 hover:bg-teal-600 hover:text-white transition-all"
+                  className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-teal-600 hover:text-white transition-all"
                   aria-label="Scroll Left"
                 >
                   <ChevronRight size={20} className="rotate-180" />
