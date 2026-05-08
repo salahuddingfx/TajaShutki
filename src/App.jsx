@@ -15,6 +15,7 @@ import Terms from '@/pages/Terms';
 import OrderSuccess from '@/pages/OrderSuccess';
 import Wishlist from '@/pages/Wishlist';
 import Developer from '@/pages/Developer';
+import NotFound from '@/pages/NotFound';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchProducts } from './store/productsSlice';
@@ -54,6 +55,7 @@ const AnimatedRoutes = () => {
         <Route path="/order-success" element={<PageTransition><OrderSuccess /></PageTransition>} />
         <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
         <Route path="/developer" element={<PageTransition><Developer /></PageTransition>} />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
