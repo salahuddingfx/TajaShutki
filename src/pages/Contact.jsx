@@ -2,12 +2,13 @@ import { Mail, Phone, MapPin, Clock, MessageCircle, HelpCircle, ArrowRight, Shie
 import { Facebook, Instagram, Twitter } from '../components/BrandIcons';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
-import { selectContact } from '../store/settingsSlice';
+import { selectContact, selectSocialLinks } from '../store/settingsSlice';
 import { clsx } from 'clsx';
 import { Link } from 'react-router-dom';
 
 const Contact = () => {
   const contact = useSelector(selectContact);
+  const socialLinks = useSelector(selectSocialLinks) || {};
   
   const contactInfo = [
     {
@@ -44,6 +45,12 @@ const Contact = () => {
     }
   ];
 
+  const activeSocials = [
+    { icon: Facebook, link: socialLinks.facebook, name: 'Facebook' },
+    { icon: Instagram, link: socialLinks.instagram, name: 'Instagram' },
+    { icon: Twitter, link: socialLinks.twitter, name: 'Twitter' },
+  ].filter(s => s.link && s.link !== '#');
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
       {/* Dynamic Hero Section */}
@@ -65,7 +72,7 @@ const Contact = () => {
               <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
               Customer Relations
             </span>
-            <h1 className="text-5xl md:text-7xl font-display font-black text-white leading-tight tracking-tighter mb-6">
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-tight tracking-tighter mb-6">
               Connect with <span className="text-teal-400/40 underline decoration-teal-400/20 underline-offset-8">TajaShutki.</span>
             </h1>
             <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
@@ -94,7 +101,7 @@ const Contact = () => {
                 {info.icon}
               </div>
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">{info.title}</h3>
-              <p className="text-lg font-bold text-slate-800 tracking-tight leading-tight mb-2">{info.details}</p>
+              <p className="text-lg font-bold text-slate-800 tracking-tight leading-tight mb-2 break-all md:break-normal">{info.details}</p>
               <p className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">{info.description}</p>
             </motion.div>
           ))}
@@ -184,11 +191,19 @@ const Contact = () => {
             <div className="mt-12 pt-10 border-t border-slate-100">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 mb-6 text-center">Social presence</p>
               <div className="flex justify-center gap-4">
-                {[Facebook, Instagram, Twitter].map((Icon, i) => (
-                  <button key={i} className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all duration-500">
-                    <Icon size={20} />
-                  </button>
-                ))}
+                {activeSocials.length > 0 ? activeSocials.map((social, i) => (
+                  <a 
+                    key={i} 
+                    href={social.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all duration-500"
+                  >
+                    <social.icon size={20} />
+                  </a>
+                )) : (
+                  <p className="text-[10px] font-bold text-slate-400">Social links coming soon</p>
+                )}
               </div>
             </div>
           </motion.div>
