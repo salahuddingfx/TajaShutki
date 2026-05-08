@@ -43,12 +43,21 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="w-16 h-16 bg-slate-900 rounded-full"
-        />
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+        <div className="relative">
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.1, 0.2] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 bg-[#0f172a] rounded-full blur-xl"
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-20 h-20 bg-white rounded-full p-2 shadow-2xl border-4 border-[#0f172a]/5 flex items-center justify-center overflow-hidden"
+          >
+            <img src="/TajaShutki.png" alt="Loading..." className="w-full h-full object-contain rounded-full" />
+          </motion.div>
+        </div>
       </div>
     }>
       <AnimatePresence mode="wait">
