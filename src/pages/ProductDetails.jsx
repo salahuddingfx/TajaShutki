@@ -36,6 +36,7 @@ const ProductDetails = () => {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const initData = useSelector((state) => state.settings?.initData);
+  const siteId = initData?.site?.id || 2;
   const settings = initData?.site?.settings || {};
 
   const cartItems = useSelector(selectCartItems);
@@ -288,12 +289,7 @@ const ProductDetails = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!rating || !reviewName) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Missing Information',
-        text: 'Please provide both a rating and your name.',
-        confirmButtonColor: '#800000'
-      });
+      toast.warning('Please provide both a rating and your name.');
       return;
     }
     
@@ -301,7 +297,7 @@ const ProductDetails = () => {
       setSubmittingReview(true);
       
       const formData = new FormData();
-      formData.append('site_id', '2'); // TajaShutki
+      formData.append('site_id', siteId);
       formData.append('product_id', product.id);
       formData.append('customer_name', reviewName);
       formData.append('rating', rating);
@@ -314,26 +310,14 @@ const ProductDetails = () => {
 
       await submitReview(formData);
       
-      Swal.fire({
-        icon: 'success',
-        title: 'Review Submitted!',
-        text: 'Thank you! Your review has been submitted and is waiting for approval.',
-        confirmButtonColor: '#800000',
-        timer: 3000,
-        timerProgressBar: true
-      });
+      toast.success('Review submitted! Waiting for approval.');
 
       setRating(0);
       setReviewName('');
       setReviewComment('');
       setReviewMedia([]);
     } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Failed to submit review. Please try again.',
-        confirmButtonColor: '#800000'
-      });
+      toast.error('Failed to submit review. Please try again.');
       console.error(err);
     } finally {
       setSubmittingReview(false);
@@ -709,7 +693,7 @@ const ProductDetails = () => {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 text-[16px]">
                 <div className="bg-slate-50 p-6 rounded-2xl">
                   <h4 className="font-bold text-slate-800 mb-2">Delivery Time</h4>
-                  <p>Inside Dhaka: 1-2 Days<br/>Outside Dhaka: 2-3 Days.</p>
+                  <p>Inside Cox's Bazar: 1-2 Days<br/>Outside Cox's Bazar: 2-3 Days.</p>
                 </div>
                 <div className="bg-slate-50 p-6 rounded-2xl">
                   <h4 className="font-bold text-slate-800 mb-2">Return Policy</h4>

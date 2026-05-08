@@ -1,12 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import LazyImage from './LazyImage';
-import { ShoppingBag, ShoppingCart, Star, StarHalf } from 'lucide-react';
-import { useDispatch } from 'react-redux';
+import { ShoppingBag, ShoppingCart, Star, StarHalf, Heart } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../store/cartSlice';
+import { toggleWishlist, selectWishlistItems } from '../store/wishlistSlice';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { toast } from 'sonner';
-import Swal from 'sweetalert2';
 
 import { useLanguage } from '../context/LanguageContext';
 
@@ -32,6 +32,8 @@ const ProductCard = ({ product }) => {
   const { language, t: translate } = useLanguage();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const wishlistItems = useSelector(selectWishlistItems);
+  const isInWishlist = wishlistItems.some(item => item.id === product.id);
 
   const handleOrderNow = (e) => {
     e.preventDefault();
@@ -39,14 +41,7 @@ const ProductCard = ({ product }) => {
       product,
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
     }));
-    Swal.fire({
-      icon: 'success',
-      title: 'Added to Cart',
-      text: `${translate(product.name, product.name_bn)} added to cart!`,
-      confirmButtonColor: '#0D9488',
-      timer: 2000,
-      timerProgressBar: true
-    });
+    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
     navigate('/checkout');
   };
 
@@ -56,14 +51,17 @@ const ProductCard = ({ product }) => {
       product,
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
     }));
-    Swal.fire({
-      icon: 'success',
-      title: 'Added to Cart',
-      text: `${translate(product.name, product.name_bn)} added to cart!`,
-      confirmButtonColor: '#0D9488',
-      timer: 2000,
-      timerProgressBar: true
-    });
+    toast.success(`${translate(product.name, product.name_bn)} added to cart!`);
+  };
+
+  const handleToggleWishlist = (e) => {
+    e.preventDefault();
+    dispatch(toggleWishlist(product));
+    if (isInWishlist) {
+      toast.success(`${translate(product.name, product.name_bn)} removed from wishlist!`);
+    } else {
+      toast.success(`${translate(product.name, product.name_bn)} added to wishlist!`);
+    }
   };
 
   return (
@@ -141,6 +139,15 @@ const ProductCard = ({ product }) => {
           </div>
 
           <div className="flex items-center gap-1">
+            <button 
+              onClick={handleToggleWishlist}
+              className={`w-7 h-7 rounded-md flex items-center justify-center transition-all ${
+                isInWishlist ? 'bg-rose-50 text-rose-500' : 'bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500'
+              }`}
+              title={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <Heart size={14} fill={isInWishlist ? 'currentColor' : 'none'} />
+            </button>
             <button 
               onClick={handleAddToCart}
               className="w-7 h-7 rounded-md bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-teal-600/10 hover:text-teal-600 transition-all"
