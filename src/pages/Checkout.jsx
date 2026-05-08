@@ -11,7 +11,7 @@ import { selectDeliverySettings } from '../store/settingsSlice';
 import { calculateDeliveryCharge, formatPrice } from '../utils/delivery';
 import { placeOrder, validateCoupon } from '../api/api';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CheckCircle2, MapPin, Phone, User, CreditCard, Truck, Ticket, X } from 'lucide-react';
+import { CheckCircle2, MapPin, Phone, Mail, User, CreditCard, Truck, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -34,6 +34,7 @@ const Checkout = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
     address: '',
     location: "Cox's Bazar", // Default to local for better UX
     notes: '',
@@ -104,7 +105,9 @@ const Checkout = () => {
       const orderData = {
         customer_name: formData.name,
         customer_phone: formData.phone,
+        customer_email: formData.email || null,
         customer_address: formData.address,
+        customer_notes: formData.notes || null,
         location: formData.location === "Cox's Bazar" ? 'Cox' : 'Outside',
         items: items.map(item => ({
           product_id: item.id,
@@ -153,7 +156,11 @@ const Checkout = () => {
           <h2 className="text-3xl font-display font-bold mb-4">Order Placed!</h2>
           <p className="text-slate-500 mb-2">Thank you for your purchase, {orderSuccess.customer_name}.</p>
           <p className="text-maroon font-bold text-lg mb-8">Tracking ID: {orderSuccess.tracking_id}</p>
-          <p className="text-sm text-slate-400 mb-10">We've sent a confirmation message to your phone.</p>
+          <p className="text-sm text-slate-400 mb-10">
+        {orderSuccess.customer_email 
+          ? "A confirmation email with your invoice has been sent to your email."
+          : "We've sent a confirmation message to your phone."}
+      </p>
           <div className="space-y-4">
             <button 
               onClick={() => navigate('/track', { state: { trackingId: orderSuccess.tracking_id } })}
@@ -204,9 +211,24 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Phone Number</label>
+                    <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Email (for invoice)</label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                      <input 
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="your@email.com"
+                        className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:border-maroon transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Phone Number</label>
                     <div className="relative">
                       <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                       <input 
@@ -249,9 +271,21 @@ const Checkout = () => {
                     name="address"
                     value={formData.address}
                     onChange={handleChange}
-                    rows="3"
+                    rows="2"
                     placeholder="House, Road, Area..."
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-maroon/20 focus:border-maroon transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all mb-4"
+                  ></textarea>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Order Notes (Optional)</label>
+                  <textarea 
+                    name="notes"
+                    value={formData.notes}
+                    onChange={handleChange}
+                    rows="2"
+                    placeholder="Special instructions for delivery..."
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
                   ></textarea>
                 </div>
 
