@@ -87,7 +87,7 @@ const Navbar = () => {
             )}>
               <img src="/TajaShutki.png" alt="Taja Shutki Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="text-xl md:text-2xl font-display font-black tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
+            <span className="text-xl md:text-2xl font-display font-bold tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
               Taja<span className="text-maroon">Shutki</span>
             </span>
           </Link>
@@ -100,7 +100,7 @@ const Navbar = () => {
               key={link.name}
               to={link.href}
               className={clsx(
-                "text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 hover:text-maroon relative group",
+                "text-[12px] font-bold uppercase tracking-widest transition-all duration-500 hover:text-maroon relative group",
                 location.pathname === link.href ? "text-maroon" : "text-slate-600"
               )}
             >
@@ -122,7 +122,7 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.href}
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-maroon transition-all duration-500"
+              className="text-[12px] font-bold uppercase tracking-widest text-slate-500 hover:text-maroon transition-all duration-500"
             >
               {link.name}
             </Link>
