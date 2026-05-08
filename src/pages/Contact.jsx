@@ -101,7 +101,7 @@ const Contact = () => {
                 {info.icon}
               </div>
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">{info.title}</h3>
-              <p className="text-lg font-bold text-slate-800 tracking-tight leading-tight mb-2 break-all md:break-normal">{info.details}</p>
+              <p className="text-lg font-bold text-slate-800 tracking-tight leading-tight mb-2 break-words">{info.details}</p>
               <p className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">{info.description}</p>
             </motion.div>
           ))}
