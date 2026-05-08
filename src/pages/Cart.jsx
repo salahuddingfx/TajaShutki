@@ -32,7 +32,11 @@ const Cart = () => {
     if (!couponCode) return;
     setLoading(true);
     try {
-      const response = await api.validateCoupon(couponCode);
+      const cartItemsForValidation = items.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }));
+      const response = await api.validateCoupon(couponCode, cartItemsForValidation);
       setAppliedCoupon(response.coupon);
       Swal.fire({
         icon: 'success',
