@@ -4,6 +4,7 @@ import {
   selectCartItems, 
   selectCartTotal, 
   selectCartWeight, 
+  removeItem,
   clearCart 
 } from '../store/cartSlice';
 import { selectDeliverySettings } from '../store/settingsSlice';
@@ -419,12 +420,25 @@ const Checkout = () => {
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-grow">
-                      <p className="font-bold text-slate-800 text-sm line-clamp-1">
-                        {item.name} {item.variation_info && <span className="text-teal-600">({item.variation_info})</span>}
-                      </p>
-                      <p className="text-xs text-slate-400">{item.quantity} x {formatPrice(item.price)}</p>
+                      <div className="flex justify-between items-start">
+                        <p className="font-bold text-slate-800 text-sm line-clamp-1">
+                          {item.name} {item.variation_info && <span className="text-teal-600">({item.variation_info})</span>}
+                        </p>
+                        <button 
+                          onClick={() => {
+                            dispatch(removeItem(item.cartItemId || item.id));
+                            toast.success(`${item.name} removed`);
+                          }}
+                          className="text-slate-300 hover:text-red-500 transition-colors p-1"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-xs text-slate-400">{item.quantity} x {formatPrice(item.price)}</p>
+                        <p className="font-bold text-slate-800 text-sm">{formatPrice(item.price * item.quantity)}</p>
+                      </div>
                     </div>
-                    <p className="font-bold text-slate-800 text-sm">{formatPrice(item.price * item.quantity)}</p>
                   </div>
                 ))}
               </div>
