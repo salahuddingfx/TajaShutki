@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShoppingBag, Heart, ShoppingCart } from 'lucide-react';
+import { Home, ShoppingBag, Heart, ShoppingCart, Truck } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { selectCartCount } from '@/store/cartSlice';
 import { selectWishlistItems } from '@/store/wishlistSlice';
@@ -13,12 +13,13 @@ const BottomNav = () => {
   const navItems = [
     { name: 'Home', icon: Home, path: '/' },
     { name: 'Shop', icon: ShoppingBag, path: '/shop' },
+    { name: 'Track', icon: Truck, path: '/track' },
     { name: 'Wishlist', icon: Heart, path: '/wishlist', badge: wishlistCount },
     { name: 'Cart', icon: ShoppingCart, path: '/cart', badge: cartCount },
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-t border-slate-100 px-6 py-1 pb-1.5 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-t border-slate-100 px-4 py-0.5 pb-1 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
       <div className="flex justify-between items-center">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
