@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { selectProductsBySite } from '@/store/productsSlice';
+import { selectProductsBySite, selectProductsLoading } from '@/store/productsSlice';
 import { selectCurrentSiteId, selectCategories } from '@/store/settingsSlice';
 import { Helmet } from 'react-helmet-async';
 import SkeletonCard from '@/components/SkeletonCard';
@@ -15,6 +15,7 @@ const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSiteId = useSelector(selectCurrentSiteId);
   const siteProducts = useSelector(state => selectProductsBySite(state, currentSiteId));
+  const loading = useSelector(selectProductsLoading);
   const categories = useSelector(selectCategories);
   
   const selectedCategoryName = searchParams.get('category') || 'All';
@@ -289,7 +290,7 @@ const Shop = () => {
               </div>
 
               {/* Product Grid */}
-              {!siteProducts || siteProducts.length === 0 ? (
+              {loading ? (
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                   {Array(8).fill(0).map((_, i) => <SkeletonCard key={i} />)}
                 </div>
