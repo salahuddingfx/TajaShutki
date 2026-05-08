@@ -109,6 +109,11 @@ function App() {
       }
     };
     init();
+    
+    // Clear notification badge if supported
+    if ('clearAppBadge' in navigator) {
+      navigator.clearAppBadge().catch(console.error);
+    }
 
     // Round favicon logic
     const roundFavicon = (src) => {
