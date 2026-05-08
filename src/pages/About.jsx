@@ -189,8 +189,12 @@ const About = () => {
               const color = COLORS[idx % COLORS.length];
               return (
                 <div key={idx} className="team-card group bg-cream rounded-3xl p-8 border border-slate-100 shadow-soft hover:shadow-xl hover:-translate-y-2 transition-all duration-500 text-center">
-                  <div className="w-20 h-20 rounded-3xl mx-auto mb-6 flex items-center justify-center text-white text-2xl font-black shadow-lg group-hover:scale-110 transition-transform duration-500" style={{ backgroundColor: color }}>
-                    {member.initials || member.name?.substring(0, 2).toUpperCase()}
+                  <div className="w-20 h-20 rounded-3xl mx-auto mb-6 flex items-center justify-center text-white text-2xl font-black shadow-lg group-hover:scale-110 transition-transform duration-500 overflow-hidden" style={{ backgroundColor: color }}>
+                    {member.image ? (
+                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                    ) : (
+                      member.initials || member.name?.substring(0, 2).toUpperCase()
+                    )}
                   </div>
                   <h3 className="font-black text-slate-800 text-lg mb-1">{member.name}</h3>
                   <p className="text-[10px] font-black uppercase tracking-widest mb-4" style={{ color }}>{member.role}</p>
