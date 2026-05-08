@@ -74,7 +74,7 @@ const settingsSlice = createSlice({
       
       state.initData = action.payload;
       // Persist the new state immediately to local storage
-      localStorage.setItem('acharu-multi-settings', JSON.stringify(state));
+      localStorage.setItem('taja-multi-settings', JSON.stringify(state));
     },
     updateSiteSettings: (state, action) => {
       const { siteId, settings } = action.payload;
