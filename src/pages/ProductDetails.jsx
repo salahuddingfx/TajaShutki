@@ -505,7 +505,7 @@ const ProductDetails = () => {
                     <span className="text-2xl font-bold text-slate-300 line-through decoration-rose-500/30">
                       ৳ {Number(selectedVariation ? selectedVariation.original_price : product.original_price).toFixed(0)}
                     </span>
-                  ))}
+                  }
                 </div>
                 
                 {/* Savings Badge */}
@@ -1045,6 +1045,8 @@ const ProductDetails = () => {
             Order Now
           </button>
         </div>
+      </div>
+      </div>
       </div>
     </>
   );
