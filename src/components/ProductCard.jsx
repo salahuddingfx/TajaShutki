@@ -38,6 +38,10 @@ const ProductCard = ({ product }) => {
 
   const handleOrderNow = (e) => {
     e.preventDefault();
+    if (product.stock <= 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
     dispatch(addItem({ 
       product,
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
@@ -55,6 +59,10 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
+    if (product.stock <= 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
     dispatch(addItem({ 
       product,
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
@@ -97,6 +105,15 @@ const ProductCard = ({ product }) => {
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
+        {/* Out of Stock Badge */}
+        {product.stock <= 0 && (
+          <div className="absolute top-3 left-3 z-20">
+            <div className="bg-rose-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg shadow-rose-600/20 uppercase tracking-widest">
+              Out of Stock
+            </div>
+          </div>
+        )}
+
         {/* Subtle overlay on hover */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
       </Link>
@@ -163,20 +180,24 @@ const ProductCard = ({ product }) => {
             >
               <Heart size={14} fill={isInWishlist ? 'currentColor' : 'none'} />
             </button>
-            <button 
-              onClick={handleAddToCart}
-              className="w-7 h-7 rounded-md bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-teal-600/10 hover:text-teal-600 transition-all"
-              title="Add to Cart"
-            >
-              <ShoppingCart size={14} />
-            </button>
-            <button 
-              onClick={handleOrderNow}
-              className="w-7 h-7 rounded-md bg-teal-600 text-white flex items-center justify-center shadow-lg shadow-teal-600/10 hover:-translate-y-0.5 transition-all"
-              title="Order Now"
-            >
-              <ShoppingBag size={14} />
-            </button>
+            {product.stock > 0 && (
+              <>
+                <button 
+                  onClick={handleAddToCart}
+                  className="w-7 h-7 rounded-md bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-teal-600/10 hover:text-teal-600 transition-all"
+                  title="Add to Cart"
+                >
+                  <ShoppingCart size={14} />
+                </button>
+                <button 
+                  onClick={handleOrderNow}
+                  className="w-7 h-7 rounded-md bg-teal-600 text-white flex items-center justify-center shadow-lg shadow-teal-600/10 hover:-translate-y-0.5 transition-all"
+                  title="Order Now"
+                >
+                  <ShoppingBag size={14} />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
