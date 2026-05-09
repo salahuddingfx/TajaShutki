@@ -24,11 +24,20 @@ const cartSlice = createSlice({
         ? `${product.id}-${selectedVariation.id}` 
         : product.id;
 
-      const existingItem = state.items.find(item => item.cartItemId === cartItemId || item.id === cartItemId);
+      const availableStock = selectedVariation ? selectedVariation.stock : product.stock;
+      const existingItem = state.items.find(item => (item.cartItemId || item.id) === cartItemId);
       
       if (existingItem) {
-        existingItem.quantity += quantity;
+        const newQuantity = existingItem.quantity + quantity;
+        if (newQuantity > availableStock) {
+          existingItem.quantity = availableStock;
+        } else {
+          existingItem.quantity = newQuantity;
+        }
       } else {
+        const finalQuantity = quantity > availableStock ? availableStock : quantity;
+        if (finalQuantity <= 0) return;
+
         const itemPrice = selectedVariation ? selectedVariation.price : product.price;
         const itemWeightRaw = selectedVariation ? selectedVariation.weight : product.weight;
         let itemWeight = 0;
@@ -53,7 +62,8 @@ const cartSlice = createSlice({
           price: itemPrice,
           weight: itemWeight,
           original_product_weight: product.weight,
-          quantity 
+          quantity: finalQuantity,
+          stock: availableStock
         });
       }
       localStorage.setItem('tajashutki-cart-redux', JSON.stringify(state.items));
@@ -67,7 +77,8 @@ const cartSlice = createSlice({
       const item = state.items.find(item => (item.cartItemId || item.id) === id);
       if (item) {
         if (quantity > 0) {
-          item.quantity = quantity;
+          const maxStock = item.stock ?? 999;
+          item.quantity = quantity > maxStock ? maxStock : quantity;
         } else {
           state.items = state.items.filter(i => (i.cartItemId || i.id) !== id);
         }
