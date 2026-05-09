@@ -393,7 +393,11 @@ const ProductDetails = () => {
 
       <div className="bg-cream min-h-screen pb-20 pt-10">
         <div className="container-custom max-w-7xl">
-        {/* Breadcrumb */}
+        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 mb-8">
+          <Link to="/" className="hover:text-teal-600 transition-colors">Home</Link>
+          <ChevronLeft size={14} className="rotate-180 opacity-50" />
+          <Link to="/shop" className="hover:text-teal-600 transition-colors">Shop</Link>
+          
           {product.category && (
             <>
               <ChevronLeft size={14} className="rotate-180 opacity-50" />
@@ -419,6 +423,7 @@ const ProductDetails = () => {
 
           <ChevronLeft size={14} className="rotate-180 opacity-50" />
           <span className="text-slate-800 font-bold truncate max-w-[150px] md:max-w-none">{translate(product.name, product.name_bn)}</span>
+        </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
