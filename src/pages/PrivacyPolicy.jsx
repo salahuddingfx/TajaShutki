@@ -71,7 +71,7 @@ const PrivacyPolicy = () => {
       content: [
         "Temporal Storage: We retain data only for the duration required to provide our services and meet legal obligations.",
         "Archival Records: Transaction summaries are archived for financial transparency and audit requirements.",
-        "Instant Purge: Marketing data is removed immediately upon your request to unsubscribe from newsletters."
+        "Instant Purge: Personal marketing data is removed immediately upon your request.",
       ]
     },
     {
@@ -89,9 +89,9 @@ const PrivacyPolicy = () => {
       title: "Communication Channels",
       icon: Bell,
       content: [
-        "Broadcast Policy: We send seasonal harvest updates and promotional offers to registered users.",
-        "Opt-Out Mechanism: Every promotional communication includes a clear 'Unsubscribe' functionality.",
-        "Mandatory Updates: Critical order status and security alerts will still be sent regardless of marketing preferences."
+        "Communication Policy: We may contact you regarding your order status or critical security updates.",
+        "Response Protocol: Inquiries sent via our contact forms will be addressed through the provided email or phone.",
+        "Service Notices: Mandatory system alerts will be sent regardless of general contact preferences."
       ]
     },
     {
