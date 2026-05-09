@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search, ChevronDown, Phone, MessageCircle, Globe, Loader2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { selectCartCount } from '../store/cartSlice';
-import { selectCategories } from '../store/settingsSlice';
+import { selectCategories, selectContact } from '../store/settingsSlice';
 import { clsx } from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '@/api/api';
@@ -15,6 +15,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const cartItemsCount = useSelector(selectCartCount);
   const categories = useSelector(selectCategories);
+  const contact = useSelector(selectContact);
   const location = useLocation();
   const navigate = useNavigate();
   const clickTimer = useRef(null);
@@ -85,7 +86,11 @@ const Navbar = () => {
               "w-9 h-9 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-active:scale-95 group-hover:-translate-y-0.5 overflow-hidden",
               "bg-white shadow-lg shadow-black/5 border border-slate-100"
             )}>
-              <img src="/TajaShutki.png" alt="Taja Shutki Logo" className="w-full h-full object-cover" />
+              {contact?.logoUrl ? (
+                <img src={contact.logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
+              ) : (
+                <img src="/TajaShutki.png" alt="Taja Shutki Logo" className="w-full h-full object-cover" />
+              )}
             </div>
             <span className="text-2xl md:text-3xl font-display font-bold tracking-tighter text-slate-900 group-hover:text-maroon transition-colors">
               Taja<span className="text-maroon">Shutki</span>
@@ -176,7 +181,11 @@ const Navbar = () => {
             {/* Header */}
             <div className="flex justify-between items-center px-6 h-20 border-b border-slate-100 bg-white z-20 flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-maroon rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-maroon/20">T</div>
+                {contact?.logoUrl ? (
+                  <img src={contact.logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-xl" />
+                ) : (
+                  <div className="w-10 h-10 bg-maroon rounded-xl flex items-center justify-center text-white font-black italic shadow-lg shadow-maroon/20">T</div>
+                )}
                 <span className="text-xl font-display font-black tracking-tighter text-slate-900">Taja<span className="text-maroon">Shutki</span></span>
               </div>
               <div className="flex items-center gap-2">
