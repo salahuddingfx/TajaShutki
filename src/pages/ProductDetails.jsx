@@ -394,19 +394,25 @@ const ProductDetails = () => {
       <div className="bg-cream min-h-screen pb-20 pt-10">
         <div className="container-custom max-w-7xl">
         {/* Breadcrumb */}
-        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 mb-8">
-          <Link to="/" className="hover:text-teal-600 transition-colors">Home</Link>
-          <ChevronLeft size={14} className="rotate-180 opacity-50" />
-          <Link to="/shop" className="hover:text-teal-600 transition-colors">Shop</Link>
-          
           {product.category && (
             <>
               <ChevronLeft size={14} className="rotate-180 opacity-50" />
+              {product.category.parent && (
+                <>
+                  <Link 
+                    to={`/shop?category=${product.category.parent.slug}`} 
+                    className="hover:text-teal-600 transition-colors"
+                  >
+                    {translate(product.category.parent.name, product.category.parent.name_bn)}
+                  </Link>
+                  <ChevronLeft size={14} className="rotate-180 opacity-50" />
+                </>
+              )}
               <Link 
-                to={`/shop?category=${product.category.name || product.category}`} 
+                to={`/shop?category=${product.category.slug || product.category.name}`} 
                 className="hover:text-teal-600 transition-colors truncate max-w-[100px] md:max-w-none"
               >
-                {product.category.name || product.category}
+                {translate(product.category.name, product.category.name_bn) || product.category}
               </Link>
             </>
           )}
@@ -486,26 +492,49 @@ const ProductDetails = () => {
               </p>
               
               {/* Price Block - shows selling + original (strikethrough) */}
-              <div className="flex items-baseline gap-3 mb-8 flex-wrap">
-                <span className="text-4xl font-black text-emerald-600">
-                  ৳ {selectedVariation ? Number(selectedVariation.price).toFixed(0) : Number(product.price).toFixed(0)}
-                </span>
-                {selectedVariation ? (
-                  selectedVariation.original_price && Number(selectedVariation.original_price) > Number(selectedVariation.price) && (
-                    <span className="text-xl font-bold text-rose-400 line-through">৳ {Number(selectedVariation.original_price).toFixed(0)}</span>
-                  )
-                ) : (
-                  product.original_price && Number(product.original_price) > Number(product.price) && (
-                    <span className="text-xl font-bold text-rose-400 line-through">৳ {Number(product.original_price).toFixed(0)}</span>
-                  )
+              <div className="flex flex-wrap items-center gap-4 mb-8">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-5xl font-black text-emerald-600 tracking-tight">
+                    ৳ {selectedVariation ? Number(selectedVariation.price).toFixed(0) : Number(product.price).toFixed(0)}
+                  </span>
+                  {(selectedVariation ? selectedVariation.original_price : product.original_price) && 
+                    Number(selectedVariation ? selectedVariation.original_price : product.original_price) > Number(selectedVariation ? selectedVariation.price : product.price) && (
+                    <span className="text-2xl font-bold text-slate-300 line-through decoration-rose-500/30">
+                      ৳ {Number(selectedVariation ? selectedVariation.original_price : product.original_price).toFixed(0)}
+                    </span>
+                  )}
+                </div>
+                
+                {/* Savings Badge */}
+                {(selectedVariation ? selectedVariation.original_price : product.original_price) && 
+                  Number(selectedVariation ? selectedVariation.original_price : product.original_price) > Number(selectedVariation ? selectedVariation.price : product.price) && (
+                  <motion.div 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="bg-rose-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-rose-500/20"
+                  >
+                    Save ৳{Number(selectedVariation ? selectedVariation.original_price : product.original_price) - Number(selectedVariation ? selectedVariation.price : product.price)}
+                  </motion.div>
                 )}
               </div>
 
-              <div className="flex flex-wrap items-center gap-y-4 gap-x-8 mb-6 py-6 border-y border-slate-50">
+              <div className="flex flex-wrap items-center gap-y-4 gap-x-8 mb-8 py-6 border-y border-slate-50">
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Product Code</span>
                   <span className="text-sm font-black text-slate-700 uppercase tracking-wider">{product.slug}</span>
                 </div>
+                
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[11px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
+                </div>
+
+                {product.sales_count > 0 && (
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <CheckCircle2 size={14} className="text-blue-500" />
+                    <span className="text-[11px] font-black uppercase tracking-widest">{product.sales_count}+ Sold Recently</span>
+                  </div>
+                )}
               </div>
 
               {/* Variation Selection (Weight + Price) */}
@@ -675,7 +704,22 @@ const ProductDetails = () => {
               </div>
             </div>
 
-          </div>
+        {/* Mobile Sticky Action Bar */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/80 backdrop-blur-xl border-t border-slate-100 lg:hidden flex gap-3 shadow-2xl">
+          <button 
+            onClick={handleAddToCart}
+            className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-white border-2 border-slate-900 text-slate-900 font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all"
+          >
+            <ShoppingCart size={18} />
+            Cart
+          </button>
+          <button 
+            onClick={handleOrderNow}
+            className="flex-[2] flex items-center justify-center gap-2 py-4 rounded-2xl bg-teal-600 text-white font-black uppercase text-[10px] tracking-[0.2em] shadow-lg shadow-teal-600/20 active:scale-95 transition-all"
+          >
+            <ShoppingBag size={18} />
+            Order Now
+          </button>
         </div>
 
         {/* Tabs */}
