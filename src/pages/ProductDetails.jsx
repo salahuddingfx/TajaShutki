@@ -424,7 +424,6 @@ const ProductDetails = () => {
           <ChevronLeft size={14} className="rotate-180 opacity-50" />
           <span className="text-slate-800 font-bold truncate max-w-[150px] md:max-w-none">{translate(product.name, product.name_bn)}</span>
         </div>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
           {/* Left Column: Image Gallery */}
@@ -503,11 +502,10 @@ const ProductDetails = () => {
                     ৳ {selectedVariation ? Number(selectedVariation.price).toFixed(0) : Number(product.price).toFixed(0)}
                   </span>
                   {(selectedVariation ? selectedVariation.original_price : product.original_price) && 
-                    Number(selectedVariation ? selectedVariation.original_price : product.original_price) > Number(selectedVariation ? selectedVariation.price : product.price) && (
                     <span className="text-2xl font-bold text-slate-300 line-through decoration-rose-500/30">
                       ৳ {Number(selectedVariation ? selectedVariation.original_price : product.original_price).toFixed(0)}
                     </span>
-                  )}
+                  ))}
                 </div>
                 
                 {/* Savings Badge */}
@@ -1035,21 +1033,16 @@ const ProductDetails = () => {
       {/* Mobile Sticky Action Bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-in slide-in-from-bottom duration-500">
         <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
-          <div>
+          <div className="flex-1">
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Price</p>
-            <p className="text-xl font-black text-maroon leading-none">৳{product.price}</p>
+            <p className="text-xl font-black text-teal-600 leading-none">৳{((selectedVariation ? selectedVariation.price : product.price) * quantity).toFixed(0)}</p>
           </div>
           <button 
             onClick={handleOrderNow}
-            disabled={product.stock <= 0}
-            className={`flex-1 py-4 px-6 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all ${
-              product.stock > 0 
-                ? "bg-maroon text-white shadow-lg active:scale-95" 
-                : "bg-slate-100 text-slate-400 cursor-not-allowed"
-            }`}
+            className="flex-[2] py-4 px-6 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-teal-600 text-white shadow-lg active:scale-95"
           >
-            <ShoppingCart size={18} />
-            {product.stock > 0 ? 'Order Now' : 'Out of Stock'}
+            <ShoppingBag size={18} />
+            Order Now
           </button>
         </div>
       </div>
