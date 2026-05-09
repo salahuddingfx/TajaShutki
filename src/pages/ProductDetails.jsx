@@ -209,7 +209,14 @@ const ProductDetails = () => {
     );
   }
 
+  const availableStock = selectedVariation ? selectedVariation.stock : product?.stock;
+  const isOutOfStock = availableStock <= 0;
+
   const handleAddToCart = () => {
+    if (isOutOfStock) {
+      toast.error("Product is currently out of stock");
+      return;
+    }
     dispatch(addItem({ 
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
       quantity: quantity,
@@ -227,6 +234,11 @@ const ProductDetails = () => {
 
   const updateProductQuantity = (newQty) => {
     const targetId = cartItem ? (cartItem.cartItemId || cartItem.id) : (selectedVariation ? `${product.id}-${selectedVariation.id || 'base'}` : product.id);
+
+    if (newQty > availableStock) {
+      toast.error(`Only ${availableStock} units available in stock`);
+      return;
+    }
 
     if (newQty < 1) {
       if (cartItem) {
@@ -251,6 +263,10 @@ const ProductDetails = () => {
   };
 
   const handleOrderNow = () => {
+    if (isOutOfStock) {
+      toast.error("Product is currently out of stock");
+      return;
+    }
     dispatch(addItem({ 
       product: { ...product, category: product.category?.name || product.category || 'Uncategorized' }, 
       quantity: quantity,
@@ -528,8 +544,10 @@ const ProductDetails = () => {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[11px] font-black text-emerald-600 uppercase tracking-widest">In Stock</span>
+                  <div className={clsx("w-2 h-2 rounded-full animate-pulse", isOutOfStock ? "bg-rose-500" : "bg-emerald-500")} />
+                  <span className={clsx("text-[11px] font-black uppercase tracking-widest", isOutOfStock ? "text-rose-600" : "text-emerald-600")}>
+                    {isOutOfStock ? "Out of Stock" : "In Stock"}
+                  </span>
                 </div>
 
                 {product.sales_count > 0 && (
@@ -600,18 +618,30 @@ const ProductDetails = () => {
                 
                 <button 
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 shadow-slate-100"
+                  disabled={isOutOfStock}
+                  className={clsx(
+                    "flex-1 flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl border-2 active:scale-95",
+                    isOutOfStock 
+                      ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed shadow-none" 
+                      : "bg-white text-slate-900 border-slate-900 hover:bg-slate-50 hover:scale-[1.02] shadow-slate-100"
+                  )}
                 >
                   <ShoppingCart size={18} />
-                  Add to Cart
+                  {isOutOfStock ? "Out of Stock" : "Add to Cart"}
                 </button>
 
                 <button 
                   onClick={handleOrderNow}
-                  className="flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl bg-teal-600 text-white hover:bg-teal-700 hover:scale-[1.02] active:scale-95 shadow-teal-600/20"
+                  disabled={isOutOfStock}
+                  className={clsx(
+                    "flex-[1.5] flex items-center justify-center gap-3 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95",
+                    isOutOfStock 
+                      ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none" 
+                      : "bg-teal-600 text-white hover:bg-teal-700 hover:scale-[1.02] shadow-teal-600/20"
+                  )}
                 >
                   <ShoppingBag size={18} />
-                  Order Now
+                  {isOutOfStock ? "Sold Out" : "Order Now"}
                 </button>
               </div>
 
