@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
       return;
     }
     dispatch(addItem({ 
-      product,
+      product: { ...product, category: product.category?.name || product.category || 'Uncategorized' },
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
     }));
     Swal.fire({
@@ -64,7 +64,7 @@ const ProductCard = ({ product }) => {
       return;
     }
     dispatch(addItem({ 
-      product,
+      product: { ...product, category: product.category?.name || product.category || 'Uncategorized' },
       selectedVariation: product.variations?.length > 0 ? product.variations[0] : null
     }));
     Swal.fire({

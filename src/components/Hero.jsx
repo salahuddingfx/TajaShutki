@@ -132,7 +132,8 @@ const Hero = () => {
               <>
                 <button 
                   onClick={() => {
-                    const product = siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 };
+                    const rawProduct = siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 };
+                    const product = { ...rawProduct, category: rawProduct.category?.name || rawProduct.category || 'Uncategorized' };
                     dispatch(addItem({ product }));
                     Swal.fire({
                       icon: 'success',
