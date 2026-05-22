@@ -296,9 +296,9 @@ const Home = () => {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={reviewIdx}
-                    initial={{ opacity: 0, x: 60 }}
+                    initial={{ opacity: 0, x: slideDir * 60 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -60 }}
+                    exit={{ opacity: 0, x: -slideDir * 60 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                     className="bg-white p-10 md:p-14 rounded-[40px] shadow-soft border border-slate-50"
                   >
