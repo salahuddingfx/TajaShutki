@@ -4,10 +4,13 @@ import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { selectContact, selectSocialLinks } from '../store/settingsSlice';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
+  const initData = useSelector((state) => state.settings?.initData);
   const contact = useSelector(selectContact);
   const socialLinks = useSelector(selectSocialLinks);
+  const siteName = initData?.site?.name || 'Taja Shutki';
 
   const contactInfo = [
     {
@@ -45,7 +48,14 @@ const Contact = () => {
   ].filter(s => s.link && s.link !== '' && s.link !== '#');
 
   return (
-    <div className="bg-[#F4F9F6] min-h-screen">
+    <>
+      <Helmet>
+        <title>{`Contact Us | ${siteName}`}</title>
+        <meta name="description" content={`Get in touch with the ${siteName} team for orders, queries, and support.`} />
+        <meta property="og:title" content={`Contact Us | ${siteName}`} />
+        <meta property="og:description" content={`Get in touch with the ${siteName} team for orders, queries, and support.`} />
+      </Helmet>
+      <div className="bg-[#F4F9F6] min-h-screen">
       {/* Top Info Cards Row */}
       <div className="container-custom pt-32 pb-12 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -181,6 +191,7 @@ const Contact = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

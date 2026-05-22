@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react';
 import { getReviews } from '../api/api';
 import { Star, Loader2, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 
 const Reviews = () => {
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteName = initData?.site?.name || 'Taja Shutki';
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [featuredIdx, setFeaturedIdx] = useState(0);
@@ -46,7 +50,14 @@ const Reviews = () => {
   );
 
   return (
-    <div className="bg-cream min-h-screen pb-20">
+    <>
+      <Helmet>
+        <title>{`Customer Reviews | ${siteName}`}</title>
+        <meta name="description" content={`Read customer reviews and success stories for ${siteName}.`} />
+        <meta property="og:title" content={`Customer Reviews | ${siteName}`} />
+        <meta property="og:description" content={`Read customer reviews and success stories for ${siteName}.`} />
+      </Helmet>
+      <div className="bg-cream min-h-screen pb-20">
       {loading ? (
         <div className="flex justify-center py-40">
           <Loader2 className="animate-spin text-maroon" size={40} />
@@ -201,6 +212,7 @@ const Reviews = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 

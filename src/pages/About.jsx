@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Loader2, Star, Award, Leaf, Heart, Users, TrendingUp, ShieldCheck, Package, Waves } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Helmet } from 'react-helmet-async';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -95,7 +96,15 @@ const About = () => {
   );
 
   return (
-    <div className="bg-cream min-h-screen overflow-x-hidden">
+    <>
+      <Helmet>
+        <title>{`About Us | ${initData?.site?.name || 'Taja Shutki'}`}</title>
+        <meta name="description" content={about.hero_subtitle || 'From the Sea to Your Table. Shaped by the tides.'} />
+        <meta property="og:title" content={`About Us | ${initData?.site?.name || 'Taja Shutki'}`} />
+        <meta property="og:description" content={about.hero_subtitle || 'From the Sea to Your Table. Shaped by the tides.'} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="bg-cream min-h-screen overflow-x-hidden">
 
       {/* HERO */}
       <section className="relative bg-slate-950 text-white py-36 overflow-hidden">
@@ -223,6 +232,7 @@ const About = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

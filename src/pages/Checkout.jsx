@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle2, MapPin, Phone, Mail, User, CreditCard, Truck, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { Helmet } from 'react-helmet-async';
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ const Checkout = () => {
   
   const initData = useSelector((state) => state.settings?.initData);
   const settings = initData?.site?.settings || {};
+  const siteName = initData?.site?.name || 'Taja Shutki';
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);
@@ -144,7 +146,12 @@ const Checkout = () => {
 
   if (orderSuccess) {
     return (
-      <div className="container-custom py-40 text-center bg-cream min-h-screen">
+      <>
+        <Helmet>
+          <title>{`Order Placed Successfully | ${siteName}`}</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
+        <div className="container-custom py-40 text-center bg-cream min-h-screen">
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -177,11 +184,17 @@ const Checkout = () => {
           </div>
         </motion.div>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="bg-cream min-h-screen pb-20 pt-10">
+    <>
+      <Helmet>
+        <title>{`Checkout | ${siteName}`}</title>
+        <meta name="description" content="Enter your delivery details and place your order safely." />
+      </Helmet>
+      <div className="bg-cream min-h-screen pb-20 pt-10">
       <div className="container-custom">
         <h1 className="text-4xl font-display font-bold mb-12">Checkout</h1>
 
@@ -527,6 +540,7 @@ const Checkout = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

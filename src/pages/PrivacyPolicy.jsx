@@ -1,8 +1,14 @@
 import React from 'react';
 import { ShieldCheck, Eye, Lock, Database, Globe, Share2, Bell, UserX, Info, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
+import { selectContact } from '../store/settingsSlice';
 
 const PrivacyPolicy = () => {
+  const initData = useSelector((state) => state.settings?.initData);
+  const contact = useSelector(selectContact);
+  const siteName = initData?.site?.name || 'Taja Shutki';
   const sections = [
     {
       id: 1,
@@ -107,7 +113,15 @@ const PrivacyPolicy = () => {
   ];
 
   return (
-    <div className="bg-cream min-h-screen pt-32 pb-20 px-6">
+    <>
+      <Helmet>
+        <title>{`Privacy Policy | ${siteName}`}</title>
+        <meta name="description" content={`Privacy Policy and Data Governance guidelines for ${siteName}.`} />
+        <meta property="og:title" content={`Privacy Policy | ${siteName}`} />
+        <meta property="og:description" content={`Privacy Policy and Data Governance guidelines for ${siteName}.`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="bg-cream min-h-screen pt-32 pb-20 px-6">
       <div className="container-custom max-w-4xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -165,10 +179,11 @@ const PrivacyPolicy = () => {
           className="mt-16 p-8 rounded-[32px] bg-slate-900 text-white text-center"
         >
           <p className="text-sm font-medium opacity-60 mb-2">Concerned about your data?</p>
-          <p className="text-lg font-bold">Email us at privacy@tajashutki.com</p>
+          <p className="text-lg font-bold">Email us at {contact.email || 'privacy@tajashutki.com'}</p>
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

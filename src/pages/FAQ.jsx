@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, HelpCircle, MessageSquare } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 
 const FAQ = () => {
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteName = initData?.site?.name || 'Taja Shutki';
   const [activeIndex, setActiveIndex] = useState(null);
 
   const faqs = [
@@ -73,7 +77,14 @@ const FAQ = () => {
   };
 
   return (
-    <div className="bg-cream min-h-screen pt-32 pb-20 px-6">
+    <>
+      <Helmet>
+        <title>{`FAQ | ${siteName}`}</title>
+        <meta name="description" content={`Find answers to frequently asked questions about ${siteName} dried fish orders, delivery, quality, and support.`} />
+        <meta property="og:title" content={`FAQ | ${siteName}`} />
+        <meta property="og:description" content={`Find answers to frequently asked questions about ${siteName} dried fish orders, delivery, quality, and support.`} />
+      </Helmet>
+      <div className="bg-cream min-h-screen pt-32 pb-20 px-6">
       <div className="container-custom max-w-3xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -152,6 +163,7 @@ const FAQ = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

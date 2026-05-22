@@ -1,10 +1,19 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, ShoppingBag, SearchX } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 
 const NotFound = () => {
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteName = initData?.site?.name || 'TajaShutki';
   return (
-    <div className="min-h-[70vh] flex items-center justify-center bg-cream px-6">
+    <>
+      <Helmet>
+        <title>{`Page Not Found | ${siteName}`}</title>
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <div className="min-h-[70vh] flex items-center justify-center bg-cream px-6">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,6 +53,7 @@ const NotFound = () => {
         </div>
       </motion.div>
     </div>
+    </>
   );
 };
 

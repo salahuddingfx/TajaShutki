@@ -1,14 +1,25 @@
 import { motion } from 'framer-motion';
 import { Globe, Mail, Code2, Zap, Palette, Rocket, User, Server, Database, Layout, Cpu } from 'lucide-react';
 import { Instagram } from '../components/BrandIcons';
+import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 
 const GithubIcon = ({ size = 18 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
 );
 
 const Developer = () => {
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteName = initData?.site?.name || 'TajaShutki';
   return (
-    <div className="bg-cream min-h-screen py-24 overflow-hidden relative">
+    <>
+      <Helmet>
+        <title>{`Meet the Developer | ${siteName}`}</title>
+        <meta name="description" content={`Learn more about the architect behind ${siteName}.`} />
+        <meta property="og:title" content={`Meet the Developer | ${siteName}`} />
+        <meta property="og:description" content={`Learn more about the architect behind ${siteName}.`} />
+      </Helmet>
+      <div className="bg-cream min-h-screen py-24 overflow-hidden relative">
       {/* Abstract Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-maroon/5 rounded-full blur-[120px] -z-0" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-maroon/5 rounded-full blur-[100px] -z-0" />
@@ -164,6 +175,7 @@ const Developer = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

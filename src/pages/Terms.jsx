@@ -1,15 +1,19 @@
 import React from 'react';
 import { ShieldCheck, Truck, CreditCard, RefreshCw, Scale, UserCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 
 const Terms = () => {
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteName = initData?.site?.name || 'Taja Shutki';
   const sections = [
     {
       id: 1,
       title: "Legally Binding Access",
       icon: Scale,
       notes: [
-        "By accessing Taja Shutki, you agree to be bound by these Terms and Conditions. Disagreement requires immediate exit.",
+        `By accessing ${siteName}, you agree to be bound by these Terms and Conditions. Disagreement requires immediate exit.`,
         "We reserve the right to modify these terms at our absolute discretion. Updates are effective upon posting.",
         "Usage of the site after updates implies unconditional acceptance of the revised legal framework."
       ]
@@ -50,7 +54,7 @@ const Terms = () => {
       icon: CreditCard,
       notes: [
         "All transactions are final once processed. We use secure, third-party encrypted payment gateways.",
-        "Taja Shutki does not store sensitive financial data. Payment disputes must be settled with your bank.",
+        `${siteName} does not store sensitive financial data. Payment disputes must be settled with your bank.`,
         "For COD, payment must be handed over before the courier releases the vacuum-sealed package."
       ]
     },
@@ -100,7 +104,7 @@ const Terms = () => {
       icon: ShieldCheck,
       notes: [
         "All products are processed in environments that handle various seafood and salt. Check for allergies.",
-        "Taja Shutki is not responsible for any allergic reactions or health issues arising from consumption.",
+        `${siteName} is not responsible for any allergic reactions or health issues arising from consumption.`,
         "Consult your doctor before adding dried seafood to your diet if you have high blood pressure or salt sensitivity."
       ]
     },
@@ -139,7 +143,7 @@ const Terms = () => {
       title: "Proprietary Rights",
       icon: Scale,
       notes: [
-        "All visual content, logos, and product descriptions are the exclusive intellectual property of Taja Shutki.",
+        `All visual content, logos, and product descriptions are the exclusive intellectual property of ${siteName}.`,
         "Copying or scraping our content for commercial use without permission will trigger legal litigation.",
         "Customer reviews may be used in our marketing materials across social media and the web."
       ]
@@ -157,7 +161,15 @@ const Terms = () => {
   ];
 
   return (
-    <div className="bg-cream min-h-screen pt-32 pb-20 px-6">
+    <>
+      <Helmet>
+        <title>{`Terms & Conditions | ${siteName}`}</title>
+        <meta name="description" content={`Terms of service and legal agreement guidelines for using the ${siteName} platform.`} />
+        <meta property="og:title" content={`Terms & Conditions | ${siteName}`} />
+        <meta property="og:description" content={`Terms of service and legal agreement guidelines for using the ${siteName} platform.`} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="bg-cream min-h-screen pt-32 pb-20 px-6">
       <div className="container-custom max-w-4xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -220,6 +232,7 @@ const Terms = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

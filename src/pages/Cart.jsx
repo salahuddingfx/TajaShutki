@@ -14,6 +14,7 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck, ShieldCheck, Refre
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../api/api';
 import Swal from 'sweetalert2';
+import { Helmet } from 'react-helmet-async';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const Cart = () => {
   const totalPrice = useSelector(selectCartTotal);
   const cartCount = useSelector(selectCartCount);
   const deliverySettings = useSelector(selectDeliverySettings);
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteName = initData?.site?.name || 'Taja Shutki';
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -68,33 +71,44 @@ const Cart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center bg-slate-50 px-4">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl border border-slate-100">
-            <ShoppingBag size={48} className="text-blue-600/20" />
-          </div>
-          <h2 className="text-4xl font-bold text-slate-800 mb-4 tracking-tight">Your cart is empty</h2>
-          <p className="text-slate-500 mb-10 max-w-sm mx-auto text-lg font-medium">
-            Looks like you haven't added any of our fresh dried fish to your bag yet.
-          </p>
-          <Link 
-            to="/shop" 
-            className="inline-flex items-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-2xl font-black hover:bg-blue-700 transition-all shadow-xl hover:shadow-blue-600/20 group"
+      <>
+        <Helmet>
+          <title>{`Shopping Cart | ${siteName}`}</title>
+          <meta name="description" content="View items in your shopping bag and proceed to checkout." />
+        </Helmet>
+        <div className="min-h-[80vh] flex flex-col items-center justify-center bg-slate-50 px-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
           >
-            Start Shopping
-            <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
-          </Link>
-        </motion.div>
-      </div>
+            <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl border border-slate-100">
+              <ShoppingBag size={48} className="text-blue-600/20" />
+            </div>
+            <h2 className="text-4xl font-bold text-slate-800 mb-4 tracking-tight">Your cart is empty</h2>
+            <p className="text-slate-500 mb-10 max-w-sm mx-auto text-lg font-medium">
+              Looks like you haven't added any of our fresh dried fish to your bag yet.
+            </p>
+            <Link 
+              to="/shop" 
+              className="inline-flex items-center gap-3 bg-blue-600 text-white px-10 py-5 rounded-2xl font-black hover:bg-blue-700 transition-all shadow-xl hover:shadow-blue-600/20 group"
+            >
+              Start Shopping
+              <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-32 pt-20">
+    <>
+      <Helmet>
+        <title>{`Shopping Cart | ${siteName}`}</title>
+        <meta name="description" content="View items in your shopping bag and proceed to checkout." />
+      </Helmet>
+      <div className="bg-slate-50 min-h-screen pb-32 pt-20">
       <div className="container-custom">
         <header className="mb-16">
           <h1 className="text-5xl font-black text-slate-900 tracking-tighter mb-4">My Shopping Bag</h1>
@@ -303,6 +317,7 @@ const Cart = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
