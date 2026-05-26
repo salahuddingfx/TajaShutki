@@ -407,7 +407,7 @@ const ProductDetails = () => {
         </script>
       </Helmet>
 
-      <div className="bg-cream min-h-screen pb-20 pt-10">
+      <div className="bg-cream min-h-screen pb-36 lg:pb-20 pt-10">
         <div className="container-custom max-w-7xl">
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 mb-8">
           <Link to="/" className="hover:text-teal-600 transition-colors">Home</Link>
@@ -417,10 +417,10 @@ const ProductDetails = () => {
           {product.category && (
             <>
               <ChevronLeft size={14} className="rotate-180 opacity-50" />
-              {product.category.parent && (
+              {product.category?.parent && (
                 <>
                   <Link 
-                    to={`/shop?category=${product.category.parent.name}`} 
+                    to={`/shop?category=${encodeURIComponent(product.category.parent.name || '')}`} 
                     className="hover:text-teal-600 transition-colors"
                   >
                     {translate(product.category.parent.name, product.category.parent.name_bn)}
@@ -429,10 +429,10 @@ const ProductDetails = () => {
                 </>
               )}
               <Link 
-                to={`/shop?category=${product.category.name}`} 
+                to={`/shop?category=${encodeURIComponent(typeof product.category === 'string' ? product.category : (product.category?.name || ''))}`} 
                 className="hover:text-teal-600 transition-colors truncate max-w-[100px] md:max-w-none"
               >
-                {translate(product.category.name, product.category.name_bn) || product.category}
+                {typeof product.category === 'string' ? product.category : (translate(product.category?.name, product.category?.name_bn) || 'Category')}
               </Link>
             </>
           )}
@@ -1061,19 +1061,54 @@ const ProductDetails = () => {
       </div>
 
       {/* Mobile Sticky Action Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-in slide-in-from-bottom duration-500">
-        <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
-          <div className="flex-1">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Price</p>
-            <p className="text-xl font-black text-teal-600 leading-none">৳{((selectedVariation ? selectedVariation.price : product.price) * quantity).toFixed(0)}</p>
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
+        <div className="max-w-lg mx-auto px-4 py-3">
+          {/* Price + Qty row */}
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Total Price</p>
+              <p className="text-lg font-black text-teal-600 leading-none">৳{((selectedVariation ? selectedVariation.price : product.price) * quantity).toFixed(0)}</p>
+            </div>
+            {/* Qty Controls */}
+            <div className="flex items-center bg-slate-100 rounded-xl p-0.5 border border-slate-200">
+              <button 
+                onClick={() => updateProductQuantity(quantity - 1)}
+                className="w-9 h-9 flex items-center justify-center text-slate-600 hover:text-teal-600 transition-colors"
+              ><Minus size={16} /></button>
+              <span className="w-9 text-center font-black text-slate-900 text-sm">{quantity}</span>
+              <button 
+                onClick={() => updateProductQuantity(quantity + 1)}
+                className="w-9 h-9 flex items-center justify-center text-slate-600 hover:text-teal-600 transition-colors"
+              ><Plus size={16} /></button>
+            </div>
           </div>
-          <button 
-            onClick={handleOrderNow}
-            className="flex-[2] py-4 px-6 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all bg-teal-600 text-white shadow-lg active:scale-95"
-          >
-            <ShoppingBag size={18} />
-            Order Now
-          </button>
+          {/* Action Buttons row */}
+          <div className="flex gap-2">
+            <button 
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+              className={`flex-1 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 border-2 ${
+                isOutOfStock 
+                  ? 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed' 
+                  : 'bg-white text-slate-900 border-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <ShoppingCart size={15} />
+              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            </button>
+            <button 
+              onClick={handleOrderNow}
+              disabled={isOutOfStock}
+              className={`flex-[1.4] py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
+                isOutOfStock 
+                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
+                  : 'bg-teal-600 text-white shadow-lg shadow-teal-600/20'
+              }`}
+            >
+              <ShoppingBag size={15} />
+              {isOutOfStock ? 'Sold Out' : 'Order Now'}
+            </button>
+          </div>
         </div>
       </div>
       </div>
