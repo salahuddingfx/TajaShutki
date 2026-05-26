@@ -407,7 +407,7 @@ const ProductDetails = () => {
         </script>
       </Helmet>
 
-      <div className="bg-cream min-h-screen pb-36 lg:pb-20 pt-10">
+      <div className="bg-cream min-h-screen pb-[130px] md:pb-[60px] lg:pb-10 pt-10">
         <div className="container-custom max-w-7xl">
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 mb-8">
           <Link to="/" className="hover:text-teal-600 transition-colors">Home</Link>
@@ -1060,55 +1060,55 @@ const ProductDetails = () => {
       </AnimatePresence>
       </div>
 
-      {/* Mobile Sticky Action Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          {/* Price + Qty row */}
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Total Price</p>
-              <p className="text-lg font-black text-teal-600 leading-none">৳{((selectedVariation ? selectedVariation.price : product.price) * quantity).toFixed(0)}</p>
-            </div>
-            {/* Qty Controls */}
-            <div className="flex items-center bg-slate-100 rounded-xl p-0.5 border border-slate-200">
-              <button 
-                onClick={() => updateProductQuantity(quantity - 1)}
-                className="w-9 h-9 flex items-center justify-center text-slate-600 hover:text-teal-600 transition-colors"
-              ><Minus size={16} /></button>
-              <span className="w-9 text-center font-black text-slate-900 text-sm">{quantity}</span>
-              <button 
-                onClick={() => updateProductQuantity(quantity + 1)}
-                className="w-9 h-9 flex items-center justify-center text-slate-600 hover:text-teal-600 transition-colors"
-              ><Plus size={16} /></button>
-            </div>
+      {/* Mobile Sticky Action Bar — sits above BottomNav on small screens */}
+      <div className="lg:hidden fixed bottom-[68px] md:bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-slate-100 z-[99] shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+        <div className="flex items-center gap-2 px-3 py-2.5 max-w-lg mx-auto">
+          {/* Price */}
+          <div className="min-w-0 shrink-0">
+            <p className="text-[8px] font-black uppercase tracking-wider text-slate-400 leading-none mb-0.5">Total</p>
+            <p className="text-base font-black text-teal-600 leading-none">৳{((selectedVariation ? selectedVariation.price : product.price) * quantity).toFixed(0)}</p>
           </div>
-          {/* Action Buttons row */}
-          <div className="flex gap-2">
+
+          {/* Qty stepper */}
+          <div className="flex items-center bg-slate-100 rounded-lg border border-slate-200 shrink-0">
             <button 
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className={`flex-1 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 border-2 ${
-                isOutOfStock 
-                  ? 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed' 
-                  : 'bg-white text-slate-900 border-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <ShoppingCart size={15} />
-              {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-            </button>
+              onClick={() => updateProductQuantity(quantity - 1)}
+              className="w-8 h-8 flex items-center justify-center text-slate-600 active:text-teal-600 transition-colors"
+            ><Minus size={14} /></button>
+            <span className="w-7 text-center font-black text-slate-900 text-sm">{quantity}</span>
             <button 
-              onClick={handleOrderNow}
-              disabled={isOutOfStock}
-              className={`flex-[1.4] py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
-                isOutOfStock 
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
-                  : 'bg-teal-600 text-white shadow-lg shadow-teal-600/20'
-              }`}
-            >
-              <ShoppingBag size={15} />
-              {isOutOfStock ? 'Sold Out' : 'Order Now'}
-            </button>
+              onClick={() => updateProductQuantity(quantity + 1)}
+              className="w-8 h-8 flex items-center justify-center text-slate-600 active:text-teal-600 transition-colors"
+            ><Plus size={14} /></button>
           </div>
+
+          {/* Add to Cart */}
+          <button 
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className={`flex-1 h-10 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1 transition-all active:scale-95 border-2 min-w-0 ${
+              isOutOfStock 
+                ? 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed' 
+                : 'bg-white text-slate-900 border-slate-800'
+            }`}
+          >
+            <ShoppingCart size={13} className="shrink-0" />
+            <span className="truncate">Cart</span>
+          </button>
+
+          {/* Order Now */}
+          <button 
+            onClick={handleOrderNow}
+            disabled={isOutOfStock}
+            className={`flex-[1.6] h-10 rounded-xl font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1 transition-all active:scale-95 min-w-0 ${
+              isOutOfStock 
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
+                : 'bg-teal-600 text-white shadow-md shadow-teal-600/20'
+            }`}
+          >
+            <ShoppingBag size={13} className="shrink-0" />
+            <span className="truncate">{isOutOfStock ? 'Sold Out' : 'Order Now'}</span>
+          </button>
         </div>
       </div>
       </div>

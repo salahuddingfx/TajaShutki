@@ -23,7 +23,7 @@ const WhatsAppFloat = () => {
   if (!cleanNumber) return null;
 
   return (
-    <div className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-50 flex flex-col items-end">
+    <div className="fixed bottom-[130px] md:bottom-[68px] lg:bottom-8 right-4 lg:right-8 z-[98] flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
