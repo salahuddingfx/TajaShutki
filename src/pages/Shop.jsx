@@ -23,7 +23,7 @@ const Shop = () => {
   const searchQuery = searchParams.get('search') || '';
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   const priceRanges = [
     { label: 'All Prices', value: 'All' },
@@ -316,26 +316,87 @@ const Shop = () => {
                 </div>
               )}
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-20 flex justify-center items-center gap-2">
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => {
-                        setCurrentPage(i + 1);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                      className={clsx(
-                        "w-10 h-10 rounded-xl font-black transition-all",
-                        currentPage === i + 1 
-                          ? "bg-emerald-600 text-white shadow-glow" 
-                          : "bg-white text-slate-400 hover:text-slate-800 border border-slate-100"
-                      )}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
+              {/* Pagination Section */}
+              {filteredProducts.length > 0 && (
+                <div className="mt-20 flex flex-col sm:flex-row justify-between items-center gap-6 border-t border-slate-100 pt-8">
+                  {/* Items per page selector */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-slate-400">Show:</span>
+                    <div className="flex gap-1">
+                      {[12, 25, 50, 100].map((limit) => (
+                        <button
+                          key={limit}
+                          onClick={() => {
+                            setItemsPerPage(limit);
+                            setCurrentPage(1);
+                          }}
+                          className={clsx(
+                            "px-3 py-1.5 rounded-lg text-xs font-black transition-all border",
+                            itemsPerPage === limit
+                              ? "bg-emerald-600 text-white border-emerald-600"
+                              : "bg-white text-slate-500 border-slate-100 hover:border-slate-200 hover:text-slate-800"
+                          )}
+                        >
+                          {limit}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Page numbers / Prev / Next */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        disabled={currentPage === 1}
+                        onClick={() => {
+                          setCurrentPage(prev => Math.max(1, prev - 1));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={clsx(
+                          "px-4 h-10 rounded-xl font-black text-xs transition-all border flex items-center justify-center",
+                          currentPage === 1
+                            ? "bg-slate-50 text-slate-300 border-transparent cursor-not-allowed"
+                            : "bg-white text-slate-600 hover:text-slate-800 border-slate-100"
+                        )}
+                      >
+                        Prev
+                      </button>
+                      
+                      {Array.from({ length: totalPages }).map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            setCurrentPage(i + 1);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className={clsx(
+                            "w-10 h-10 rounded-xl font-black text-xs transition-all",
+                            currentPage === i + 1 
+                              ? "bg-emerald-600 text-white shadow-glow" 
+                              : "bg-white text-slate-400 hover:text-slate-800 border border-slate-100"
+                          )}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+
+                      <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => {
+                          setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        className={clsx(
+                          "px-4 h-10 rounded-xl font-black text-xs transition-all border flex items-center justify-center",
+                          currentPage === totalPages
+                            ? "bg-slate-50 text-slate-300 border-transparent cursor-not-allowed"
+                            : "bg-white text-slate-600 hover:text-slate-800 border-slate-100"
+                        )}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
