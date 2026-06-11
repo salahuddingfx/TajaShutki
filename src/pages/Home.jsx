@@ -38,27 +38,44 @@ const Home = () => {
   const sliderRef = useRef(null);
   const reviewContentRef = useRef(null);
 
-  const scroll = (direction) => {
-    if (sliderRef.current) {
-      const { scrollLeft, clientWidth } = sliderRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2;
-      sliderRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
-    }
-  };
+  const scrollTimerRef = useRef(null);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
+  const startAutoScroll = useCallback(() => {
+    if (scrollTimerRef.current) clearInterval(scrollTimerRef.current);
+    scrollTimerRef.current = setInterval(() => {
       if (sliderRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
-        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+        if (scrollLeft + clientWidth >= scrollWidth - 30) {
           sliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
-          scroll('right');
+          sliderRef.current.scrollTo({ left: scrollLeft + 260, behavior: 'smooth' });
         }
       }
     }, 4000);
-    return () => clearInterval(interval);
   }, []);
+
+  const stopAutoScroll = useCallback(() => {
+    if (scrollTimerRef.current) {
+      clearInterval(scrollTimerRef.current);
+    }
+  }, []);
+
+  const scroll = (direction) => {
+    stopAutoScroll();
+    if (sliderRef.current) {
+      const { scrollLeft } = sliderRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - 260 : scrollLeft + 260;
+      sliderRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+    // Resume auto-scroll after a short delay
+    const resumeTimer = setTimeout(startAutoScroll, 6000);
+    return () => clearTimeout(resumeTimer);
+  };
+
+  useEffect(() => {
+    startAutoScroll();
+    return () => stopAutoScroll();
+  }, [startAutoScroll, stopAutoScroll]);
 
   // Fallback data if DB settings aren't set yet
   const whyUs = homeSettings?.why_us || [
