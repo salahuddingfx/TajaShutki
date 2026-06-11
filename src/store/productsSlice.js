@@ -25,8 +25,28 @@ const initialState = {
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (params) => {
-    const response = await getProducts(params);
-    return response.data.data || [];
+    let allProducts = [];
+    let page = 1;
+    let hasMore = true;
+    let safetyCounter = 0;
+    
+    while (hasMore && safetyCounter < 50) {
+      safetyCounter++;
+      const response = await getProducts({ ...params, page });
+      const paginatedData = response?.data;
+      
+      if (paginatedData && Array.isArray(paginatedData.data) && paginatedData.data.length > 0) {
+        allProducts = [...allProducts, ...paginatedData.data];
+        if (paginatedData.current_page >= paginatedData.last_page) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      } else {
+        hasMore = false;
+      }
+    }
+    return allProducts;
   }
 );
 
