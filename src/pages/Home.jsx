@@ -42,6 +42,18 @@ const Home = () => {
   const [isManual, setIsManual] = useState(false);
   const scrollTimeoutRef = useRef(null);
 
+  // Center the scroll initially once products are loaded
+  useEffect(() => {
+    if (sliderRef.current && bestSellers.length > 0) {
+      const slider = sliderRef.current;
+      const timer = setTimeout(() => {
+        const originalWidth = slider.scrollWidth / 4;
+        slider.scrollLeft = originalWidth;
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [bestSellers.length]);
+
   // Infinite linear auto-scroll loop
   useEffect(() => {
     let animationFrame;
@@ -59,10 +71,9 @@ const Home = () => {
         const speed = 0.045; // pixels per millisecond (approx 45px/sec)
         let nextScroll = slider.scrollLeft + speed * delta;
 
-        // Original list size is roughly half the duplicated scrollWidth
-        const halfWidth = slider.scrollWidth / 2;
-        if (nextScroll >= halfWidth) {
-          nextScroll = nextScroll - halfWidth;
+        const originalWidth = slider.scrollWidth / 4;
+        if (originalWidth > 0 && nextScroll >= originalWidth * 2.5) {
+          nextScroll = nextScroll - originalWidth;
         }
         slider.scrollLeft = nextScroll;
       }
@@ -73,6 +84,21 @@ const Home = () => {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, [isPaused, isManual]);
+
+  // Handle seamless wrapping on manual scroll or button clicks
+  const handleScroll = () => {
+    if (sliderRef.current) {
+      const slider = sliderRef.current;
+      const originalWidth = slider.scrollWidth / 4;
+      if (originalWidth === 0) return;
+
+      if (slider.scrollLeft >= originalWidth * 2.5) {
+        slider.scrollLeft = slider.scrollLeft - originalWidth;
+      } else if (slider.scrollLeft <= originalWidth * 0.5) {
+        slider.scrollLeft = slider.scrollLeft + originalWidth;
+      }
+    }
+  };
 
   const scroll = (direction) => {
     setIsManual(true);
@@ -253,7 +279,8 @@ const Home = () => {
               ref={sliderRef}
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
-              className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar snap-x snap-mandatory scroll-smooth"
+              onScroll={handleScroll}
+              className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar snap-x snap-mandatory"
             >
               {loading ? (
                 [...Array(5)].map((_, i) => (
@@ -262,7 +289,7 @@ const Home = () => {
                   </div>
                 ))
               ) : (
-                [...bestSellers, ...bestSellers].map((product, i) => (
+                [...bestSellers, ...bestSellers, ...bestSellers, ...bestSellers].map((product, i) => (
                   <motion.div
                     key={`${product.id}-${i}`}
                     initial={{ opacity: 0, x: 40 }}
