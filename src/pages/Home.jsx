@@ -41,6 +41,9 @@ const Home = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isManual, setIsManual] = useState(false);
   const scrollTimeoutRef = useRef(null);
+  const speedRef = useRef(0.045); // Speed of 45px/second
+  const targetScrollLeftRef = useRef(0);
+  const isProgrammaticRef = useRef(false);
 
   // Center the scroll initially once products are loaded
   useEffect(() => {
@@ -49,12 +52,13 @@ const Home = () => {
       const timer = setTimeout(() => {
         const originalWidth = slider.scrollWidth / 4;
         slider.scrollLeft = originalWidth;
+        targetScrollLeftRef.current = originalWidth;
       }, 100);
       return () => clearTimeout(timer);
     }
   }, [bestSellers.length]);
 
-  // Infinite linear auto-scroll loop
+  // Unified animation frame loop for smooth auto-scrolling & seamless wrapping
   useEffect(() => {
     let animationFrame;
     let lastTime;
@@ -66,16 +70,29 @@ const Home = () => {
       const delta = time - lastTime;
       lastTime = time;
 
-      if (sliderRef.current && !isPaused && !isManual && bestSellers.length > 0) {
+      if (sliderRef.current && bestSellers.length > 0) {
         const slider = sliderRef.current;
-        const speed = 0.045; // pixels per millisecond (approx 45px/sec)
-        let nextScroll = slider.scrollLeft + speed * delta;
-
         const originalWidth = slider.scrollWidth / 4;
-        if (originalWidth > 0 && nextScroll >= originalWidth * 2.5) {
-          nextScroll = nextScroll - originalWidth;
+
+        if (originalWidth > 0) {
+          // 1. Wrap-around check: Keep the scroll within [0.5 * originalWidth, 2.5 * originalWidth]
+          if (slider.scrollLeft >= originalWidth * 2.5) {
+            isProgrammaticRef.current = true;
+            slider.scrollLeft -= originalWidth;
+            targetScrollLeftRef.current -= originalWidth;
+          } else if (slider.scrollLeft <= originalWidth * 0.5) {
+            isProgrammaticRef.current = true;
+            slider.scrollLeft += originalWidth;
+            targetScrollLeftRef.current += originalWidth;
+          }
+
+          // 2. Perform auto-scroll increment if not paused and not manual
+          if (!isPaused && !isManual) {
+            targetScrollLeftRef.current += speedRef.current * delta;
+            isProgrammaticRef.current = true;
+            slider.scrollLeft = targetScrollLeftRef.current;
+          }
         }
-        slider.scrollLeft = nextScroll;
       }
 
       animationFrame = requestAnimationFrame(animate);
@@ -85,27 +102,37 @@ const Home = () => {
     return () => cancelAnimationFrame(animationFrame);
   }, [isPaused, isManual, bestSellers.length]);
 
-  // Handle seamless wrapping on manual scroll or button clicks
+  // Safe manual scroll tracking (to avoid infinite loops)
   const handleScroll = () => {
-    if (sliderRef.current && bestSellers.length > 0) {
-      const slider = sliderRef.current;
-      const originalWidth = slider.scrollWidth / 4;
-      if (originalWidth === 0) return;
+    if (!sliderRef.current) return;
 
-      if (slider.scrollLeft >= originalWidth * 2.5) {
-        slider.scrollLeft = slider.scrollLeft - originalWidth;
-      } else if (slider.scrollLeft <= originalWidth * 0.5) {
-        slider.scrollLeft = slider.scrollLeft + originalWidth;
-      }
+    if (isProgrammaticRef.current) {
+      isProgrammaticRef.current = false;
+      return;
     }
+
+    // User is manually swiping/scrolling
+    setIsManual(true);
+    targetScrollLeftRef.current = sliderRef.current.scrollLeft;
+
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsManual(false);
+    }, 10000);
   };
 
   const scroll = (direction) => {
     setIsManual(true);
     if (sliderRef.current) {
-      const { scrollLeft } = sliderRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - 260 : scrollLeft + 260;
-      sliderRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+      const slider = sliderRef.current;
+      const cardWidth = slider.querySelector('.marquee-card')?.offsetWidth || 220;
+      const gap = 24;
+      const step = cardWidth + gap;
+      const scrollTo = direction === 'left' ? slider.scrollLeft - step : slider.scrollLeft + step;
+      
+      targetScrollLeftRef.current = scrollTo;
+      isProgrammaticRef.current = true;
+      slider.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
 
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
@@ -280,26 +307,22 @@ const Home = () => {
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
               onScroll={handleScroll}
-              className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar snap-x snap-mandatory"
+              className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar"
             >
               {loading ? (
                 [...Array(5)].map((_, i) => (
-                  <div key={i} className="w-[160px] md:w-[220px] shrink-0 snap-start">
+                  <div key={i} className="w-[160px] md:w-[220px] shrink-0 marquee-card">
                     <SkeletonCard />
                   </div>
                 ))
               ) : (
                 [...bestSellers, ...bestSellers, ...bestSellers, ...bestSellers].map((product, i) => (
-                  <motion.div
+                  <div
                     key={`${product.id}-${i}`}
-                    initial={{ opacity: 0, x: 40 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: (i % bestSellers.length) * 0.08, duration: 0.5, ease: "easeOut" }}
-                    className="w-[160px] md:w-[220px] shrink-0 snap-start"
+                    className="w-[160px] md:w-[220px] shrink-0 marquee-card"
                   >
                     <ProductCard product={product} />
-                  </motion.div>
+                  </div>
                 ))
               )}
             </div>
