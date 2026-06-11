@@ -38,44 +38,56 @@ const Home = () => {
   const sliderRef = useRef(null);
   const reviewContentRef = useRef(null);
 
-  const scrollTimerRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isManual, setIsManual] = useState(false);
+  const scrollTimeoutRef = useRef(null);
 
-  const startAutoScroll = useCallback(() => {
-    if (scrollTimerRef.current) clearInterval(scrollTimerRef.current);
-    scrollTimerRef.current = setInterval(() => {
-      if (sliderRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
-        if (scrollLeft + clientWidth >= scrollWidth - 30) {
-          sliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          sliderRef.current.scrollTo({ left: scrollLeft + 260, behavior: 'smooth' });
-        }
+  // Infinite linear auto-scroll loop
+  useEffect(() => {
+    let animationFrame;
+    let lastTime;
+
+    const animate = (time) => {
+      if (lastTime === undefined) {
+        lastTime = time;
       }
-    }, 4000);
-  }, []);
+      const delta = time - lastTime;
+      lastTime = time;
 
-  const stopAutoScroll = useCallback(() => {
-    if (scrollTimerRef.current) {
-      clearInterval(scrollTimerRef.current);
-    }
-  }, []);
+      if (sliderRef.current && !isPaused && !isManual) {
+        const slider = sliderRef.current;
+        const speed = 0.045; // pixels per millisecond (approx 45px/sec)
+        let nextScroll = slider.scrollLeft + speed * delta;
+
+        // Original list size is roughly half the duplicated scrollWidth
+        const halfWidth = slider.scrollWidth / 2;
+        if (nextScroll >= halfWidth) {
+          nextScroll = nextScroll - halfWidth;
+        }
+        slider.scrollLeft = nextScroll;
+      }
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isPaused, isManual]);
 
   const scroll = (direction) => {
-    stopAutoScroll();
+    setIsManual(true);
     if (sliderRef.current) {
       const { scrollLeft } = sliderRef.current;
       const scrollTo = direction === 'left' ? scrollLeft - 260 : scrollLeft + 260;
       sliderRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
-    // Resume auto-scroll after a short delay
-    const resumeTimer = setTimeout(startAutoScroll, 6000);
-    return () => clearTimeout(resumeTimer);
-  };
 
-  useEffect(() => {
-    startAutoScroll();
-    return () => stopAutoScroll();
-  }, [startAutoScroll, stopAutoScroll]);
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    // Resume auto scroll after 10 seconds of inactivity
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsManual(false);
+    }, 10000);
+  };
 
   // Fallback data if DB settings aren't set yet
   const whyUs = homeSettings?.why_us || [
@@ -239,6 +251,8 @@ const Home = () => {
           <div className="relative group">
             <div 
               ref={sliderRef}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
               className="flex gap-4 md:gap-6 overflow-x-auto pb-12 px-4 md:px-[calc((100vw-1200px)/2)] no-scrollbar snap-x snap-mandatory scroll-smooth"
             >
               {loading ? (
@@ -248,13 +262,13 @@ const Home = () => {
                   </div>
                 ))
               ) : (
-                bestSellers.map((product, i) => (
+                [...bestSellers, ...bestSellers].map((product, i) => (
                   <motion.div
-                    key={product.id}
+                    key={`${product.id}-${i}`}
                     initial={{ opacity: 0, x: 40 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
+                    transition={{ delay: (i % bestSellers.length) * 0.08, duration: 0.5, ease: "easeOut" }}
                     className="w-[160px] md:w-[220px] shrink-0 snap-start"
                   >
                     <ProductCard product={product} />
