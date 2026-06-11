@@ -66,7 +66,7 @@ const Home = () => {
       const delta = time - lastTime;
       lastTime = time;
 
-      if (sliderRef.current && !isPaused && !isManual) {
+      if (sliderRef.current && !isPaused && !isManual && bestSellers.length > 0) {
         const slider = sliderRef.current;
         const speed = 0.045; // pixels per millisecond (approx 45px/sec)
         let nextScroll = slider.scrollLeft + speed * delta;
@@ -83,11 +83,11 @@ const Home = () => {
 
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
-  }, [isPaused, isManual]);
+  }, [isPaused, isManual, bestSellers.length]);
 
   // Handle seamless wrapping on manual scroll or button clicks
   const handleScroll = () => {
-    if (sliderRef.current) {
+    if (sliderRef.current && bestSellers.length > 0) {
       const slider = sliderRef.current;
       const originalWidth = slider.scrollWidth / 4;
       if (originalWidth === 0) return;
