@@ -107,6 +107,9 @@ function App() {
   }, [cartItems.length]);
 
   useEffect(() => {
+    // Clear stale cached products to avoid duplicate key issues
+    localStorage.removeItem('tajashutki-products');
+
     dispatch(fetchProducts());
     
     const init = async () => {
