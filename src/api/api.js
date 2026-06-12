@@ -12,8 +12,35 @@ const apiClient = axios.create({
   timeout: 15000,
 });
 
+const BACKEND_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api\/?$/, '') : 'http://127.0.0.1:8000';
+
+const rewriteUrls = (obj) => {
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj === 'string') {
+    return obj.replace(/https?:\/\/(localhost|127\.0\.0\.1):8000/g, BACKEND_URL);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(rewriteUrls);
+  }
+  if (typeof obj === 'object') {
+    const newObj = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        newObj[key] = rewriteUrls(obj[key]);
+      }
+    }
+    return newObj;
+  }
+  return obj;
+};
+
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data) {
+      response.data = rewriteUrls(response.data);
+    }
+    return response;
+  },
   (error) => {
     if (!error.response) {
       toast.error('Network error — please check your connection');
