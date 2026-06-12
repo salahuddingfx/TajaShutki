@@ -96,6 +96,10 @@ const Hero = () => {
           <div className="absolute inset-0 bg-black/40 z-5" />
           <img 
             src={slideImage} 
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=1200';
+            }}
             alt={activeSlide.title}
             className="w-full h-full object-cover"
             fetchPriority="high"
