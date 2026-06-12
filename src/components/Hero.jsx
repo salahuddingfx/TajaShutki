@@ -74,6 +74,8 @@ const Hero = () => {
 
   if (!slides.length) return null;
   const activeSlide = slides[currentSlide];
+  const slideImage = activeSlide.image_path || activeSlide.image;
+  const slideProductId = activeSlide.product_id || activeSlide.productId;
 
   return (
     <section className="relative h-[550px] w-full overflow-hidden bg-slate-950">
@@ -93,14 +95,14 @@ const Hero = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent z-10" />
           <div className="absolute inset-0 bg-black/40 z-5" />
           <img 
-            src={activeSlide.image_path} 
+            src={slideImage} 
             alt={activeSlide.title}
             className="w-full h-full object-cover"
             fetchPriority="high"
           />
         </motion.div>
       </AnimatePresence>
-
+ 
       <div className="container-custom relative z-20 h-full flex flex-col items-center">
         {/* Center Side: Main Text */}
         <div ref={contentRef} className="flex-1 flex flex-col justify-center items-center text-center max-w-4xl">
@@ -114,25 +116,25 @@ const Hero = () => {
                {activeSlide.badge || 'Coastal Traditions'}
              </span>
           </motion.div>
-
+ 
           <h1 className="text-5xl md:text-[6rem] font-display font-black text-white leading-[0.9] mb-6 tracking-tighter uppercase">
             {activeSlide.title}
           </h1>
-
+ 
           <p className="text-base md:text-lg text-cream/60 leading-relaxed max-w-xl mx-auto font-medium backdrop-blur-sm bg-black/5 p-3 rounded-xl">
             {activeSlide.subtitle}
           </p>
         </div>
-
+ 
         {/* Bottom Interaction Bar */}
         <div className="w-full pb-10 flex flex-col md:flex-row items-center justify-between gap-6">
           {/* CTAs */}
           <div className="flex items-center gap-6">
-            {activeSlide.product_id && (
+            {slideProductId && (
               <>
                 <button 
                   onClick={() => {
-                    const rawProduct = siteProducts.find(p => p.id == activeSlide.product_id) || { id: activeSlide.product_id, name: activeSlide.title, price: 0, image: activeSlide.image_path, weight: 0.5 };
+                    const rawProduct = siteProducts.find(p => p.id == slideProductId) || { id: slideProductId, name: activeSlide.title, price: 0, image: slideImage, weight: 0.5 };
                     const product = { ...rawProduct, category: rawProduct.category?.name || rawProduct.category || 'Uncategorized' };
                     dispatch(addItem({ product }));
                     Swal.fire({
@@ -149,9 +151,9 @@ const Hero = () => {
                   <ShoppingCart size={16} />
                   {activeSlide.button_text || 'Order Now'}
                 </button>
-
+ 
                 <Link 
-                  to={`/product/${siteProducts.find(p => p.id == activeSlide.product_id)?.slug || activeSlide.product_id}`}
+                  to={`/product/${siteProducts.find(p => p.id == slideProductId)?.slug || slideProductId}`}
                   className="group flex items-center gap-4"
                 >
                   <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-maroon transition-all duration-500">
