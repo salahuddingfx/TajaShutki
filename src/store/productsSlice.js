@@ -29,6 +29,7 @@ export const fetchProducts = createAsyncThunk(
     let page = 1;
     let hasMore = true;
     let safetyCounter = 0;
+    const seenIds = new Set();
     
     while (hasMore && safetyCounter < 50) {
       safetyCounter++;
@@ -36,7 +37,12 @@ export const fetchProducts = createAsyncThunk(
       const paginatedData = response?.data;
       
       if (paginatedData && Array.isArray(paginatedData.data) && paginatedData.data.length > 0) {
-        allProducts = [...allProducts, ...paginatedData.data];
+        for (const item of paginatedData.data) {
+          if (item && item.id && !seenIds.has(item.id)) {
+            seenIds.add(item.id);
+            allProducts.push(item);
+          }
+        }
         if (paginatedData.current_page >= paginatedData.last_page) {
           hasMore = false;
         } else {
