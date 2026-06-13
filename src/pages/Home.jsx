@@ -51,6 +51,7 @@ const Home = () => {
       const slider = sliderRef.current;
       const timer = setTimeout(() => {
         const originalWidth = slider.scrollWidth / 4;
+        isProgrammaticRef.current = true;
         slider.scrollLeft = originalWidth;
         targetScrollLeftRef.current = originalWidth;
       }, 100);
