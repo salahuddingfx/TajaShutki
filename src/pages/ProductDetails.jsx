@@ -21,6 +21,101 @@ const ProductDetails = () => {
   
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isManual, setIsManual] = useState(false);
+  const sliderRef = useRef(null);
+  const scrollTimeoutRef = useRef(null);
+  const speedRef = useRef(0.045);
+  const targetScrollLeftRef = useRef(0);
+  const isProgrammaticRef = useRef(false);
+
+  const scroll = (direction) => {
+    setIsManual(true);
+    if (sliderRef.current) {
+      const slider = sliderRef.current;
+      const cardWidth = slider.querySelector('.marquee-card')?.offsetWidth || 220;
+      const gap = 24;
+      const step = cardWidth + gap;
+      const scrollTo = direction === 'left' ? slider.scrollLeft - step : slider.scrollLeft + step;
+      
+      targetScrollLeftRef.current = scrollTo;
+      isProgrammaticRef.current = true;
+      slider.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsManual(false);
+    }, 10000);
+  };
+
+  const handleScroll = () => {
+    if (!sliderRef.current) return;
+    if (isProgrammaticRef.current) {
+      isProgrammaticRef.current = false;
+      return;
+    }
+    setIsManual(true);
+    targetScrollLeftRef.current = sliderRef.current.scrollLeft;
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsManual(false);
+    }, 10000);
+  };
+
+  useEffect(() => {
+    if (sliderRef.current && relatedProducts.length > 0) {
+      const slider = sliderRef.current;
+      const timer = setTimeout(() => {
+        const originalWidth = slider.scrollWidth / 4;
+        slider.scrollLeft = originalWidth;
+        targetScrollLeftRef.current = originalWidth;
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [relatedProducts.length]);
+
+  useEffect(() => {
+    let animationFrame;
+    let lastTime;
+
+    const animate = (time) => {
+      if (lastTime === undefined) {
+        lastTime = time;
+      }
+      const delta = time - lastTime;
+      lastTime = time;
+
+      if (sliderRef.current && relatedProducts.length > 0) {
+        const slider = sliderRef.current;
+        const originalWidth = slider.scrollWidth / 4;
+
+        if (originalWidth > 0) {
+          if (slider.scrollLeft >= originalWidth * 2.5) {
+            isProgrammaticRef.current = true;
+            slider.scrollLeft -= originalWidth;
+            targetScrollLeftRef.current -= originalWidth;
+          } else if (slider.scrollLeft <= originalWidth * 0.5) {
+            isProgrammaticRef.current = true;
+            slider.scrollLeft += originalWidth;
+            targetScrollLeftRef.current += originalWidth;
+          }
+
+          if (!isPaused && !isManual) {
+            targetScrollLeftRef.current += speedRef.current * delta;
+            isProgrammaticRef.current = true;
+            slider.scrollLeft = targetScrollLeftRef.current;
+          }
+        }
+      }
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isPaused, isManual, relatedProducts.length]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [quantity, setQuantity] = useState(1);
