@@ -11,9 +11,9 @@ export default {
           DEFAULT: '#F8FAFC',
         },
         maroon: {
-          DEFAULT: '#475569', // Slate-600 (Gray)
-          dark: '#334155',    // Slate-700
-          light: '#64748b',   // Slate-500
+          DEFAULT: '#0D9488', // Teal-600 — TajaShutki primary
+          dark: '#0F766E',    // Teal-700
+          light: '#14B8A6',   // Teal-500
         },
       },
       fontFamily: {
