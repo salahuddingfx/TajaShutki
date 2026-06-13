@@ -94,7 +94,7 @@ function App() {
             },
             duration: 8000,
             style: {
-              background: '#475569',
+              background: '#0D9488',
               color: 'white',
               borderRadius: '20px',
               border: 'none'
