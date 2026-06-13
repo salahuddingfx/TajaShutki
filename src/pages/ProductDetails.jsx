@@ -2,7 +2,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem, selectCartItems, updateQuantity } from '../store/cartSlice';
-import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle, Star, Truck, MapPin, Globe, CreditCard, ShieldCheck, AlertTriangle, X, Maximize2, Minus, Plus, ShoppingBag, Image as ImageIcon, Video, Trash2, PlayCircle } from 'lucide-react';
+import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle, Star, Truck, MapPin, Globe, CreditCard, ShieldCheck, AlertTriangle, X, Maximize2, Minus, Plus, ShoppingBag, Image as ImageIcon, Video, Trash2, PlayCircle, Heart } from 'lucide-react';
+import { toggleWishlist, selectWishlistItems } from '../store/wishlistSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 import { getProductDetails, getProducts, getReviews, submitReview } from '../api/api';
@@ -40,6 +41,17 @@ const ProductDetails = () => {
   const settings = initData?.site?.settings || {};
 
   const cartItems = useSelector(selectCartItems);
+  const wishlistItems = useSelector(selectWishlistItems);
+  const isInWishlist = wishlistItems.some(item => item.id === product?.id);
+
+  const handleToggleWishlist = () => {
+    dispatch(toggleWishlist(product));
+    if (isInWishlist) {
+      toast.success(`${translate(product.name, product.name_bn)} removed from wishlist!`);
+    } else {
+      toast.success(`${translate(product.name, product.name_bn)} added to wishlist!`);
+    }
+  };
   
   // Find cart item considering variation
   const currentCartItemId = selectedVariation ? `${product?.id}-${selectedVariation.id || 'base'}` : product?.id;
