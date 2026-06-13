@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem, selectCartItems, updateQuantity } from '../store/cartSlice';
 import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle, Star, Truck, MapPin, Globe, CreditCard, ShieldCheck, AlertTriangle, X, Maximize2, Minus, Plus, ShoppingBag, Image as ImageIcon, Video, Trash2, PlayCircle, Heart, ChevronRight } from 'lucide-react';
@@ -66,14 +66,16 @@ const ProductDetails = () => {
   useEffect(() => {
     if (sliderRef.current && relatedProducts.length > 0) {
       const slider = sliderRef.current;
+      setIsManual(false);
       const timer = setTimeout(() => {
         const originalWidth = slider.scrollWidth / 4;
+        isProgrammaticRef.current = true;
         slider.scrollLeft = originalWidth;
         targetScrollLeftRef.current = originalWidth;
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [relatedProducts.length]);
+  }, [relatedProducts, id]);
 
   useEffect(() => {
     let animationFrame;
