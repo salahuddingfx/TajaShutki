@@ -34,8 +34,13 @@ const initialState = {
 };
 
 const loadSettings = () => {
-  const saved = localStorage.getItem('taja-multi-settings');
-  return saved ? JSON.parse(saved) : initialState;
+  try {
+    const saved = localStorage.getItem('taja-multi-settings');
+    return saved ? JSON.parse(saved) : initialState;
+  } catch (e) {
+    console.error("Failed to parse settings from localStorage:", e);
+    return initialState;
+  }
 };
 
 const settingsSlice = createSlice({
