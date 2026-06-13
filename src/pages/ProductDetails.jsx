@@ -1105,17 +1105,39 @@ const ProductDetails = () => {
         {/* Related Products Carousel */}
         {relatedProducts.length > 0 && (
           <div className="mt-10">
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex justify-between items-end mb-10 px-4 md:px-0">
               <div className="flex items-center gap-4 flex-1">
                 <h2 className="text-3xl font-display font-black text-slate-800">Related Products</h2>
                 <div className="h-px bg-slate-200 flex-1"></div>
               </div>
+              <div className="hidden md:flex gap-4 ml-6">
+                 <button 
+                  onClick={() => scroll('left')}
+                  className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-teal-600 hover:text-white transition-all shrink-0"
+                  aria-label="Scroll Left"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                 <button 
+                  onClick={() => scroll('right')}
+                  className="w-12 h-12 rounded-full border border-teal-600 flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all shrink-0"
+                  aria-label="Scroll Right"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
             </div>
             
             <div className="relative group">
-              <div className="flex gap-4 md:gap-6 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
-                {relatedProducts.map(p => (
-                  <div key={p.id} className="w-[160px] md:w-[220px] shrink-0 snap-start">
+              <div 
+                ref={sliderRef}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+                onScroll={handleScroll}
+                className="flex gap-4 md:gap-6 overflow-x-auto pb-10 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
+              >
+                {[...relatedProducts, ...relatedProducts, ...relatedProducts, ...relatedProducts].map((p, i) => (
+                  <div key={`${p.id}-${i}`} className="w-[160px] md:w-[220px] shrink-0 marquee-card">
                     <ProductCard product={p} />
                   </div>
                 ))}
