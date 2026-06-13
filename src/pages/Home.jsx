@@ -161,18 +161,23 @@ const Home = () => {
     .map(cat => ({ name: cat.name }))
     .slice(0, 4);
 
+  const initData = useSelector((state) => state.settings?.initData);
+  const siteId = initData?.site?.id || 2;
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await getReviews({ site_id: 2, limit: 5 });
+        const res = await getReviews({ site_id: siteId, limit: 5 });
         const data = Array.isArray(res) ? res : (res?.data || []);
         setReviews(data);
       } catch (err) {
         console.error('Failed to load reviews', err);
       }
     };
-    fetchReviews();
-  }, []);
+    if (initData) {
+      fetchReviews();
+    }
+  }, [initData, siteId]);
 
   // Auto-slide reviews every 3s
   useEffect(() => {
