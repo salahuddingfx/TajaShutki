@@ -655,6 +655,19 @@ const ProductDetails = () => {
                   <ShoppingBag size={18} />
                   {isOutOfStock ? "Sold Out" : "Order Now"}
                 </button>
+
+                <button 
+                  onClick={handleToggleWishlist}
+                  className={clsx(
+                    "p-5 rounded-2xl border transition-all active:scale-95 flex items-center justify-center shadow-xl shrink-0",
+                    isInWishlist 
+                      ? "bg-rose-50 border-rose-200 text-rose-500 hover:bg-rose-100" 
+                      : "bg-slate-50 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500"
+                  )}
+                  title={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                >
+                  <Heart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
+                </button>
               </div>
 
             </div>
