@@ -288,17 +288,17 @@ const Home = () => {
                 <span className="text-teal-600 font-black uppercase tracking-[0.4em] text-[10px]">Most Wanted</span>
                 <h2 className="text-4xl md:text-5xl font-display font-black mt-3 text-slate-900 tracking-tight">Best Sellers</h2>
               </div>
-              <div className="hidden md:flex gap-4">
+              <div className="flex gap-2 md:gap-4 shrink-0">
                  <button 
                   onClick={() => scroll('left')}
-                  className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-teal-600 hover:text-white transition-all"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-600 hover:bg-teal-600 hover:text-white transition-all"
                   aria-label="Scroll Left"
                 >
                   <ChevronRight size={20} className="rotate-180" />
                 </button>
                  <button 
                   onClick={() => scroll('right')}
-                  className="w-12 h-12 rounded-full border border-teal-600 flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-teal-600 flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all"
                   aria-label="Scroll Right"
                 >
                   <ChevronRight size={20} />
