@@ -12,7 +12,7 @@ const apiClient = axios.create({
   timeout: 15000,
 });
 
-const BACKEND_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api\/?$/, '') : 'http://127.0.0.1:8000';
+const BACKEND_URL = API_BASE_URL ? API_BASE_URL.replace(/\/api\/.*$/, '') : 'http://127.0.0.1:8000';
 
 const rewriteUrls = (obj) => {
   if (obj === null || obj === undefined) return obj;
