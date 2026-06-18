@@ -507,7 +507,7 @@ const ProductDetails = () => {
             },
             "offers": {
               "@type": "Offer",
-              "url": window.location.href,
+              "url": `${BACKEND_URL}/seo/tajashutki/product/${product.slug}`,
               "priceCurrency": "BDT",
               "price": product.price,
               "availability": "https://schema.org/InStock"
