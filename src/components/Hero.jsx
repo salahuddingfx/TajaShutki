@@ -109,7 +109,7 @@ const Hero = () => {
  
       <div className="container-custom relative z-20 h-full flex flex-col items-center">
         {/* Center Side: Main Text */}
-        <div ref={contentRef} className="flex-1 flex flex-col justify-center items-center text-center max-w-4xl">
+        <div ref={contentRef} className="flex-1 flex flex-col justify-center items-center text-center max-w-4xl pt-20">
           <motion.div 
             key={`badge-${currentSlide}`}
             initial={{ opacity: 0, y: 10 }}
