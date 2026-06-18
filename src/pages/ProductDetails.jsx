@@ -6,7 +6,7 @@ import { ShoppingCart, ChevronLeft, Loader2, CheckCircle2, Phone, MessageCircle,
 import { toggleWishlist, selectWishlistItems } from '../store/wishlistSlice';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
-import { getProductDetails, getProducts, getReviews, submitReview } from '../api/api';
+import { getProductDetails, getProducts, getReviews, submitReview, BACKEND_URL } from '../api/api';
 import ProductCard from '../components/ProductCard';
 import Swal from 'sweetalert2';
 import { useLanguage } from '@/context/LanguageContext';
