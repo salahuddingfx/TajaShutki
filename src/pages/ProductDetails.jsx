@@ -926,7 +926,50 @@ const ProductDetails = () => {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Reviews List */}
                 <div className="h-full">
-                  {productReviews.length === 0 ? (
+                  {/* Summary Bar */}
+                  {productReviews.length > 0 && (
+                    <div className="bg-white rounded-2xl border border-slate-100 p-5 mb-6 shadow-sm">
+                      <div className="flex items-center gap-4 mb-3">
+                        <span className="text-3xl font-black text-slate-800">
+                          {(productReviews.reduce((sum, r) => sum + Number(r.rating), 0) / productReviews.length).toFixed(1)}
+                        </span>
+                        <div>
+                          <div className="flex gap-0.5">
+                            {[1,2,3,4,5].map(star => (
+                              <Star key={star} size={16} className="text-yellow-400" fill="currentColor" />
+                            ))}
+                          </div>
+                          <p className="text-xs text-slate-400 mt-0.5">{productReviews.length} review{productReviews.length !== 1 && 's'}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        {[5,4,3,2,1].map(star => {
+                          const count = productReviews.filter(r => Math.floor(Number(r.rating)) === star).length;
+                          const pct = productReviews.length > 0 ? (count / productReviews.length * 100) : 0;
+                          return (
+                            <div key={star} className="flex items-center gap-2 text-xs">
+                              <span className="text-slate-500 w-4">{star}</span>
+                              <Star size={10} className="text-yellow-400 fill-yellow-400" />
+                              <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${pct}%` }} />
+                              </div>
+                              <span className="text-slate-400 w-6 text-right">{count}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Rating Filter */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <button onClick={() => setRatingFilter(0)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${ratingFilter === 0 ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>All</button>
+                    {[5,4,3,2,1].map(star => (
+                      <button key={star} onClick={() => setRatingFilter(star)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${ratingFilter === star ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{star}★</button>
+                    ))}
+                  </div>
+
+                  {(ratingFilter === 0 ? productReviews : productReviews.filter(r => Math.floor(Number(r.rating)) === ratingFilter)).length === 0 ? (
                     <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center h-full">
                       <div className="w-20 h-20 bg-white shadow-sm rounded-full flex items-center justify-center mb-4">
                         <MessageCircle size={32} className="text-slate-300" />
@@ -936,7 +979,7 @@ const ProductDetails = () => {
                     </div>
                   ) : (
                     <div className="space-y-6">
-                      {productReviews.map(rev => (
+                      {(ratingFilter === 0 ? productReviews : productReviews.filter(r => Math.floor(Number(r.rating)) === ratingFilter)).map(rev => (
                         <div key={rev.id} className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
                           <div className="flex justify-between items-start mb-2">
                             <span className="font-bold text-slate-800">
@@ -993,6 +1036,15 @@ const ProductDetails = () => {
                               ))}
                             </div>
                           )}
+
+                          {/* Admin Reply */}
+                          {rev.admin_reply && (
+                            <div className="mt-4 pl-4 border-l-2 border-teal-600/30 bg-teal-600/5 p-4 rounded-xl">
+                              <p className="text-xs font-bold text-teal-600 mb-1">Admin Response</p>
+                              <p className="text-sm text-slate-600">{rev.admin_reply}</p>
+                            </div>
+                          )}
+
                           <p className="text-xs text-slate-400 mt-3">{new Date(rev.created_at).toLocaleDateString()}</p>
                         </div>
                       ))}
