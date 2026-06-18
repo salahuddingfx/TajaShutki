@@ -126,7 +126,7 @@ const ProductCard = ({ product }) => {
               to={`/product/${product.slug || product.id}`}
               className={clsx(
                 "text-[13px] font-bold text-slate-800 hover:text-emerald-600 transition-colors line-clamp-1 leading-tight",
-                language === 'bn' ? "font-hindi" : "font-display"
+                language === 'bn' ? "font-display" : "font-sans"
               )}
             >
               {translate(product.name, product.name_bn)}
