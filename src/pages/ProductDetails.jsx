@@ -1040,7 +1040,7 @@ const ProductDetails = () => {
                           {/* Admin Reply */}
                           {rev.admin_reply && (
                             <div className="mt-4 pl-4 border-l-2 border-teal-600/30 bg-teal-600/5 p-4 rounded-xl">
-                              <p className="text-xs font-bold text-teal-600 mb-1">Admin Response</p>
+                              <p className="text-xs font-bold text-teal-600 mb-1">{settings.store_name || 'TajaShutki'} Response</p>
                               <p className="text-sm text-slate-600">{rev.admin_reply}</p>
                             </div>
                           )}
