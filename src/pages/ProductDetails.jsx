@@ -616,8 +616,8 @@ const ProductDetails = () => {
             <div className="bg-white rounded-3xl p-8 md:p-10 shadow-soft-lg border border-slate-100 flex-1 flex flex-col">
               <span className="text-teal-600 font-bold tracking-widest uppercase text-xs mb-3 block">{product.category?.name || product.category || 'Uncategorized'}</span>
               <h1 className={clsx(
-                "text-3xl md:text-5xl font-display font-black mb-4 text-slate-800 leading-tight",
-                language === 'bn' && "text-4xl md:text-6xl"
+                "text-3xl md:text-5xl font-black mb-4 text-slate-800 leading-tight",
+                language === 'bn' ? "font-display text-4xl md:text-6xl" : "font-sans"
               )}>{translate(product.name, product.name_bn)}</h1>
 
               {/* Short Description */}
