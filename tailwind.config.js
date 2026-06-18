@@ -17,7 +17,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Noto Sans Bengali', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Noto Sans Bengali', 'system-ui', 'sans-serif'],
         display: ['Noto Sans Bengali', 'Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
