@@ -479,7 +479,7 @@ const ProductDetails = () => {
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="product" />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:url" content={`${BACKEND_URL}/seo/tajashutki/product/${product.slug}`} />
         <meta property="og:title" content={translate(product.name, product.name_bn)} />
         <meta property="og:description" content={translate(product.description, product.description_bn)?.substring(0, 160)} />
         <meta property="og:image" content={product.image} />
@@ -487,7 +487,7 @@ const ProductDetails = () => {
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content={window.location.href} />
+        <meta name="twitter:url" content={`${BACKEND_URL}/seo/tajashutki/product/${product.slug}`} />
         <meta name="twitter:title" content={translate(product.name, product.name_bn)} />
         <meta name="twitter:description" content={translate(product.description, product.description_bn)?.substring(0, 160)} />
         <meta name="twitter:image" content={product.image} />
