@@ -17,8 +17,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'Noto Sans Bengali', 'system-ui', 'sans-serif'],
-        display: ['Noto Sans Bengali', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Roboto', 'Noto Sans Bengali', 'system-ui', 'sans-serif'],
+        display: ['Noto Sans Bengali', 'Roboto', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
