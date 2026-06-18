@@ -132,6 +132,7 @@ const ProductDetails = () => {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewMedia, setReviewMedia] = useState([]); // { file, type, preview }
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [ratingFilter, setRatingFilter] = useState(0);
 
   const initData = useSelector((state) => state.settings?.initData);
   const siteId = initData?.site?.id || 2;
