@@ -33,10 +33,30 @@ const initialState = {
   loading: false
 };
 
+const rewriteStaleUrls = (obj) => {
+  const BACKEND_URL = 'https://eadmin.viretadev.com';
+  if (typeof obj === 'string') {
+    let rewritten = obj.replace(/https?:\/\/(localhost|127\.0\.0\.1):8000/g, BACKEND_URL);
+    if (rewritten.includes('eadmin.viretadev.com') && rewritten.includes('/storage/') && !rewritten.includes('/public/storage/')) {
+      rewritten = rewritten.replace('/storage/', '/public/storage/');
+    }
+    return rewritten;
+  }
+  if (Array.isArray(obj)) return obj.map(rewriteStaleUrls);
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const key of Object.keys(obj)) {
+      out[key] = rewriteStaleUrls(obj[key]);
+    }
+    return out;
+  }
+  return obj;
+};
+
 const loadSettings = () => {
   try {
     const saved = localStorage.getItem('taja-multi-settings');
-    return saved ? JSON.parse(saved) : initialState;
+    return saved ? rewriteStaleUrls(JSON.parse(saved)) : initialState;
   } catch (e) {
     console.error("Failed to parse settings from localStorage:", e);
     return initialState;
