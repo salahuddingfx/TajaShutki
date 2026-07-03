@@ -63,7 +63,7 @@ const PushNotificationPrompt = ({ siteId }) => {
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-[350px] bg-white rounded-[32px] p-6 shadow-2xl border border-slate-100 overflow-hidden"
+          className="fixed bottom-24 left-6 z-[100] w-[calc(100%-2rem)] max-w-[350px] bg-white rounded-[32px] p-6 shadow-2xl border border-slate-100 overflow-hidden sm:bottom-6 sm:left-6"
         >
           <div className="absolute top-0 right-0 p-4">
             <button onClick={handleDismiss} className="text-slate-300 hover:text-slate-500 transition-colors">
