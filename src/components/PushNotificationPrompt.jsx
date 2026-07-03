@@ -33,7 +33,7 @@ const PushNotificationPrompt = ({ siteId }) => {
         const registration = await navigator.serviceWorker.register('/service-worker.js');
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: 'BEl62iUZuU7yRT97Id_ZclS5S6f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s3f6s' // Placeholder VAPID key
+          applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY
         });
 
         await subscribePush(subscription.toJSON(), siteId);
